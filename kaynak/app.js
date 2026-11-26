@@ -21269,7 +21269,7 @@ void main() {
       t(Pt.ROAD, (s) => {
         nt.forEach((a) => Na(s, a.line, a.w));
         for (let a in jt)
-          if (jt[a] > 1) {
+          if (jt[a] > 2) {
             let r = ji(a);
             O6(s, r[0], r[1], mn[a], mn[a]);
           }
@@ -21341,7 +21341,7 @@ void main() {
   }
   function r3(n, e) {
     for (let t in jt)
-      if (jt[t] > 1) {
+      if (jt[t] > 2) {
         let i = ji(t);
         if ((i[0] - n) ** 2 + (i[1] - e) ** 2 < (mn[t] + 8) ** 2) return !0;
       }
@@ -22259,9 +22259,29 @@ void main() {
         (s.beginPath(), l.forEach((u, h) => (h ? s.lineTo(u[0], u[1]) : s.moveTo(u[0], u[1]))), s.closePath());
       },
       o = Ms.D;
+    for (let l = 0; l < 1400; l++) {
+      let cx = Me.minX + a() * Ct,
+        cz = Me.minZ + a() * It,
+        k = a();
+      ((s.fillStyle = k < 0.33 ? "rgba(185,200,95,0.22)" : k < 0.66 ? "rgba(60,120,45,0.2)" : "rgba(130,190,80,0.25)"),
+        s.beginPath(),
+        s.ellipse(cx, cz, 6 + a() * 22, 4 + a() * 14, a() * 3, 0, 7),
+        s.fill());
+    }
+    for (let l = 0; l < 260; l++) {
+      let cx = Me.minX + a() * Ct,
+        cz = Me.minZ + a() * It,
+        c = ["255,255,255", "255,226,90", "255,150,190", "190,150,255"][(a() * 4) | 0];
+      for (let k = 0; k < 26; k++) ((s.fillStyle = `rgba(${c},${0.35 + a() * 0.35})`), s.fillRect(cx + (a() - 0.5) * 16, cz + (a() - 0.5) * 12, 0.9, 0.9));
+    }
     ((s.fillStyle = "rgba(150,210,95,0.6)"),
       o.grass.forEach((l) => {
-        (r(l.poly), s.fill());
+        (r(l.poly), s.fill(), s.save(), r(l.poly), s.clip());
+        let [cx, cz] = Ws(l.poly),
+          R = Math.sqrt(Hs(l.poly)) + 40;
+        (s.translate(cx, cz), s.rotate(a() * 3.14), (s.fillStyle = "rgba(255,255,220,0.08)"));
+        for (let k = -R; k < R; k += 8) s.fillRect(k, -R, 4, 2 * R);
+        (s.restore(), (s.fillStyle = "rgba(150,210,95,0.6)"));
       }),
       (s.fillStyle = "#4f8f3c"),
       o.forests.forEach((l) => {
@@ -22410,12 +22430,12 @@ void main() {
       j = [];
     for (let C of nt) {
       if (C.len < 1) continue;
-      let W = jt[C.a] > 1 ? Math.min(C.len * 0.3, mn[C.a] - 1) : 0,
-        te = jt[C.b] > 1 ? Math.min(C.len * 0.3, mn[C.b] - 1) : 0;
+      let W = jt[C.a] > 2 ? Math.min(C.len * 0.3, mn[C.a] - 1) : 0,
+        te = jt[C.b] > 2 ? Math.min(C.len * 0.3, mn[C.b] - 1) : 0;
       if (C.len < 0.5) continue;
       (C.type === "ana" ? V : F).push(v1(C.line, -C.w / 2, C.w / 2, 0.09, 12, { trim0: W, trim1: te }));
-      let oe = jt[C.a] > 1 ? Math.max(0, mn[C.a] - 0.9) : 0,
-        Re = jt[C.b] > 1 ? Math.max(0, mn[C.b] - 0.9) : 0,
+      let oe = jt[C.a] > 2 ? Math.max(0, mn[C.a] - 0.9) : 0,
+        Re = jt[C.b] > 2 ? Math.max(0, mn[C.b] - 0.9) : 0,
         Ue = Xs;
       {
         let tr = { trim0: oe, trim1: Re },
@@ -22448,28 +22468,88 @@ void main() {
       let vg = Y($n(VG), VGm, !1);
       vg && (vg.renderOrder = 1);
     }
-    let re = [];
-    for (let C in jt)
-      if (jt[C] > 1) {
-        let [W, te] = ji(C),
-          oe = [W, Wt(W, te) + 0.11, te],
-          Re = [0.5, 0.5],
-          Ue = [],
-          Ve = mn[C] + 0.3,
-          Ne = 20;
-        for (let yt = 0; yt <= Ne; yt++) {
-          let Ze = (yt / Ne) * Math.PI * 2,
-            gt = W + Math.cos(Ze) * Ve,
-            Yt = te + Math.sin(Ze) * Ve;
-          (oe.push(gt, Wt(gt, Yt) + 0.11, Yt), Re.push(0.5 + Math.cos(Ze) * 0.45, Math.sin(Ze) * 0.6), yt > 0 && Ue.push(0, yt + 1, yt));
+    // --- İNİN v1.5: kavşak dolgusu (yol ağızlarının dışbükey zarfı) + iki yol parçasının birleştiği yerde yuvarlak ek ---
+    let re = [],
+      rj = [];
+    {
+      let ptAt = (L, d) => {
+          let acc = 0;
+          for (let i = 1; i < L.length; i++) {
+            let dx = L[i][0] - L[i - 1][0],
+              dz = L[i][1] - L[i - 1][1],
+              s0 = Math.hypot(dx, dz) || 1e-6;
+            if (acc + s0 >= d || i === L.length - 1) {
+              let f = Math.max(0, Math.min(1, (d - acc) / s0));
+              return [L[i - 1][0] + dx * f, L[i - 1][1] + dz * f, dx / s0, dz / s0];
+            }
+            acc += s0;
+          }
+          return [L[0][0], L[0][1], 1, 0];
+        },
+        hull = (P) => {
+          P = P.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+          let cr = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]),
+            lo = [],
+            up = [];
+          for (let p of P) {
+            for (; lo.length >= 2 && cr(lo[lo.length - 2], lo[lo.length - 1], p) <= 0;) lo.pop();
+            lo.push(p);
+          }
+          for (let i = P.length - 1; i >= 0; i--) {
+            let p = P[i];
+            for (; up.length >= 2 && cr(up[up.length - 2], up[up.length - 1], p) <= 0;) up.pop();
+            up.push(p);
+          }
+          return (up.pop(), lo.pop(), lo.concat(up));
+        },
+        fan = (H, y0, out) => {
+          let pos = [],
+            uv = [],
+            idx = [];
+          H.forEach((p) => {
+            (pos.push(p[0], Wt(p[0], p[1]) + y0, p[1]), uv.push(p[0] / 8, p[1] / 16));
+          });
+          for (let i = 1; i < H.length - 1; i++) idx.push(0, i, i + 1);
+          let g = new St();
+          (g.setAttribute("position", new tt(pos, 3)), g.setAttribute("uv", new tt(uv, 2)), g.setIndex(idx), g.computeVertexNormals(), out.push(g));
+        },
+        ends = {};
+      for (let C of nt)
+        for (let [k, rv] of [
+          [C.a, 0],
+          [C.b, 1],
+        ])
+          jt[k] > 1 && (ends[k] = ends[k] || []).push([C, rv]);
+      for (let k in ends) {
+        let E2 = ends[k],
+          n0 = ji(k);
+        if (jt[k] > 2) {
+          let pts = [];
+          for (let [C, rv] of E2) {
+            let L = rv ? C.line.slice().reverse() : C.line,
+              hw = C.w / 2,
+              d = Math.min(C.len * 0.3, mn[k] - 1) + 0.08;
+            for (let dd of [0, d]) {
+              let [px, pz, tx, tz] = ptAt(L, dd);
+              pts.push([px - tz * hw, pz + tx * hw], [px + tz * hw, pz - tx * hw]);
+            }
+          }
+          let H = hull(pts);
+          H.length > 2 && fan(H, 0.1, re);
+        } else if (E2.length === 2) {
+          let [A1, B1] = E2,
+            ta = ptAt(A1[1] ? A1[0].line.slice().reverse() : A1[0].line, 0),
+            tb = ptAt(B1[1] ? B1[0].line.slice().reverse() : B1[0].line, 0),
+            dot = -(ta[2] * tb[2] + ta[3] * tb[3]);
+          if (dot > 0.995) continue;
+          let r = Math.min(A1[0].w, B1[0].w) / 2,
+            H = [];
+          for (let i = 0; i < 18; i++) H.push([n0[0] + Math.cos((i / 18) * 6.283) * r, n0[1] + Math.sin((i / 18) * 6.283) * r]);
+          fan(H, 0.075, rj);
         }
-        let $e = new St();
-        ($e.setAttribute("position", new tt(oe, 3)),
-          $e.setAttribute("uv", new tt(Re, 2)),
-          $e.setIndex(Ue),
-          $e.computeVertexNormals(),
-          re.push($e));
       }
+    }
+    Y($n(rj), new lt({ map: v, side: Mn }));
     Y($n(re), P);
     let K = [],
       fe = [],
@@ -23001,6 +23081,53 @@ void main() {
     (qs(Ye, new lt({ color: 5914672 }), B, { shadow: !1 }),
       qs(ie, new lt({ color: 16777215 }), J, { shadow: Z, color: !0 }),
       qs(ue, new lt({ color: 16777215, side: Mn }), ne, { shadow: Z, color: !0 }));
+    // --- İNİN v1.5: çim alanlara hafif süs: çalı, çiçek öbeği, taş (instanced, az çizim çağrısı) ---
+    {
+      let rz = Wn(4242),
+        bush = [],
+        flw = [],
+        rock = [],
+        tries = e.trees ? 9e3 : 3500,
+        mt2 = new ct(),
+        q2 = new on(),
+        pv = new L(),
+        sv = new L(),
+        okc = (x2, z2) => tn(x2, z2) === Pt.GRASS && x2 > Me.minX + 3 && x2 < Me.maxX - 3 && z2 > Me.minZ + 3 && z2 < Me.maxZ - 3 && !cn(x2, z2, 1.2);
+      for (let i = 0; i < tries; i++) {
+        let x2 = Me.minX + rz() * Ct,
+          z2 = Me.minZ + rz() * It;
+        if (!okc(x2, z2)) continue;
+        let k = rz();
+        if (k < 0.45) {
+          let s = 0.6 + rz() * 0.7,
+            c = new Le().setHSL(0.24 + rz() * 0.1, 0.45 + rz() * 0.2, 0.22 + rz() * 0.12);
+          (pv.set(x2, Wt(x2, z2) - 0.1, z2), q2.setFromAxisAngle(new L(0, 1, 0), rz() * 6.28), sv.set(s, s * (0.6 + rz() * 0.3), s), bush.push({ x: x2, z: z2, m: new ct().compose(pv, q2, sv), c }));
+        } else if (k < 0.85) {
+          let hue = [0.0, 0.13, 0.85, 0.75, 0.6][(rz() * 5) | 0],
+            n2 = 4 + ((rz() * 6) | 0);
+          for (let j = 0; j < n2; j++) {
+            let fx = x2 + (rz() - 0.5) * 2.4,
+              fz = z2 + (rz() - 0.5) * 2.4,
+              s = 0.18 + rz() * 0.14,
+              c = new Le().setHSL(hue + (rz() - 0.5) * 0.04, 0.8, 0.62 + rz() * 0.15);
+            (pv.set(fx, Wt(fx, fz) + 0.05, fz), sv.set(s, s * 0.7, s), q2.set(0, 0, 0, 1), flw.push({ x: fx, z: fz, m: new ct().compose(pv, q2, sv), c }));
+          }
+        } else if (k < 0.92) {
+          let s = 0.3 + rz() * 0.5,
+            c = new Le().setHSL(0.08, 0.05, 0.45 + rz() * 0.2);
+          (pv.set(x2, Wt(x2, z2) - 0.05, z2), q2.setFromAxisAngle(new L(0, 1, 0), rz() * 6.28), sv.set(s, s * 0.6, s * 0.8), rock.push({ x: x2, z: z2, m: new ct().compose(pv, q2, sv), c }));
+        }
+      }
+      let bg = new Qo(1, 0);
+      bg.translate(0, 0.55, 0);
+      let fg = new Qo(1, 0),
+        rg = new Qo(1, 0);
+      (rg.translate(0, 0.3, 0),
+        bush.length && qs(bg, new lt({ color: 16777215 }), bush, { shadow: !1, color: !0 }),
+        flw.length && qs(fg, new lt({ color: 16777215 }), flw, { shadow: !1, color: !0 }),
+        rock.length && qs(rg, new lt({ color: 16777215 }), rock, { shadow: !1, color: !0 }));
+    }
+
     let Pe = [];
     for (let C of nt)
       if (C.type !== "servis")
@@ -24028,9 +24155,9 @@ void main() {
     let D = Math.max(0, P * m),
       V = Math.min(D, 350) + Math.max(0, D - 350) * 0.16;
     ((s.batt = Math.max(OPTX.noslow ? Math.min(s.batt, 0.25) : 0, s.batt - (((V / 0.8) * n) / 3600 / i.capWh) * t.battMul)), (x.powerW = D));
-    let F = 0.07 + 0.55 / (1 + Math.abs(m) * 0.55),
+    let F = (0.04 + 0.5 / (1 + Math.abs(m) * 0.75)) * ((S.save && S.save.opt.steerK) || 1),
       q = e.steer * F;
-    x.steerA += (q - x.steerA) * Math.min(1, n * 7);
+    x.steerA += (q - x.steerA) * Math.min(1, n * (7 / (1 + Math.abs(m) * 0.12)));
     let j = m - (i.vmax + 2.5),
       Y = Math.sin(performance.now() / 70) * x.wobble * 0.06,
       re = (m * Math.tan(x.steerA + Y)) / 0.95,
@@ -24666,7 +24793,7 @@ void main() {
     if (t === es.WATER) return { ok: !1, why: "Buras\u0131 su!" };
     if (Ki.some((s) => Math.hypot(s.x - n, s.z - e) < 6)) return { ok: !1, why: "Yaya ge\xE7idini kapat\u0131yorsun" };
     for (let s in jt)
-      if (jt[s] > 1 && Math.hypot(ji(s)[0] - n, ji(s)[1] - e) < mn[s] + 4)
+      if (jt[s] > 2 && Math.hypot(ji(s)[0] - n, ji(s)[1] - e) < mn[s] + 4)
         return { ok: !1, why: "Kav\u015Fak k\xF6\u015Fesine park edilemez" };
     if (cn(n, e, 1.6) && cn(n, e, 1.6).hit.kind === "bina") return { ok: !1, why: "Bina giri\u015Fini kapat\u0131yorsun" };
     for (let s of Lt)
@@ -25794,6 +25921,31 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
 .achc .n{font-family:var(--hd);font-weight:800;font-size:16px;margin-top:2px}.achc .d{font-size:12px;color:var(--muted);line-height:1.35}.achc .r{font-size:12px;color:var(--gold);margin-top:3px}
 .prog{height:5px;border-radius:3px;background:rgba(255,255,255,.1);overflow:hidden;margin-top:6px}.prog i{display:block;height:100%;background:linear-gradient(90deg,#e8b04b,#ffe39a)}
 #mini:active{transform:scale(.95)}
+#ui{--pw:64px;--ph:92px;--gh:104px;--rb:38px;--sw:190px;--sh:52px;--sk:21px;--ab:124px}
+#ui.us{--pw:54px;--ph:78px;--gh:88px;--rb:33px;--sw:165px;--sh:46px;--sk:18px;--ab:106px}
+#ui.ul{--pw:80px;--ph:118px;--gh:134px;--rb:44px;--sw:230px;--sh:64px;--sk:26px;--ab:160px}
+.pedal{width:var(--pw);height:var(--ph);font-size:calc(var(--pw) * .23);border-radius:calc(var(--pw) * .22);padding-bottom:calc(var(--pw) * .13)}
+#gas{height:var(--gh)}
+#ctrlR{gap:8px;bottom:10px}
+.rbtn{width:var(--rb);height:var(--rb);font-size:calc(var(--rb) * .44);border-radius:calc(var(--rb) * .27)}
+#topbtn{display:grid;grid-template-columns:repeat(2,var(--rb));gap:6px;right:calc(var(--mm,132px) + 14px + env(safe-area-inset-right))}
+#small{right:calc(var(--pw) * 2 + 32px + env(safe-area-inset-right));bottom:10px;gap:6px}
+.act{padding:calc(var(--rb) * .19) calc(var(--rb) * .34);font-size:calc(var(--rb) * .4);border-radius:12px}
+.act small{font-size:11px}
+#steerVis{width:var(--sw);height:var(--sh);border-radius:calc(var(--sh) / 2);bottom:16px}
+#steerVis i{top:calc(var(--sh) / 2 - var(--sk));left:calc(50% - var(--sk));width:calc(var(--sk) * 2);height:calc(var(--sk) * 2)}
+#steerVis span{top:calc(var(--sh) / 2 - 11px);font-size:17px}
+#speed{padding:4px 12px;min-width:160px;bottom:8px}
+#speed .v{font-size:calc(var(--rb) * .85)}
+#speed .sub{font-size:12px;gap:8px}
+#limit{left:calc(50% + 96px);width:38px;height:38px;font-size:16px;border-width:4px;bottom:14px}
+#stat{font-size:12px;min-width:160px;padding:6px 10px;line-height:1.45}
+#stat .money{font-size:20px}
+#ui.us #stat{font-size:11px;min-width:145px}#ui.us #stat .money{font-size:18px}
+#job{top:96px;font-size:12px;max-width:205px;padding:5px 9px;line-height:1.4}
+#job b{font-size:13px}
+#job .tx{float:right;margin:-2px -3px 0 8px;padding:0 5px;font-size:13px;opacity:.75;border-radius:6px;background:rgba(255,255,255,.08)}
+#joyVis{width:104px;height:104px}#joyVis i{left:29px;top:29px;width:46px;height:46px}
 #stat .money{transition:color .3s}#stat .money.up{color:#7ff0a0}
 `;
   function K4() {
@@ -25804,7 +25956,7 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
       (mi.innerHTML = `
   <div id="stat" class="panel"></div>
   <canvas id="mini" width="264" height="264"></canvas>
-  <div id="topbtn"><div class="rbtn pe" id="bPhone">\u{1F4F1}</div><div class="rbtn pe" id="bPause">\u23F8</div><div class="rbtn pe" id="bCam">\u{1F3A5}</div></div>
+  <div id="topbtn"><div class="rbtn pe" id="bPhone">\u{1F4F1}</div><div class="rbtn pe" id="bJobs">\u{1F4BC}</div><div class="rbtn pe" id="bSet">\u2699\uFE0F</div><div class="rbtn pe" id="bPause">\u23F8</div><div class="rbtn pe" id="bCam">\u{1F3A5}</div></div>
   <div id="job" class="panel"></div>
   <div id="toasts"></div>
   <div id="ctrlL"></div>
@@ -25842,6 +25994,12 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
       E7(),
       (document.getElementById("bPhone").onclick = () => ea()),
       (Xe.mini.onclick = () => ea("map")),
+      (document.getElementById("bJobs").onclick = () => ea("jobs")),
+      (document.getElementById("bSet").onclick = () => ea("set")),
+      UIsize(),
+      Xe.job.addEventListener("click", (ev) => {
+        ev.target.classList && ev.target.classList.contains("tx") && ((S.save.opt.tut = !1), Ln(), (Xe.job.style.display = "none"), vn("\xD6\u011Freticiler kapat\u0131ld\u0131 (Ayarlar'dan a\xE7abilirsin)"));
+      }),
       MMsize(),
       (document.getElementById("bPause").onclick = () => S.onPause && S.onPause()),
       (document.getElementById("bCam").onclick = () => {
@@ -25861,6 +26019,10 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
       }));
     let e = { toast: vn, big: J4, moneyFx: S7, qr: P7, endRideFlow: I7 };
     return ((S.ui = e), e);
+  }
+  function UIsize() {
+    let u = (S.save && S.save.opt.ui) || "m";
+    mi && ((mi.classList.toggle("us", u === "s")), mi.classList.toggle("ul", u === "l"));
   }
   function MMsize() {
     let s = (S.save && S.save.opt.mm) || 132;
@@ -26007,7 +26169,7 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
     }
     if (n === Fe.steerTouch) {
       let i = Math.max(-1, Math.min(1, (e - N3) / 90));
-      ((Fe.steer = -i), (Xe.steerVis.lastChild.style.transform = `translateX(${i * 85}px)`));
+      ((Fe.steer = -i), (Xe.steerVis.lastChild.style.transform = `translateX(${i * Math.max(30, (Xe.steerVis.clientWidth - Xe.steerVis.lastChild.clientWidth) / 2 - 6)}px)`));
     }
   }
   function G4(n) {
@@ -26101,7 +26263,7 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
       <div class="row">\u{1F4F1} %${Math.round(t.phone)} \xB7 ${s.i} ${A3()} \xB7 G\xFCn ${t.day}${Ci() ? ' \xB7 <b style="color:#19c3d6">PASS</b>' : ""}</div>`;
       let a = S.job,
         r = S.race;
-      if (a) {
+      if (((a || r) && (Xe.job.dataset.t = ""), a)) {
         let l = (a.deadline - t.hour) * 60,
           u = a.stage === "pickup" ? a.from : a.to,
           h = Math.hypot(u.x - x.x, u.z - x.z);
@@ -26114,8 +26276,8 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
               r.stage === "goto"
                 ? `<b>\u{1F3C1} ${r.r.name}</b><br>Ba\u015Flang\u0131ca git ve dur`
                 : `<b>\u{1F3C1} ${r.r.name}</b><br>\u23F1 ${r.t.toFixed(1)} sn \xB7 Kontrol ${r.idx}/${r.pts.length - 1}<br>\u{1F947} ${r.gold.toFixed(0)} \xB7 \u{1F948} ${r.silver.toFixed(0)} \xB7 \u{1F949} ${r.bronze.toFixed(0)} sn`))
-          : t.tutorial < 99
-            ? ((Xe.job.style.display = "block"), (Xe.job.innerHTML = T7()))
+          : t.tutorial < 99 && t.opt.tut !== !1
+            ? ((Xe.job.style.display = "block"), Xe.job.dataset.t !== String(t.tutorial) && ((Xe.job.dataset.t = String(t.tutorial)), (Xe.job.innerHTML = T7())))
             : (Xe.job.style.display = "none");
       let o = P3().slice(0, 3),
         c = o.map((l) => l.k + ":" + l.label).join("|");
@@ -26136,19 +26298,23 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
           let h = Xe.acts.children[u] && Xe.acts.children[u].lastChild;
           h && h.textContent !== (l.sub || "") && ((h.textContent = l.sub || ""), (h.style.display = l.sub ? "block" : "none"));
         }),
-        (Xe.acts.style.bottom = i ? "160px" : "20px"));
+        (Xe.acts.style.bottom = i ? "var(--ab)" : "16px"));
     }
     (S.frame || 0) % 3 === 0 && R7();
   }
   function T7() {
     let n = S.save;
-    return n.tutorial === 0
-      ? "<b>\u{1F44B} Ho\u015F geldin!</b><br>Haritadaki turkuaz noktalar \u0130N\u0130N scooterlar\u0131. En yak\u0131n\u0131na y\xFCr\xFC ve <b>QR okut</b>."
-      : n.tutorial === 1
-        ? "<b>\u{1F6F4} S\xFCr\xFC\u015F</b><br>Solda kayd\u0131r: direksiyon. Sa\u011Fda GAZ/FREN.<br>Kasis, kald\u0131r\u0131m ve \xE7arpmalarda scooter yava\u015Flar."
-        : n.tutorial === 2
-          ? "<b>\u{1F4BC} Para kazan</b><br>\u{1F4F1} Telefon \u2192 \u0130\u015Fler: teslimat al, zaman\u0131nda g\xF6t\xFCr. S\xFCr\xFC\u015F dakikas\u0131 para yer, h\u0131zl\u0131 ol!"
-          : "<b>Hedef</b><br>Para biriktir: kask, telefon tutaca\u011F\u0131, \u0130N\u0130N Pass ve sonunda kendi scooter\u0131n (Sv 8).";
+    let X = '<span class="pe tx">\u2715</span>';
+    return (
+      X +
+      (n.tutorial === 0
+        ? "<b>\u{1F44B} Ba\u015Fla</b><br>Turkuaz nokta = scooter. Yan\u0131na git, QR okut."
+        : n.tutorial === 1
+          ? "<b>\u{1F6F4} S\xFCr\xFC\u015F</b><br>Sol: direksiyon \xB7 Sa\u011F: GAZ/FREN"
+          : n.tutorial === 2
+            ? "<b>\u{1F4BC} \u0130\u015F al</b><br>\u{1F4BC} tu\u015Fu \u2192 teslimat se\xE7, zaman\u0131nda g\xF6t\xFCr."
+            : "<b>\u{1F3AF} Hedef</b><br>Para biriktir: kask, Pass, kendi scooter'\u0131n (Sv 8).")
+    );
   }
   var O3 = 2;
   function A7() {
@@ -26709,6 +26875,37 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
           },
         ),
         i(
+          "\u{1F3AF} Direksiyon hassasiyeti",
+          [
+            [0.6, "D\xFC\u015F\xFCk"],
+            [1, "Orta"],
+            [1.4, "Y\xFCksek"],
+          ],
+          t.steerK || 1,
+          (s) => (t.steerK = s),
+        ),
+        i(
+          "\u{1F518} Tu\u015F boyutu",
+          [
+            ["s", "K\xFC\xE7\xFCk"],
+            ["m", "Orta"],
+            ["l", "B\xFCy\xFCk"],
+          ],
+          t.ui || "m",
+          (s) => {
+            ((t.ui = s), UIsize());
+          },
+        ),
+        i(
+          "\u{1F4D6} \xD6\u011Freticiler",
+          [
+            [!0, "A\xE7\u0131k"],
+            [!1, "Kapal\u0131"],
+          ],
+          t.tut !== !1,
+          (s) => (t.tut = s),
+        ),
+        i(
           "\u{1F3A5} Kamera",
           [
             [0, "Arkadan"],
@@ -27021,9 +27218,9 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
   }
   function th(n, e, t) {
     let i =
-      Bt(`<div id="menu"><div class="box"><div class="logo">\u0130N<span>\u0130N</span></div><h3>\u0130T\xDC Ayaza\u011Fa \xB7 Scooter Sim\xFClat\xF6r\xFC</h3><div class="tag">Ger\xE7ek kamp\xFCs haritas\u0131 \xB7 ger\xE7ek yoku\u015Flar \xB7 v1.4</div>
+      Bt(`<div id="menu"><div class="box"><div class="logo">\u0130N<span>\u0130N</span></div><h3>\u0130T\xDC Ayaza\u011Fa \xB7 Scooter Sim\xFClat\xF6r\xFC</h3><div class="tag">Ger\xE7ek kamp\xFCs haritas\u0131 \xB7 ger\xE7ek yoku\u015Flar \xB7 v1.5</div>
     ${n ? '<div class="mbtn pri" id="mc"><i>\u25B6</i>Devam et</div>' : ""}<div class="mbtn ${n ? "" : "pri"}" id="mn"><i>${n ? "\uFF0B" : "\u25B6"}</i>${n ? "Yeni oyun" : "Ba\u015Fla"}</div><div class="mbtn" id="mh"><i>?</i>Nas\u0131l oynan\u0131r</div>
-    <div class="foot">v1.4.0 \xB7 Hayran yap\u0131m\u0131 oyun \xB7 ger\xE7ek bir scooter \u015Firketiyle ba\u011Flant\u0131s\u0131 yok \xB7 Harita \xA9 OpenStreetMap katk\u0131c\u0131lar\u0131 (ODbL, 26.11.2026) \xB7 Y\xFCkselti: SRTM / Terrain Tiles (AWS Open Data)</div></div></div>`);
+    <div class="foot">v1.5.0 \xB7 Hayran yap\u0131m\u0131 oyun \xB7 ger\xE7ek bir scooter \u015Firketiyle ba\u011Flant\u0131s\u0131 yok \xB7 Harita \xA9 OpenStreetMap katk\u0131c\u0131lar\u0131 (ODbL, 26.11.2026) \xB7 Y\xFCkselti: SRTM / Terrain Tiles (AWS Open Data)</div></div></div>`);
     (mi.appendChild(i), mi.classList.add("inmenu"), (S.inMenu = !0));
     let s = i.querySelector(".box");
     i.addEventListener("pointermove", (r) => {

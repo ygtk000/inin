@@ -8,6 +8,12 @@
 
 iPhone: Safari'de aç → Paylaş → Ana Ekrana Ekle. İlk açılıştan sonra internetsiz çalışır.
 
+## v1.5.0
+- Kavşaklar düzgün dolgu, yol parçalarının birleştiği yerlerde yuvarlak lekeler yok.
+- Daha küçük tuşlar (Ayarlar → Tuş boyutu), ekranda İşler ve Ayarlar tuşları.
+- Kısa, kapatılabilir öğreticiler; direksiyon hassasiyeti ayarı, yüksek hızda daha yumuşak dönüş.
+- Çim alanlarda biçme desenleri, çiçek öbekleri, çalılar ve taşlar.
+
 ## v1.4.0
 - Beyaz çizgili yeni asfalt, taş kaldırımlar ve bordürler; yollardan çime yumuşak geçiş, neredeyse her yolda kaldırım.
 - Ekranı sürükleyerek etrafa bakma, birinci şahıs kamera.
