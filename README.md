@@ -8,5 +8,15 @@
 
 iPhone: Safari'de aç → Paylaş → Ana Ekrana Ekle. İlk açılıştan sonra internetsiz çalışır.
 
+## v1.3.0
+- Harita OpenStreetMap'ten yeniden çekildi (26.11.2026): kampüs sınırı (OSM way 549717756) uydu görüntüsü, Büyükdere/Katar caddeleri ve kapılarla karşılaştırıldı.
+- Eksik fakülte blokları (EEF, Kimya-Metalurji, Maden, İnşaat, Fen-Edebiyat, Gemi, YDY) avlularıyla eklendi; tüm yollar, kaldırımlar, merdivenler ve yaya yolları.
+- Simge yapılar: Mustafa İnan Kütüphanesi (bakır kavisli çatı), Abdülhakim Sancak Camii (26 m kubbe, 39 m minare), MED, EEF, BBF, SDKM, Arı Kapı, olimpik havuz.
+- Yükselti: 10 m ızgara, SRTM tabanlı Terrain Tiles (AWS Open Data).
+- Daha kolay ekonomi, ayarlardan arazi zorlukları ve cezalar kapatılabilir.
+- Tatlı çizim tarzı, belirgin hatlar, yeni karakter, rozetler, keşif, seri teslimat.
+
 Hayran yapımı oyun, gerçek bir scooter şirketiyle bağlantısı yoktur.
-Harita © OpenStreetMap katkıcıları (ODbL) · Yükselti: Copernicus DEM (open-meteo)
+Harita © OpenStreetMap katkıcıları (ODbL) · Yükselti: SRTM / Terrain Tiles (AWS Open Data)
+
+`kaynak/` klasörü okunabilir kaynak kodu ve harita dönüştürücüsünü içerir.
