@@ -106,7 +106,7 @@ for e in road_ways:
         elif h in ('primary', 'secondary', 'tertiary', 'residential', 'unclassified', 'living_street'): default = True
         elif h.endswith('_link'): default = False
         elif h == 'service':
-            default = in_campus and ls.length > 50 and t.get('service') not in ('parking_aisle', 'driveway', 'drive-through', 'emergency_access')
+            default = ls.length > 12 and t.get('service') not in ('parking_aisle', 'driveway', 'drive-through', 'emergency_access')
         if L is None: L = default
         if R is None: R = default
         # ayrı kaldırım varsa o tarafta üretme

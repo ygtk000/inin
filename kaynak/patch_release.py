@@ -2,9 +2,9 @@
 from patch_common import P
 p = P('/home/claude/work/app.mod.js')
 p.rep('''<div class="foot">v1.2.4 \\xB7 Hayran yap\\u0131m\\u0131 oyun \\xB7 ger\\xE7ek bir scooter \\u015Firketiyle ba\\u011Flant\\u0131s\\u0131 yok \\xB7 Harita \\xA9 OpenStreetMap katk\\u0131c\\u0131lar\\u0131 \\xB7 Y\\xFCkselti: Copernicus DEM</div>''',
-      '''<div class="foot">v1.3.0 \\xB7 Hayran yap\\u0131m\\u0131 oyun \\xB7 ger\\xE7ek bir scooter \\u015Firketiyle ba\\u011Flant\\u0131s\\u0131 yok \\xB7 Harita \\xA9 OpenStreetMap katk\\u0131c\\u0131lar\\u0131 (ODbL, 26.11.2026) \\xB7 Y\\xFCkselti: SRTM / Terrain Tiles (AWS Open Data)</div>''')
+      '''<div class="foot">v1.4.0 \\xB7 Hayran yap\\u0131m\\u0131 oyun \\xB7 ger\\xE7ek bir scooter \\u015Firketiyle ba\\u011Flant\\u0131s\\u0131 yok \\xB7 Harita \\xA9 OpenStreetMap katk\\u0131c\\u0131lar\\u0131 (ODbL, 26.11.2026) \\xB7 Y\\xFCkselti: SRTM / Terrain Tiles (AWS Open Data)</div>''')
 p.rep('''<div class="tag">Ger\\xE7ek kamp\\xFCs haritas\\u0131 \\xB7 ger\\xE7ek yoku\\u015Flar</div>''',
-      '''<div class="tag">Ger\\xE7ek kamp\\xFCs haritas\\u0131 \\xB7 ger\\xE7ek yoku\\u015Flar \\xB7 v1.3 b\\xFCy\\xFCk g\\xFCncelleme</div>''')
+      '''<div class="tag">Ger\\xE7ek kamp\\xFCs haritas\\u0131 \\xB7 ger\\xE7ek yoku\\u015Flar \\xB7 v1.4</div>''')
 p.rep('''  <b>Hayatta kal:</b> Enerji azal\\u0131r \\u2192 yemekhane/kafe.''',
       '''  <b>Ayarlar (\\u2699\\uFE0F):</b> Oyunu zor bulursan <b>Arazi zorluklar\\u0131</b> ve <b>Cezalar</b>'\\u0131 kapatabilirsin.<br>
   <b>\\u0130lerleme:</b> \\u{1F3C6} Rozetler, \\u{1F4CD} kamp\\xFCste ke\\u015Fif (yerlerin yan\\u0131na git) ve \\u{1F525} seri teslimat bonusu (+%10/teslimat, en fazla +%50).<br>

@@ -8,6 +8,12 @@
 
 iPhone: Safari'de aç → Paylaş → Ana Ekrana Ekle. İlk açılıştan sonra internetsiz çalışır.
 
+## v1.4.0
+- Beyaz çizgili yeni asfalt, taş kaldırımlar ve bordürler; yollardan çime yumuşak geçiş, neredeyse her yolda kaldırım.
+- Ekranı sürükleyerek etrafa bakma, birinci şahıs kamera.
+- Ayarlar: "Hiçbir şey yavaşlatmasın", kamera seçimi, mini harita boyutu; mini haritaya dokununca tam harita açılır.
+- Konfeti kaldırıldı, pencere ve karakter oranları düzeltildi.
+
 ## v1.3.0
 - Harita OpenStreetMap'ten yeniden çekildi (26.11.2026): kampüs sınırı (OSM way 549717756) uydu görüntüsü, Büyükdere/Katar caddeleri ve kapılarla karşılaştırıldı.
 - Eksik fakülte blokları (EEF, Kimya-Metalurji, Maden, İnşaat, Fen-Edebiyat, Gemi, YDY) avlularıyla eklendi; tüm yollar, kaldırımlar, merdivenler ve yaya yolları.
