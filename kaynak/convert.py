@@ -37,6 +37,10 @@ for e in hw:
     if t.get('area') == 'yes' or 'area:highway' in t: continue
     if t.get('tunnel') in ('yes', 'building_passage') and h not in PATHS: continue
     if t.get('tunnel') == 'yes': continue
+    try: lay = int(float(t.get('layer', '0')))
+    except Exception: lay = 0
+    if lay < 0: continue
+    if (t.get('bridge') or lay > 0) and h not in ('primary', 'secondary', 'tertiary', 'residential', 'trunk'): continue
     if t.get('indoor') == 'yes' or h == 'corridor': continue
     pts = ring(e)
     if not any(inb(p, 40) for p in pts): continue
@@ -120,6 +124,7 @@ for e in road_ways:
                 if cov > 0.45:
                     if side == 'left': L = False
                     else: R = False
+        if t.get('junction') in ('roundabout', 'circular'): L = R = False
         r = {'a': na, 'b': nb, 'pts': pts, 'W': W, 'type': ty, 'name': t.get('name', ''), 'oneway': oneway, 'hw': h, 'surf': surf,
              'sws': [bool(L), bool(R)]}
         roads_out.append(r)
@@ -144,6 +149,40 @@ for e in path_ways:
         if t.get('footway') == 'crossing': w = 3.0
     paths_out.append({'pts': pts, 'w': w, 't': ty, 'name': t.get('name', ''), 'loop': pts[0] == pts[-1],
                       'kind': t.get('footway', '') or h})
+
+# ---- kaldırım: başka yolun ya da binanın üstüne binen tarafı kapat ----
+from shapely.strtree import STRtree
+carr = [LineString(r['pts']).buffer(r['W'] / 2, cap_style=2) for r in roads_out]
+ctree = STRtree(carr)
+bpolys0 = []
+for e in osm:
+    t = e.get('tags', {})
+    if e['type'] == 'way' and 'building' in t and closed(e) and t.get('building') not in ('roof', 'construction'):
+        try:
+            pg = Polygon(open_ring(ring(e)))
+            if pg.is_valid and pg.area > 4: bpolys0.append(pg)
+        except Exception: pass
+btree = STRtree(bpolys0)
+off_cnt = 0
+for idx, r in enumerate(roads_out):
+    ls = LineString(r['pts'])
+    if ls.length < 1: continue
+    ends = Point(r['pts'][0]).buffer(r['W'] / 2 + 6).union(Point(r['pts'][-1]).buffer(r['W'] / 2 + 6))
+    for si, side in enumerate(('left', 'right')):
+        if not r['sws'][si]: continue
+        try: o = ls.parallel_offset(r['W'] / 2 + 1.25, side, join_style=2)
+        except Exception: continue
+        if o.is_empty: continue
+        strip = o.buffer(1.0, cap_style=2).difference(ends)
+        if strip.is_empty or strip.area < 3: continue
+        ov = 0
+        for j in ctree.query(strip):
+            if j == idx: continue
+            ov += strip.intersection(carr[j]).area
+        bo = sum(strip.intersection(bpolys0[j]).area for j in btree.query(strip))
+        if ov / strip.area > 0.2 or bo / strip.area > 0.3:
+            r['sws'][si] = False; off_cnt += 1
+print('sidewalk sides disabled (overlap):', off_cnt)
 
 # ---------------- ALANLAR ----------------
 def assemble(rel):

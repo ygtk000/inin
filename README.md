@@ -8,6 +8,12 @@
 
 iPhone: Safari'de aç → Paylaş → Ana Ekrana Ekle. İlk açılıştan sonra internetsiz çalışır.
 
+## v1.6.0
+- Tek yükselti yüzeyi: zemin (4 m ızgara), yollar, kaldırımlar, binalar ve fizik aynı yüzeyi kullanır.
+- Yol boyuna profilleri yumuşatılır, kavşaklarda eşitlenir; yol kenarlarında yumuşak dolgu/yarma geçişi.
+- Başka yolun asfaltına/binaya taşan kaldırım ve bordür parçaları kesilir; göbeklerde iç kaldırım yok; köprü/tünel/katmanlı yollar çıkarıldı.
+- Çok daha fazla ağaç (zemin karolara bölündü, uzak ağaçların hattı çizilmez).
+
 ## v1.5.0
 - Kavşaklar düzgün dolgu, yol parçalarının birleştiği yerlerde yuvarlak lekeler yok.
 - Daha küçük tuşlar (Ayarlar → Tuş boyutu), ekranda İşler ve Ayarlar tuşları.

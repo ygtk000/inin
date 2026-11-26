@@ -33,13 +33,23 @@
           return (up.pop(), lo.pop(), lo.concat(up));
         },
         fan = (H, y0, out) => {
+          let res = [],
+            dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]),
+            mid = (a, b) => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2],
+            sub = (a, b, c, dp) => {
+              if (Math.max(dist(a, b), dist(b, c), dist(c, a)) < 2.6 || dp > 6) return void res.push(a, b, c);
+              let ab = mid(a, b),
+                bc = mid(b, c),
+                ca = mid(c, a);
+              (sub(a, ab, ca, dp + 1), sub(ab, b, bc, dp + 1), sub(ca, bc, c, dp + 1), sub(ab, bc, ca, dp + 1));
+            };
+          for (let i = 1; i < H.length - 1; i++) sub(H[0], H[i], H[i + 1], 0);
           let pos = [],
             uv = [],
             idx = [];
-          H.forEach((p) => {
-            (pos.push(p[0], Wt(p[0], p[1]) + y0, p[1]), uv.push(p[0] / 8, p[1] / 16));
+          res.forEach((p, q) => {
+            (pos.push(p[0], Wt(p[0], p[1]) + y0, p[1]), uv.push(p[0] / 8, p[1] / 16), idx.push(q));
           });
-          for (let i = 1; i < H.length - 1; i++) idx.push(0, i, i + 1);
           let g = new St();
           (g.setAttribute("position", new tt(pos, 3)), g.setAttribute("uv", new tt(uv, 2)), g.setIndex(idx), g.computeVertexNormals(), out.push(g));
         },
