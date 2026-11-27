@@ -8,6 +8,17 @@
 
 iPhone: Safari'de aç → Paylaş → Ana Ekrana Ekle. İlk açılıştan sonra internetsiz çalışır.
 
+## v1.8.0
+- 🎓 Seviyeler akademik ünvan verir: Hazırlık Öğrencisi → Lisans → Mühendis → Y. Lisans → Doktora → Arş. Gör. → Öğr. Gör. → Dr. Öğr. Üyesi → Doçent → Profesör → Bölüm Başkanı → Enstitü Müdürü → Dekan → Rektör Yardımcısı → Rektör (Sv 34). Her ünvan iş ücretine +%2 prim.
+- 🏪 Kampüs içindeki 44 gerçek işletme (OSM 27.11.2026 + İTÜ ve yemek.com kaynakları) tabelalarıyla oyunda: satın al, 5 seviyeye yükselt, müdür tut, fiyat politikası seç, kasayı topla, tedarik işleriyle geliri artır. Sen yokken müdürler kazandırır.
+- 🛴 Sv 9'da filo patronluğu: bölge izni, kendi scooter'ların (kampüste görünür), şarj istasyonu, şarjcı/dengeleyici/teknisyen, filo bakım işleri.
+- 🎯 Görev sekmesi: genişletilmiş günlük görevler, haftalık görevler, gerçek gün giriş serisi, haftalık kurye ligi (rakipler işleri kapabilir), 13 bölgede fakülte itibarı, etkinlik günleri (Final Haftası, Bahar Şenliği, Maç Günü, Kariyer Günleri, Mezuniyet, Kampanya), yağmurlu gece ×1.5.
+- 🎚️ Zorluk kademesi: Rahat ×1.00 / Normal ×1.25 / Gerçekçi ×1.50 ödül çarpanı.
+- 🔥 Teslimat serisi en fazla +%100, 5/10/15/20/30'da seri ödülü; iş bitince 3 dk içinde yenisini almazsan seri biter.
+- 🎨 Garaj: 6 scooter modeli (Retro, Sprint, Dağcı, Kargo, Altın Arı), scooter rengi, far ışığı, kapüşon/pantolon/kask/saç, iz efektleri, zil sesleri.
+- 👻 Yarışlarda en iyi derecenin hayaleti ve kontrol noktalarında fark bildirimi. 🏁 Kampüste dolaşan rakip kuryeler. 🐝 Kampüse saklanmış 40 Altın Arı ve ödülleri.
+- Kampüs dışındaki dükkanlar (İstinyePark, Maslak plazaları) artık iş noktası değil; tüm yeni işler ve rotalar kampüs içinde.
+
 ## v1.7.0
 - Tüm yarışlar (başlangıç, bitiş, her kontrol noktası) ve görev alış/teslim noktaları tek tek kampüs sınırına göre kontrol edildi: hepsi içeride.
 - Rota bulucu kampüs dışındaki yolları kullanmaz; dış kapıdaki (Metro gibi) noktalar en yakın kampüs içi noktaya alındı.

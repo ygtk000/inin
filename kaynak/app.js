@@ -23807,7 +23807,8 @@ void main() {
     }
     let mo = new Ie(new e1(0.028, 0.008, 6, 12, Math.PI), mK);
     (mo.position.set(0, 0.095, 0.196), (mo.rotation.z = Math.PI), p.add(mo));
-    let m = new Ie(new _i(0.238, 18, 10, 0, Math.PI * 2, 0, Math.PI * 0.55), mW);
+    let mHel = yn(16316664),
+      m = new Ie(new _i(0.238, 18, 10, 0, Math.PI * 2, 0, Math.PI * 0.55), mHel);
     ((m.position.y = 0.185), p.add(m), (m.visible = !1));
     let st = new Ie(new ot(0.05, 0.02, 0.44), yn(1688534));
     (st.position.y = 0.235, m.add(st));
@@ -23837,7 +23838,7 @@ void main() {
       P2.position.set(0.1, 0, 0),
       u.add(v),
       u.add(P2),
-      (a.userData = { hip: u, la: E, ra: w, ll: v, rl: P2, neck: p, hel: m, bag: f, torso: tor, eyes: ey }),
+      (a.userData = { hip: u, la: E, ra: w, ll: v, rl: P2, neck: p, hel: m, bag: f, torso: tor, eyes: ey, mats: { hood: mH, pants: mP, hair: mHr, hel: mHel } }),
       a.traverse((R) => {
         R.isMesh && (R.castShadow = !0);
       }),
@@ -24411,6 +24412,9 @@ void main() {
       (x.light.target = x.lightT));
   }
   function w3(n, e, t) {
+    return V18SPEC(n, w3o(n, e, t));
+  }
+  function w3o(n, e, t) {
     let i = e || {};
     return n
       ? {
@@ -24743,7 +24747,7 @@ void main() {
   }
   function Ln() {
     try {
-      S.save && ((S.save.pos = [x.x, x.z, x.yaw]), localStorage.setItem("inin_save_v3", JSON.stringify(S.save)));
+      S.save && ((S.save.pos = [x.x, x.z, x.yaw]), S.save.v18 && (S.save.v18.lastReal = Date.now()), localStorage.setItem("inin_save_v3", JSON.stringify(S.save)));
     } catch {}
   }
   function c7() {
@@ -24909,6 +24913,1951 @@ void main() {
     ((dl.querySelector(".d").innerHTML = DISC.map((d) => (s.disc[d.k] ? "✅ " : "⬜ ") + d.name.replace(/</g, "")).join("<br>")), n.appendChild(dl));
   }
 
+  // ===== İNİN v1.8: ünvanlar, zorluk, işletmeler, filo, görevler, lig, garaj, hayalet, rakipler, altın arılar =====
+  var V18T = [
+    [1, "Hazırlık Öğrencisi", "Hazırlık"],
+    [2, "Lisans 1. Sınıf Öğrencisi", "1. Sınıf"],
+    [3, "Lisans 2. Sınıf Öğrencisi", "2. Sınıf"],
+    [4, "Lisans 3. Sınıf Öğrencisi", "3. Sınıf"],
+    [5, "Lisans 4. Sınıf Öğrencisi", "4. Sınıf"],
+    [6, "Mezun Mühendis", "Mühendis"],
+    [7, "Yüksek Lisans Öğrencisi", "Y. Lisans"],
+    [8, "Doktora Öğrencisi", "Doktora"],
+    [9, "Araştırma Görevlisi", "Arş. Gör."],
+    [11, "Öğretim Görevlisi", "Öğr. Gör."],
+    [13, "Dr. Öğretim Üyesi", "Dr. Öğr. Üyesi"],
+    [15, "Doçent", "Doç. Dr."],
+    [18, "Profesör", "Prof. Dr."],
+    [21, "Bölüm Başkanı", "Böl. Bşk."],
+    [24, "Enstitü Müdürü", "Enst. Md."],
+    [27, "Dekan", "Dekan"],
+    [30, "Rektör Yardımcısı", "Rek. Yrd."],
+    [34, "Rektör", "Rektör"],
+  ];
+  function V18TI(l) {
+    let k = 0;
+    for (let i = 0; i < V18T.length; i++) l >= V18T[i][0] && (k = i);
+    return k;
+  }
+  function V18TN(l) {
+    return V18T[V18TI(l)][1];
+  }
+  function V18TS(l) {
+    return V18T[V18TI(l)][2] + " · SV " + l;
+  }
+  function V18TNEXT(l) {
+    let i = V18TI(l);
+    return i + 1 < V18T.length ? V18T[i + 1] : null;
+  }
+  // ---- zorluk ----
+  function V18DM() {
+    let o = S.save.opt;
+    return 1 + (o.terrain !== !1 && o.noslow !== !0 ? 0.15 : 0) + (o.pen !== !1 ? 0.25 : 0) + (o.noslow !== !0 ? 0.1 : 0);
+  }
+  function V18DP() {
+    let o = S.save.opt,
+      t = o.terrain !== !1,
+      p = o.pen !== !1,
+      q = o.noslow === !0;
+    return !t && !p && q ? "rahat" : t && !p && !q ? "normal" : t && p && !q ? "gercek" : "ozel";
+  }
+  function V18DIFF(i, t) {
+    i(
+      `🎚️ Zorluk · ödül çarpanı ×${V18DM().toFixed(2)}<div class="d" style="font-weight:400;font-family:Barlow;font-size:12px">Rahat: hiçbir şey yavaşlatmaz, ceza yok (×1.00). Normal: arazi ve yavaşlatmalar açık, ceza yok (×1.25). Gerçekçi: her şey açık (×1.50). İş ücreti ve XP bu çarpanla artar. Aşağıdaki ayarları tek tek de değiştirebilirsin.</div>`,
+      [
+        ["rahat", "Rahat"],
+        ["normal", "Normal"],
+        ["gercek", "Gerçekçi"],
+      ],
+      V18DP(),
+      (s) => {
+        s === "rahat"
+          ? ((t.terrain = !1), (t.pen = !1), (t.noslow = !0))
+          : s === "normal"
+            ? ((t.terrain = !0), (t.pen = !1), (t.noslow = !1))
+            : ((t.terrain = !0), (t.pen = !0), (t.noslow = !1));
+      },
+    );
+  }
+  // ---- bölgeler / fakülte itibarı ----
+  var V18Z = [
+    ["rek", "Rektörlük & Metro", -220, -300, "m"],
+    ["med", "MED & YDY", -50, -90, "f"],
+    ["fen", "Fen-Edebiyat & SDKM", 60, -210, "f"],
+    ["ins", "İnşaat Fakültesi", -450, 0, "f"],
+    ["kut", "Kütüphane & Sosyal Merkez", -170, 150, "f"],
+    ["eef", "EEF & Bilgisayar-Bilişim", 110, 150, "f"],
+    ["mad", "Maden · Kimya-Metalurji · Gemi", 260, 170, "f"],
+    ["kiz", "Kız Yurtları & Stadyum", -280, 330, "d"],
+    ["ucak", "Uçak-Uzay & Olimpik Havuz", 60, 420, "f"],
+    ["golet", "Gölet Yurtları", 430, 360, "d"],
+    ["ari", "ARI Teknokent", 620, -300, "t"],
+    ["vadi", "Vadi Yurtları", 960, -420, "d"],
+    ["kyk", "KYK & Kamu Konutları", 960, 500, "d"],
+  ];
+  function V18ZI(a, b) {
+    let k = 0,
+      bd = 1e18;
+    for (let i = 0; i < V18Z.length; i++) {
+      let d = (V18Z[i][2] - a) ** 2 + (V18Z[i][3] - b) ** 2;
+      d < bd && ((bd = d), (k = i));
+    }
+    return k;
+  }
+  function V18DEM(zi, h) {
+    h = ((h % 24) + 24) % 24;
+    let t = V18Z[zi][4];
+    return t === "f"
+      ? h >= 8.5 && h < 17.5
+        ? 1.3
+        : h >= 7.5 && h < 20
+          ? 0.7
+          : 0.2
+      : t === "d"
+        ? (h >= 7 && h < 9.5) || (h >= 17 && h < 23.5)
+          ? 1.3
+          : h >= 9.5 && h < 17
+            ? 0.6
+            : 0.25
+        : t === "m"
+          ? (h >= 7.5 && h < 10) || (h >= 16.5 && h < 19.5)
+            ? 1.6
+            : h >= 10 && h < 16.5
+              ? 0.8
+              : 0.3
+          : h >= 8 && h < 19
+            ? 1.1
+            : 0.25;
+  }
+  var V18RL = [0, 8, 25, 60, 130],
+    V18RN = ["Yeni", "Tanıdık", "Sevilen", "Efsane", "Fahri Üye"];
+  function V18RLV(zi) {
+    let r = V18S().rep[V18Z[zi][0]] || 0,
+      l = 0;
+    for (let i = 0; i < V18RL.length; i++) r >= V18RL[i] && (l = i);
+    return l;
+  }
+  // ---- etkinlikler ----
+  var V18EVS = {
+    final: ["📚", "Final Haftası", "Ders notu işleri ×1.6 · kafe, kafeterya ve kırtasiye gelirleri ×1.5"],
+    bahar: ["🌸", "Bahar Şenliği", "Tüm teslimatlar +%20 · yeme-içme işletmeleri ×1.5"],
+    mac: ["⚽", "Maç Günü", "Stadyum ve kız yurtları bölgesine teslimat ×1.5 · restoran ve büfeler ×1.4"],
+    kariyer: ["💼", "Kariyer Günleri", "ARI Teknokent işleri ×1.5 · zincir kahveciler ×1.4"],
+    mezun: ["🎓", "Mezuniyet Töreni", "Tüm iş ödemeleri +%15 · 1773 mağaza ve Gratis ×2"],
+    filo: ["🛴", "İNİN Kampanya Günü", "Filo gelirleri ×1.6 · kiralama yoğun"],
+  };
+  function V18EV() {
+    let v = V18S();
+    return v.ev && v.ev.day === S.save.day ? v.ev.id : null;
+  }
+  function V18RN8() {
+    return Dn[S.save.weather].rain > 0.5 && js();
+  }
+  // ---- kayıt ----
+  function V18S() {
+    let s = S.save;
+    s.v18 || (s.v18 = {});
+    let v = s.v18,
+      d = {
+        biz: {},
+        fl: { lic: 0, z: {}, staff: {}, today: 0, total: 0, pend: 0 },
+        gar: { own: {}, eq: { model: "pro", col: 0, hood: 0, pants: 0, hel: 0, hair: 0, trail: 0, bell: 0, light: 0 } },
+        rep: {},
+        bees: {},
+        radar: 0,
+        ghost: {},
+        week: null,
+        league: null,
+        login: { last: "", n: 0 },
+        ev: null,
+        dz: {},
+        dstreak: 0,
+        ema: 250,
+        hourIn: 0,
+        lastH: -1,
+        acc: 0,
+        mgrPend: 0,
+        st: { bizIn: 0, fleetIn: 0, collects: 0, supplies: 0, ghostWins: 0, stolen: 0, leagueWins: 0, bizN: 0, beeN: 0 },
+        lastReal: 0,
+      };
+    for (let k in d) v[k] === void 0 && (v[k] = d[k]);
+    for (let k in d.st) v.st[k] === void 0 && (v.st[k] = 0);
+    for (let k in d.gar.eq) v.gar.eq[k] === void 0 && (v.gar.eq[k] = d.gar.eq[k]);
+    return v;
+  }
+  function V18H32(s) {
+    let h = 2166136261;
+    for (let i = 0; i < s.length; i++) ((h ^= s.charCodeAt(i)), (h = Math.imul(h, 16777619)));
+    return (h >>> 0) / 4294967296;
+  }
+  function V18RNG(a) {
+    return () => {
+      a |= 0;
+      a = (a + 1831565813) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      return ((t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t), ((t ^ (t >>> 14)) >>> 0) / 4294967296);
+    };
+  }
+  var V18TL = (n) => Math.round(n).toLocaleString("tr-TR") + "₺";
+  // ---- işletmeler (OSM 27.11.2026 + İTÜ/yemek.com kaynakları) ----
+  // [ad, simge, fiyat, saatlik gelir, açılış, kapanış, seviye]
+  var V18BC = {
+    otomat: ["Otomat", "🥤", 1200, 45, 0, 24, 2],
+    kucuk: ["Simit · Börek · Lokanta", "🥯", 3000, 125, 7, 22, 3],
+    kafe: ["Kafe", "☕", 4500, 185, 7.5, 23, 4],
+    berber: ["Kuaför", "💈", 3500, 130, 9, 20, 4],
+    kirtasiye: ["Kırtasiye · Kitap · Baskı", "📚", 4000, 150, 8, 19, 5],
+    kafeterya: ["Kafeterya", "🍽️", 5500, 220, 8, 20, 5],
+    restoran: ["Restoran", "🍕", 7000, 280, 11, 22.5, 6],
+    zincir: ["Zincir kahveci", "🧋", 9000, 360, 7, 22, 7],
+    cowork: ["Çalışma kafe", "💻", 5000, 170, 8, 24, 7],
+    magaza: ["Mağaza", "🛍️", 8000, 260, 9, 19, 8],
+    yikama: ["Oto yıkama", "🚗", 6500, 230, 8, 19, 8],
+    market: ["Market", "🛒", 15000, 520, 8, 21.5, 10],
+  };
+  var V18FOOD = { otomat: 1, kucuk: 1, kafe: 1, kafeterya: 1, restoran: 1, zincir: 1, cowork: 1 };
+  var V18B = [
+    ["robean", "Robean Cafe Otomatı", "otomat", -215, 131],
+    ["otokuzey", "Kuzey Otomatı", "otomat", 148, 231],
+    ["sofra", "Sofra Börek", "kucuk", -77, -48],
+    ["simit", "Simit Çarşısı", "kucuk", -183, -348],
+    ["sariyer", "Meşhur Sarıyer Börekçisi", "kucuk", -133, 84],
+    ["tost", "Tost Akademisi", "kucuk", 4, -240],
+    ["pisaco", "Pi Sa Co", "kucuk", -256, -346],
+    ["faki", "Fakı Mehmet", "kucuk", -256, -341],
+    ["oses", "Oses Çiğköfte", "kucuk", -250, -340],
+    ["pilavist", "Pilav İstanbul", "kucuk", -247, -346],
+    ["unkapani", "Tarihi Unkapanı Pilavcısı", "kucuk", -246, 36],
+    ["kahve1773", "1773 İTÜ Kahve", "kafe", -79, -38],
+    ["cabra", "Cabra Loca", "kafe", -64, -157],
+    ["mg", "MG Coffee", "kafe", -35, -131],
+    ["caldo", "Caffe Caldo", "kafe", -178, -348],
+    ["mekansal", "mekanSAL", "kafe", -400, -45],
+    ["golet", "Gölet Kafe", "kafe", 455, 330],
+    ["dolunay", "Dolunay Cafe (Spor Merkezi)", "kafe", -228, 182],
+    ["starbucks", "Starbucks ARI Teknokent", "zincir", 708, -322],
+    ["espressolab", "Espressolab", "zincir", -42, -44],
+    ["moc", "MOC Coffee Roastery", "zincir", -13, -49],
+    ["coffy", "Coffy", "zincir", -286, 43],
+    ["fanfan", "Fanfan", "restoran", -306, 46],
+    ["bestra", "Bestra Kitchen", "restoran", -128, 180],
+    ["kucukev", "Küçük Ev", "restoran", -385, 61],
+    ["selfis", "Selfiş", "restoran", -217, 31],
+    ["bigslice", "Big Slice Pizza", "restoran", 360, 231],
+    ["cajun", "Cajun Corner", "restoran", -64, -67],
+    ["cafe1773", "1773 Cafe", "restoran", -45, -66],
+    ["kafeterya1773", "1773 İTÜ Kafeterya", "kafeterya", -174, 164],
+    ["luqs", "LUQS Cafeteria", "kafeterya", -406, 119],
+    ["kuzey", "Kuzey Cafeteria", "kafeterya", 171, 215],
+    ["osm", "Öğrenci Sosyal Merkezi Kafesi", "kafeterya", 84, 113],
+    ["migros", "Migros", "market", -137, 207],
+    ["sok", "Şok", "market", -320, -88],
+    ["a101", "A101", "market", 31, 193],
+    ["satis1773", "1773 İTÜ Satış Mekânı", "magaza", -83, -64],
+    ["gratis", "Gratis", "magaza", -124, 198],
+    ["cantaylar", "Çantaylar Kitabevi", "kirtasiye", 18, -232],
+    ["goldenmert", "Golden Mert Kırtasiye", "kirtasiye", -179, -359],
+    ["maslakbaski", "Maslak Baskı", "kirtasiye", -184, -358],
+    ["hairplanet", "Hair Planet", "berber", -237, 35],
+    ["otoyikama", "Oto Yıkama", "yikama", -660, -229],
+    ["kovan", "Kovan Cafe & Çalışma Mekânı", "cowork", -167, 186],
+  ];
+  var V18BI = {},
+    V18READY = !1;
+  function V18BPREP() {
+    for (let b of V18B) {
+      let o = { id: b[0], name: b[1], cat: b[2], x: b[3], z: b[4] };
+      o.pm = 0.88 + V18H32(o.id) * 0.26;
+      o.zi = V18ZI(o.x, o.z);
+      // kapı: bina içindeyse en yakın açık noktaya taşı
+      let ok = (a, c) => sn(a, c) && tn(a, c) !== Pt.BUILDING && tn(a, c) !== Pt.WATER,
+        dx = o.x,
+        dz = o.z;
+      if (!ok(dx, dz)) {
+        let f = !1;
+        for (let r = 2; r <= 60 && !f; r += 2)
+          for (let k = 0; k < 24 && !f; k++) {
+            let a = (k / 24) * Math.PI * 2,
+              px = o.x + Math.cos(a) * r,
+              pz = o.z + Math.sin(a) * r;
+            ok(px, pz) && ((dx = px), (dz = pz), (f = !0));
+          }
+      }
+      let q = i3(dx, dz);
+      if (q < 0 || BTout(q)) {
+        let bq = -1,
+          bd = 6400;
+        for (let k = 0; k < bt.pts.length; k++) {
+          if (BTout(k)) continue;
+          let d = (bt.pts[k][0] - dx) ** 2 + (bt.pts[k][1] - dz) ** 2;
+          d < bd && ((bd = d), (bq = k));
+        }
+        bq >= 0 && ((dx = bt.pts[bq][0]), (dz = bt.pts[bq][1]));
+      }
+      ((o.dx = dx), (o.dz = dz), (V18BI[o.id] = o));
+    }
+  }
+  function V18BPRICE(b) {
+    let c = V18BC[b.cat];
+    return Math.round((c[2] * b.pm * (1 - 0.04 * V18RLV(b.zi))) / 50) * 50;
+  }
+  var V18LVM = [1, 1.5, 2.1, 2.8, 3.6],
+    V18UPC = [0.5, 0.9, 1.5, 2.4];
+  function V18BOPEN(b, h) {
+    let c = V18BC[b.cat];
+    h = ((h % 24) + 24) % 24;
+    return c[4] <= 0 && c[5] >= 24 ? !0 : h >= c[4] && h < c[5];
+  }
+  function V18BCAP(b, st) {
+    return Math.round(V18BC[b.cat][3] * b.pm * V18LVM[st.lv - 1] * 5);
+  }
+  function V18BINC(b, st, h) {
+    if (!V18BOPEN(b, h)) return 0;
+    let c = V18BC[b.cat],
+      hh = ((h % 24) + 24) % 24,
+      m = c[3] * b.pm * V18LVM[st.lv - 1],
+      w = S.save.weather,
+      ev = V18EV();
+    V18FOOD[b.cat]
+      ? (m *= hh >= 11.5 && hh < 14 ? 1.5 : hh >= 8 && hh < 10 ? 1.25 : hh >= 18 && hh < 20.5 ? 1.2 : 0.85)
+      : b.cat === "market" && (m *= hh >= 17 && hh < 20 ? 1.35 : 1);
+    w === "yagmur" && (m *= b.cat === "yikama" ? 0.3 : /kafe|zincir|cowork|kafeterya/.test(b.cat) ? 1.15 : 1);
+    ev === "final" && /kafe|kafeterya|kirtasiye|zincir|cowork/.test(b.cat) && (m *= 1.5);
+    ev === "bahar" && V18FOOD[b.cat] && (m *= 1.5);
+    ev === "mac" && /restoran|kucuk/.test(b.cat) && (m *= 1.4);
+    ev === "kariyer" && b.cat === "zincir" && (m *= 1.4);
+    ev === "mezun" && (b.id === "satis1773" || b.id === "gratis") && (m *= 2);
+    m *= [0.85, 1, 1.25][st.pr] * (0.55 + 0.1 * st.rt) * (1 + 0.05 * V18RLV(b.zi)) * (st.fresh === S.save.day ? 1.25 : 1);
+    return m;
+  }
+  function V18BOWN() {
+    let v = V18S();
+    return Object.keys(v.biz).filter((k) => V18BI[k]);
+  }
+  function V18BBUY(id) {
+    let b = V18BI[id],
+      v = V18S(),
+      e = S.save,
+      c = V18BC[b.cat],
+      p = V18BPRICE(b);
+    if (v.biz[id]) return;
+    if (e.lvl < c[6]) return mt("Seviye " + c[6] + " (" + V18TN(c[6]) + ") gerekli", "bad");
+    if (e.money < p) return mt("Para yetmiyor (" + V18TL(p) + ")", "bad");
+    (xn(-p, b.name + " satın alındı"),
+      (v.biz[id] = { lv: 1, cash: 0, mgr: 0, pr: 1, rt: 4, fresh: 0, inv: p, full: 0 }),
+      (v.st.bizN = Object.keys(v.biz).length),
+      S3(Math.round(20 + p / 120)),
+      V18SIGN(id),
+      S.audio && S.audio.level(),
+      Ot() && Ot().big("🏪 " + b.name, "Artık senin! Kasası dolunca yanına gidip topla ya da müdür tut.", "good"),
+      Ln());
+  }
+  function V18BUP(id) {
+    let b = V18BI[id],
+      st = V18S().biz[id];
+    if (!st || st.lv >= 5) return;
+    let p = Math.round((V18BC[b.cat][2] * b.pm * V18UPC[st.lv - 1]) / 50) * 50;
+    if (S.save.money < p) return mt("Para yetmiyor (" + V18TL(p) + ")", "bad");
+    (xn(-p, b.name + " yükseltme"), st.lv++, (st.inv += p), S3(Math.round(10 + p / 150)), mt("⬆️ " + b.name + " Sv " + st.lv, "good"), V18SIGN(id), Ln());
+  }
+  function V18BMGR(id) {
+    let b = V18BI[id],
+      st = V18S().biz[id];
+    if (!st) return;
+    if (st.mgr) return ((st.mgr = 0), mt("Müdür ayrıldı. Kasayı artık sen toplayacaksın.", "info"), Ln());
+    let p = Math.round((V18BC[b.cat][2] * b.pm * 0.4) / 50) * 50;
+    if (S.save.money < p) return mt("Para yetmiyor (" + V18TL(p) + ")", "bad");
+    (xn(-p, "Müdür: " + b.name), (st.mgr = 1), (st.inv += p), st.cash > 0 && (xn(st.cash, "Kasa"), (st.cash = 0)), mt("👔 Müdür işe başladı: gelir otomatik hesabına geçer (%12 pay alır)", "good"), Ln());
+  }
+  function V18BSELL(id) {
+    let v = V18S(),
+      st = v.biz[id],
+      b = V18BI[id];
+    if (!st) return;
+    let p = Math.round((st.inv * 0.5) / 10) * 10 + Math.round(st.cash);
+    (xn(p, b.name + " satıldı"), delete v.biz[id], (v.st.bizN = Object.keys(v.biz).length), V18SIGN(id), Ln());
+  }
+  function V18BCOL(id) {
+    let v = V18S(),
+      st = v.biz[id],
+      b = V18BI[id];
+    if (!st || st.cash < 1) return;
+    let c = Math.round(st.cash);
+    ((st.cash = 0), (st.full = 0), xn(c, "Kasa: " + b.name), S3(Math.max(1, Math.round(c / 50))), (v.st.collects++, (v.st.bizIn += c)), Or("kasa"), V18W("kasa", c), Ln());
+  }
+  // saatlik birikim (oyun saati)
+  function V18H(dh) {
+    if (!V18READY || !(dh > 0)) return;
+    let v = V18S();
+    for (v.acc += dh; v.acc >= 0.02;) {
+      let st = Math.min(v.acc, 0.25);
+      ((v.acc -= st), V18STEP(st));
+    }
+  }
+  function V18STEP(dh) {
+    let v = V18S(),
+      e = S.save,
+      h = e.hour,
+      mg = 0;
+    for (let id in v.biz) {
+      let b = V18BI[id],
+        st = v.biz[id];
+      if (!b) continue;
+      let inc = V18BINC(b, st, h) * dh,
+        tgt = [4.8, 4.2, 3.4][st.pr] + (st.fresh === e.day ? 0.2 : 0);
+      if (((st.rt += (tgt - st.rt) * Math.min(1, 0.06 * dh)), st.mgr)) mg += inc * 0.88;
+      else {
+        let cap = V18BCAP(b, st);
+        ((st.cash = Math.min(cap, st.cash + inc)),
+          st.cash >= cap - 0.5 && !st.full && ((st.full = 1), mt("💰 " + b.name + " kasası doldu! Yanına gidip topla.", "warn")));
+      }
+    }
+    if (mg > 0) {
+      ((v.mgrPend += mg), (v.st.bizIn += mg));
+      v.mgrPend >= 40 && (xn(Math.round(v.mgrPend), "Müdürlerden"), V18W("kasa", v.mgrPend), (v.mgrPend = 0));
+    }
+    V18FSTEP(dh, h);
+    // lig rakipleri ve oyuncu ortalaması
+    let L = V18LG();
+    for (let r of L.r) r[1] += r[2] * Math.max(150 + e.lvl * 15, v.ema) * dh;
+    let hi = Math.floor(h);
+    v.lastH !== hi && (v.lastH >= 0 && (v.ema = v.ema * 0.85 + v.hourIn * 0.15), (v.hourIn = 0), (v.lastH = hi));
+  }
+  // ---- filo patronluğu ----
+  var V18FLV = 9,
+    V18FLIC = 2500,
+    V18FST = {
+      sarj: ["🔌 Şarjcı", "Bataryaları %60'ın altına düşürmez", 1500, 150],
+      deng: ["🔁 Dengeleyici", "Scooter'ları yoğun noktalara taşır: filo geliri +%25", 2500, 220],
+      tekn: ["🔧 Teknisyen", "Arıza ve yıpranmayı önler, bakımları yapar", 2000, 180],
+    },
+    V18FMAX = 8,
+    V18FHUB = [];
+  function V18FZP(zi) {
+    return { m: 3500, f: 2000, d: 2400, t: 3000 }[V18Z[zi][4]];
+  }
+  function V18FCNT() {
+    let n = 0,
+      z = V18S().fl.z;
+    for (let k in z) n += z[k].n || 0;
+    return n;
+  }
+  function V18FSP() {
+    return 1200 + 20 * V18FCNT();
+  }
+  function V18FRATE(zi, h) {
+    let v = V18S(),
+      z = v.fl.z[V18Z[zi][0]];
+    if (!z || !z.n || z.b <= 0.03) return 0;
+    return 50 * Math.pow(z.n, 0.9) * V18DEM(zi, h) * z.c * (v.fl.staff.deng ? 1.25 : 1) * (V18EV() === "filo" ? 1.6 : 1) * (1 + 0.05 * V18RLV(zi));
+  }
+  function V18FSTEP(dh, h) {
+    let v = V18S(),
+      f = v.fl;
+    if (!f.lic) return;
+    let tot = 0;
+    for (let i = 0; i < V18Z.length; i++) {
+      let z = f.z[V18Z[i][0]];
+      if (!z || !z.on) continue;
+      let d = V18DEM(i, h);
+      if (z.n) {
+        let r = V18FRATE(i, h) * dh;
+        ((tot += r), (z.b = Math.max(0, z.b - 0.07 * d * dh)), f.staff.tekn ? (z.c = Math.min(1, z.c + 0.05 * dh)) : (z.c = Math.max(0.4, z.c - 0.012 * d * dh)));
+      }
+      (z.st && (z.b = Math.min(1, z.b + 0.12 * dh)), f.staff.sarj && z.b < 0.6 && (z.b = Math.min(1, z.b + 0.3 * dh)));
+      z.n && z.b <= 0.03 && !z.warn && ((z.warn = 1), mt("🔋 " + V18Z[i][1] + " filon şarjsız kaldı! Şarjcı tut ya da filo bakım işini yap.", "warn"));
+      z.b > 0.2 && (z.warn = 0);
+    }
+    if (tot > 0) {
+      ((f.pend += tot), (f.today += tot), (f.total += tot), (v.st.fleetIn += tot), Or("filo", tot), V18W("filo", tot));
+      f.pend >= 30 && (xn(Math.round(f.pend), "Filo geliri"), (f.pend = 0));
+    }
+  }
+  function V18FLIC2() {
+    let v = V18S();
+    if (S.save.lvl < V18FLV) return mt("Seviye " + V18FLV + " (" + V18TN(V18FLV) + ") gerekli", "bad");
+    if (S.save.money < V18FLIC) return mt("Para yetmiyor", "bad");
+    (xn(-V18FLIC, "İNİN bayi lisansı"), (v.fl.lic = 1), S3(60), Ot() && Ot().big("🛴 İNİN BAYİSİ", "Artık kendi filon var! Bir bölge izni al ve scooter yerleştir.", "good"), Ln());
+  }
+  function V18FZON(zi) {
+    let v = V18S(),
+      k = V18Z[zi][0],
+      p = V18FZP(zi);
+    if (v.fl.z[k] && v.fl.z[k].on) return;
+    if (S.save.money < p) return mt("Para yetmiyor (" + V18TL(p) + ")", "bad");
+    (xn(-p, "Bölge izni: " + V18Z[zi][1]), (v.fl.z[k] = { on: 1, n: 0, b: 1, c: 1, st: 0 }), mt("✅ " + V18Z[zi][1] + " izni alındı", "good"), Ln());
+  }
+  function V18FADD(zi, d) {
+    let v = V18S(),
+      z = v.fl.z[V18Z[zi][0]];
+    if (!z || !z.on) return;
+    if (d > 0) {
+      if (z.n >= V18FMAX) return mt("Bu bölgede en fazla " + V18FMAX + " scooter olabilir", "bad");
+      let p = V18FSP();
+      if (S.save.money < p) return mt("Para yetmiyor (" + V18TL(p) + ")", "bad");
+      (xn(-p, "Filoya scooter"), (z.b = (z.b * z.n + 1) / (z.n + 1)), (z.c = (z.c * z.n + 1) / (z.n + 1)), z.n++, S3(15));
+    } else {
+      if (!z.n) return;
+      (z.n--, xn(Math.round((V18FSP() - 20) * 0.5), "Scooter satıldı"));
+    }
+    (V18FLEETM(), Ln());
+  }
+  function V18FSTN(zi) {
+    let z = V18S().fl.z[V18Z[zi][0]];
+    if (!z || z.st) return;
+    if (S.save.money < 3e3) return mt("Para yetmiyor (3.000₺)", "bad");
+    (xn(-3e3, "Şarj istasyonu"), (z.st = 1), mt("⚡ Şarj istasyonu kuruldu", "good"), Ln());
+  }
+  function V18FREP(zi) {
+    let z = V18S().fl.z[V18Z[zi][0]];
+    if (!z) return;
+    let p = Math.round((1 - z.c) * 300 * z.n);
+    if (p < 1) return;
+    if (S.save.money < p) return mt("Para yetmiyor (" + V18TL(p) + ")", "bad");
+    (xn(-p, "Filo bakımı"), (z.c = 1), mt("🔧 Bakım tamam", "good"), Ln());
+  }
+  function V18FSTAFF(k) {
+    let f = V18S().fl,
+      d = V18FST[k];
+    if (f.staff[k]) return ((f.staff[k] = 0), mt(d[0] + " işten ayrıldı", "info"), Ln());
+    if (S.save.money < d[2]) return mt("Para yetmiyor (" + V18TL(d[2]) + ")", "bad");
+    (xn(-d[2], d[0] + " işe alındı"), (f.staff[k] = 1), mt(d[0] + " işe başladı · günlük maaş " + d[3] + "₺", "good"), Ln());
+  }
+  // gün sonu: maaşlar ve özet
+  function V18FDAY() {
+    let v = V18S(),
+      f = v.fl;
+    if (!f.lic) return "";
+    let sal = 0,
+      out = [];
+    for (let k in V18FST)
+      if (f.staff[k]) {
+        let p = V18FST[k][3];
+        S.save.money >= p ? ((sal += p), xn(-p, "Maaş: " + V18FST[k][0])) : ((f.staff[k] = 0), out.push(V18FST[k][0]));
+      }
+    let s = "🛴 Filo dün " + V18TL(f.today) + " kazandı" + (sal ? " · maaşlar " + V18TL(sal) : "") + (out.length ? " · bakiye yetmediği için ayrılan: " + out.join(", ") : "");
+    f.today = 0;
+    return s;
+  }
+  // bölge park noktaları
+  function V18FPREP() {
+    V18FHUB.length = 0;
+    let ok = (a, c) => sn(a, c) && tn(a, c) !== Pt.BUILDING && tn(a, c) !== Pt.WATER;
+    for (let i = 0; i < V18Z.length; i++) {
+      let [, , ax, az] = V18Z[i],
+        best = null,
+        bd = 1e18;
+      for (let h of en) {
+        let d = (h[1] - ax) ** 2 + (h[2] - az) ** 2;
+        d < bd && d < 160 ** 2 && sn(h[1], h[2]) && ((bd = d), (best = [h[1], h[2]]));
+      }
+      if (!best) {
+        let q = i3(ax, az);
+        best = q >= 0 ? [bt.pts[q][0], bt.pts[q][1]] : [ax, az];
+      }
+      let slots = null;
+      for (let t = 0; t < 12 && !slots; t++) {
+        let a = (t / 12) * Math.PI * 2,
+          dx = Math.cos(a),
+          dz = Math.sin(a),
+          s = [];
+        for (let k = 0; k < V18FMAX; k++) {
+          let px = best[0] + dx * (3 + k * 0.85) - dz * 1.5,
+            pz = best[1] + dz * (3 + k * 0.85) + dx * 1.5;
+          if (!ok(px, pz)) break;
+          s.push([px, pz, Math.atan2(dx, dz) + Math.PI / 2]);
+        }
+        s.length === V18FMAX && (slots = s);
+      }
+      if (!slots) {
+        slots = [];
+        for (let k = 0; k < V18FMAX; k++) slots.push([best[0] + 3 + k * 0.85, best[1] + 1.5, Math.PI / 2]);
+      }
+      V18FHUB.push({ x: best[0], z: best[1], slots });
+    }
+  }
+  // ---- günlük / haftalık görevler, giriş serisi, kurye ligi ----
+  function V18DAILY(i) {
+    let e = S.save,
+      v = V18S(),
+      o = e.daily;
+    o && o.list && o.day !== e.day && (v.dstreak = o.list.every((q) => q.done) ? (v.dstreak || 0) + 1 : 0);
+    let g = Math.round((400 + e.lvl * 60) / 50) * 50,
+      ow = V18BOWN().length > 0,
+      P = [
+        i[1],
+        i[2],
+        { id: "combo", t: "x4 teslimat serisine ulaş", goal: 4, prog: 0, rew: 90 },
+        { id: "earn", t: "İşlerden " + g + "₺ kazan", goal: g, prog: 0, rew: 80 },
+        { id: "zone", t: "3 farklı bölgeye teslimat yap", goal: 3, prog: 0, rew: 70 },
+      ];
+    ow && P.push({ id: "kasa", t: "İşletmelerinden 3 kez kasa topla", goal: 3, prog: 0, rew: 90 }, { id: "tedarik", t: "1 tedarik işi tamamla", goal: 1, prog: 0, rew: 100 });
+    Object.keys(v.bees).length < V18BEEN && P.push({ id: "ari", t: "1 Altın Arı bul", goal: 1, prog: 0, rew: 120 });
+    V18FCNT() > 0 && P.push({ id: "filo", t: "Filon bugün 400₺ kazansın", goal: 400, prog: 0, rew: 90 });
+    e.lvl >= 6 && P.push({ id: "vip", t: "1 VIP teslimat yap", goal: 1, prog: 0, rew: 110 });
+    for (let k = P.length - 1; k > 0; k--) {
+      let j = Math.floor(Math.random() * (k + 1));
+      [P[k], P[j]] = [P[j], P[k]];
+    }
+    let L = [i[0], ...P.slice(0, 3)],
+      m = 1 + 0.08 * (e.lvl - 1);
+    for (let q of L) q.rew = Math.round((q.rew * m) / 5) * 5;
+    v.dz = {};
+    return L;
+  }
+  var V18WT = [
+    ["jobs", "teslimat yap", 40, 1200],
+    ["earn", "₺ iş geliri kazan", 0, 1500],
+    ["race", "yarış bitir", 5, 900],
+    ["combo", "x8 seriye ulaş", 8, 1000],
+    ["kasa", "₺ işletme geliri topla", 3e3, 1500],
+    ["filo", "₺ filo geliri", 2500, 1400],
+    ["ari", "Altın Arı bul", 5, 1200],
+    ["tedarik", "tedarik işi yap", 4, 1100],
+  ];
+  function V18WEEK() {
+    let e = S.save,
+      v = V18S(),
+      w = Math.floor((e.day - 1) / 7);
+    if (v.week && v.week.w === w) return v.week;
+    let ow = V18BOWN().length > 0,
+      fl = V18FCNT() > 0,
+      bees = Object.keys(v.bees).length < V18BEEN - 4,
+      P = V18WT.filter((q) => (q[0] !== "kasa" && q[0] !== "tedarik") || ow).filter((q) => q[0] !== "filo" || fl).filter((q) => q[0] !== "ari" || bees);
+    for (let k = P.length - 1; k > 0; k--) {
+      let j = Math.floor(Math.random() * (k + 1));
+      [P[k], P[j]] = [P[j], P[k]];
+    }
+    let m = 1 + 0.1 * (e.lvl - 1),
+      L = P.slice(0, 3).map((q) => {
+        let goal = q[0] === "earn" ? Math.round((2500 + e.lvl * 400) / 100) * 100 : q[0] === "jobs" ? 30 + Math.min(30, e.lvl * 2) : q[2];
+        return { id: q[0], t: q[0] === "combo" ? "x8 teslimat serisine ulaş" : (q[0] === "earn" || q[0] === "kasa" || q[0] === "filo" ? V18TL(goal) : goal) + " " + q[1].replace(/^₺ /, ""), goal, prog: 0, rew: Math.round((q[3] * m) / 50) * 50 };
+      });
+    return (v.week = { w, list: L });
+  }
+  function V18W(id, a = 1) {
+    if (!S.save) return;
+    let wk = V18WEEK();
+    for (let q of wk.list)
+      q.id === id &&
+        !q.done &&
+        ((q.prog = id === "combo" ? Math.max(q.prog, a) : Math.min(q.goal, q.prog + a)),
+        q.prog >= q.goal &&
+          ((q.prog = q.goal), (q.done = !0), xn(q.rew, "Haftalık görev"), S3(120), Ot() && Ot().big("🏅 HAFTALIK GÖREV", q.t + "\n+" + V18TL(q.rew) + " · +120 XP", "good")));
+  }
+  var V18LN = [
+    ["Hızlı Hakan", 0.7, 14697339],
+    ["Turbo Tuğçe", 0.85, 9067766],
+    ["Rüzgâr Rıza", 1, 15764004],
+    ["Şimşek Selin", 1.12, 3062473],
+    ["Kurye Kerem", 1.28, 15773480],
+  ];
+  function V18LG() {
+    let v = V18S(),
+      w = Math.floor((S.save.day - 1) / 7);
+    if (!v.league || v.league.w !== w) {
+      let old = v.league;
+      if (old && old.w < w) V18LEND(old);
+      v.league = { w, me: 0, r: V18LN.map((q) => [q[0], 0, q[1] * (0.9 + Math.random() * 0.2)]) };
+    }
+    return v.league;
+  }
+  function V18LRANK(L) {
+    let a = L.r.map((q) => [q[0], q[1], 0]);
+    a.push(["Sen", L.me, 1]);
+    a.sort((p, q) => q[1] - p[1]);
+    return a;
+  }
+  function V18LEND(L) {
+    let a = V18LRANK(L),
+      k = a.findIndex((q) => q[2]),
+      rw = [2500, 1200, 600][k] || 0,
+      v = V18S();
+    rw && (xn(rw, "Kurye ligi ödülü"), S3([250, 150, 80][k]));
+    k === 0 && v.st.leagueWins++;
+    setTimeout(() => {
+      Ot() && Ot().big("🏆 KURYE LİGİ " + (k + 1) + ". OLDUN", rw ? "Haftalık ödül +" + V18TL(rw) : "Bu hafta ilk 3'e giremedin. Yeni hafta başladı!", rw ? "good" : "info");
+    }, 4500);
+  }
+  function V18LOGIN() {
+    let v = V18S(),
+      d = new Date(),
+      f = (q) => q.getFullYear() + "-" + (q.getMonth() + 1) + "-" + q.getDate(),
+      t = f(d),
+      y = f(new Date(d.getTime() - 864e5));
+    if (v.login.last === t) return null;
+    ((v.login.n = v.login.last === y ? v.login.n + 1 : 1), (v.login.last = t));
+    let k = (v.login.n - 1) % 7,
+      m = [100, 150, 250, 350, 500, 700, 1200][k],
+      x2 = [20, 30, 40, 60, 80, 100, 200][k];
+    return (xn(m, "Giriş ödülü"), S3(x2), ["🔥 GİRİŞ SERİSİ " + v.login.n + ". GÜN", "Günlük ödül +" + V18TL(m) + " · +" + x2 + " XP" + (k === 6 ? "\n7. gün büyük ödülü!" : "\nYarın gel: " + V18TL([100, 150, 250, 350, 500, 700, 1200][(k + 1) % 7]))]);
+  }
+  // yeni gün (D1 sonunda)
+  function V18DAY(n) {
+    let e = S.save,
+      v = V18S(),
+      r = Math.random(),
+      ks = Object.keys(V18EVS);
+    v.ev = e.day > 1 && r < 0.55 ? { id: ks[Math.floor(Math.random() * ks.length)], day: e.day } : null;
+    V18LG();
+    V18WEEK();
+    let fs = n ? "" : V18FDAY(),
+      ev = V18EV();
+    !n &&
+      setTimeout(() => {
+        ev && Ot() && Ot().big(V18EVS[ev][0] + " " + V18EVS[ev][1].toUpperCase(), V18EVS[ev][2], "info");
+        fs && mt(fs, "info");
+      }, 3500);
+  }
+  // ---- iş ödemesi çarpanları ----
+  function V18JMUL(n, a) {
+    let e = S.save,
+      m = V18DM(),
+      ti = V18TI(e.lvl),
+      ev = V18EV(),
+      zf = V18ZI(n.from.x, n.from.z),
+      zt = V18ZI(n.to.x, n.to.z),
+      rp = (V18RLV(zf) + V18RLV(zt)) / 2,
+      k = 1;
+    (m > 1.001 && (a && a.push("🎚️ Zorluk ×" + m.toFixed(2)), (k *= m)), ti > 0 && (a && a.push("🎓 Ünvan +%" + ti * 2), (k *= 1 + ti * 0.02)));
+    rp > 0 && (a && a.push("⭐ İtibar +%" + Math.round(rp * 4)), (k *= 1 + rp * 0.04));
+    let em = 1;
+    (ev === "final" && n.type === "not" && (em = 1.6),
+      ev === "bahar" && (em = 1.2),
+      ev === "mac" && (V18Z[zt][0] === "kiz" || V18Z[zf][0] === "kiz") && (em = 1.5),
+      ev === "kariyer" && (V18Z[zt][0] === "ari" || V18Z[zf][0] === "ari") && (em = 1.5),
+      ev === "mezun" && (em = 1.15),
+      em > 1 && (a && a.push(V18EVS[ev][0] + " " + V18EVS[ev][1] + " ×" + em), (k *= em)));
+    V18RN8() && (a && a.push("🌧️🌙 Yağmurlu gece ×1.5"), (k *= 1.5));
+    S.ride && S.ride.own && V18S().gar.eq.model === "kargo" && (a && a.push("📦 Kargo modeli +%12"), (k *= 1.12));
+    n.v18 && n.v18.own && (a && a.push("🏪 Kendi dükkanın +%25"), (k *= 1.25));
+    return k;
+  }
+  function V18PAY(n, s, a) {
+    return s * V18JMUL(n, a);
+  }
+  function V18XP(n) {
+    return Math.round(n.xp * V18DM() * (1 + V18TI(S.save.lvl) * 0.01));
+  }
+  var V18CT = 0;
+  function V18DONE(n, paid) {
+    let e = S.save,
+      v = V18S(),
+      zf = V18ZI(n.from.x, n.from.z),
+      zt = V18ZI(n.to.x, n.to.z),
+      g = n.type === "vip" ? 3 : 1;
+    ((v.rep[V18Z[zf][0]] = (v.rep[V18Z[zf][0]] || 0) + g), zt !== zf && (v.rep[V18Z[zt][0]] = (v.rep[V18Z[zt][0]] || 0) + g));
+    (v.dz[zt] || (v.dz[zt] = 1, Or("zone")), Or("earn", Math.round(paid)), n.type === "vip" && Or("vip"), e.streak >= 4 && Or("combo", 99));
+    (V18W("jobs"), V18W("earn", paid), V18W("combo", e.streak || 0));
+    let L = V18LG();
+    ((L.me += paid), (v.hourIn += paid));
+    [5, 10, 15, 20, 30].includes(e.streak) &&
+      (xn(e.streak * 25, "Seri ödülü"), S3(e.streak * 4), setTimeout(() => Ot() && Ot().big("🔥 x" + e.streak + " SERİ!", "Seri ödülü +" + V18TL(e.streak * 25) + " · ödemeler +%" + Math.round(Math.min(1, (e.streak - 1) * 0.1) * 100), "good"), 2200));
+    V18CT = 180;
+    if (n.v18) {
+      let q = n.v18;
+      if (q.k === "sup" && v.biz[q.id]) {
+        let st = v.biz[q.id];
+        ((st.fresh = e.day), (st.rt = Math.min(5, st.rt + 0.3)), v.st.supplies++, Or("tedarik"), V18W("tedarik"), mt("📦 " + V18BI[q.id].name + " taze stokla bugün +%25 kazanıyor", "good"));
+      }
+      if (q.k === "flt") {
+        let z = v.fl.z[q.id];
+        z && ((z.b = 1), (z.c = Math.min(1, z.c + 0.15)), mt("⚡ Filo bataryaları dolu!", "good"));
+      }
+    }
+  }
+  // ---- ek iş teklifleri: işletme siparişi, tedarik, filo bakımı ----
+  var V18OID = 9e5;
+  function V18MKJ(from, to, title, item, frag, q, pm) {
+    let l = C1(from, to),
+      w = Dn[S.save.weather].pay * (js() ? 1.15 : 1);
+    return {
+      id: V18OID++,
+      type: "kurye",
+      title,
+      from,
+      to,
+      item,
+      frag,
+      pay: Math.round((45 + l * 0.16 * w + frag * 10) * (pm || 1)),
+      mins: Math.round(((l / 4.3 + 70) * Lr) / 60),
+      dist: l,
+      who: Ai(_4),
+      xp: Math.round(15 + l / 40),
+      v18: q,
+    };
+  }
+  function V18OFF(e) {
+    if (!V18READY) return e;
+    let v = V18S(),
+      P = an.D.pois;
+    try {
+      if (Math.random() < 0.4) {
+        let fb = V18B.filter((b) => V18FOOD[b[2]] && V18BOPEN(V18BI[b[0]], S.save.hour));
+        if (fb.length) {
+          let b = V18BI[Ai(fb)[0]],
+            to = null,
+            k = 0;
+          do to = P[Ai(Ya)];
+          while (Math.hypot(to.x - b.dx, to.z - b.dz) < 150 && ++k < 30);
+          let own = !!v.biz[b.id],
+            it = b.cat === "kafe" || b.cat === "zincir" ? ["Kahve", 1.8] : b.cat === "otomat" ? ["Atıştırmalık", 0.4] : Ai(m7);
+          e.push(V18MKJ({ x: b.dx, z: b.dz, name: b.name }, { ...to }, (own ? "🏪 Kendi dükkanından: " : "") + b.name + " siparişi", it[0], it[1], { k: "biz", id: b.id, own }));
+        }
+      }
+      let ow = V18BOWN().filter((id) => v.biz[id].fresh !== S.save.day);
+      if (ow.length && Math.random() < 0.4 && !e.some((q) => q.v18 && q.v18.k === "sup")) {
+        let b = V18BI[Ai(ow)],
+          sp = ["migros", "sok", "a101"].map((k) => V18BI[k]).filter((q) => q.id !== b.id && Math.hypot(q.dx - b.dx, q.dz - b.dz) > 60);
+        sp.sort((p, q) => Math.hypot(p.dx - b.dx, p.dz - b.dz) - Math.hypot(q.dx - b.dx, q.dz - b.dz));
+        let s = sp[0];
+        s && e.push(V18MKJ({ x: s.dx, z: s.dz, name: s.name + " (toptan)" }, { x: b.dx, z: b.dz, name: b.name }, "📦 Tedarik: " + b.name, "Tedarik kolisi", 0.3, { k: "sup", id: b.id }, 1.1));
+      }
+      if (v.fl.lic && !v.fl.staff.sarj && !e.some((q) => q.v18 && q.v18.k === "flt")) {
+        let low = V18Z.map((z, i) => [i, v.fl.z[z[0]]]).filter((q) => q[1] && q[1].n && q[1].b < 0.4);
+        if (low.length && Math.random() < 0.7) {
+          let zi = Ai(low)[0],
+            hb = V18FHUB[zi],
+            c = null,
+            cd = 1e18;
+          for (let p of Pn) {
+            let d = Math.hypot(p[0] - hb.x, p[1] - hb.z);
+            d < cd && d > 40 && ((cd = d), (c = p));
+          }
+          c &&
+            e.push(
+              V18MKJ({ x: c[0], z: c[1], name: "Şarj istasyonu" }, { x: hb.x, z: hb.z, name: V18Z[zi][1] + " filon" }, "⚡ Filo bakımı: " + V18Z[zi][1], "Yedek batarya", 0.2, { k: "flt", id: V18Z[zi][0] }, 0.8),
+            );
+        }
+      }
+    } catch (er) {}
+    for (let q of e) q.born = S.t || 0;
+    return e;
+  }
+  // ---- yakın etkileşimler (kasa topla, satın al, ye) ----
+  function V18ACT(e) {
+    if (!V18READY || x.mode === "fallen" || Math.abs(x.speed) > 1.5) return;
+    let v = V18S(),
+      s = S.save;
+    for (let id in V18BI) {
+      let b = V18BI[id],
+        d = Math.hypot(b.dx - x.x, b.dz - x.z);
+      if (d > 14) continue;
+      let st = v.biz[id];
+      st && !st.mgr && st.cash >= 1
+        ? e.unshift({ k: "kasa", label: "💰 Kasayı topla · " + V18TL(st.cash), sub: b.name, fn: () => V18BCOL(id) })
+        : !st &&
+          x.mode === "walk" &&
+          d < 10 &&
+          !e.some((q) => q.k === "v18biz") &&
+          e.push({
+            k: "v18biz",
+            label: "🏪 " + b.name,
+            sub: "Satılık · " + V18TL(V18BPRICE(b)),
+            fn: () => {
+              ((V18UI.sel = id), ea("biz"));
+            },
+          });
+      if (x.mode === "walk" && V18FOOD[b.cat] && d < 12 && !e.some((q) => q.k === "cafe" || q.k === "eat" || q.k === "v18eat") && V18BOPEN(b, s.hour)) {
+        let pr = st ? 0 : b.cat === "otomat" ? 15 : b.cat === "kucuk" ? 35 : 50;
+        e.push({ k: "v18eat", label: (st ? "🎁 " : "🍽️ ") + b.name + (st ? " · ikram" : " · " + pr + "₺"), sub: "+40 enerji", fn: () => E4(pr, 40, 0.25) });
+      }
+    }
+  }
+  // ---- garaj ----
+  var V18M = {
+    pro: ["İNİN Pro", "Dengeli standart model", 0, 8, {}],
+    retro: ["İNİN Retro", "Krem gövde, yuvarlak krom far, kahve sele", 2000, 8, {}],
+    sprint: ["İNİN Sprint", "+%18 güç · -%12 menzil · yarış şeritleri", 3500, 9, { power: 1.18, thrust: 1.1, capWh: 0.88 }],
+    dagci: ["İNİN Dağcı", "+%30 çekiş: yokuşlarda rakipsiz · çamurluklar", 3000, 9, { thrust: 1.3, power: 1.08 }],
+    kargo: ["İNİN Kargo", "Teslimat ücreti +%12 · +%30 menzil · paketler %30 daha az sarsılır · arka sandık", 4500, 10, { capWh: 1.3, power: 0.95 }],
+    ari: ["İNİN Altın Arı", "40 Altın Arı'nın ödülü: +%15 güç ve menzil", -1, 1, { power: 1.15, capWh: 1.15, thrust: 1.08 }],
+  };
+  var V18CS = {
+    col: [
+      "🎨 Scooter rengi",
+      [
+        ["İNİN Mavi", 0, 2846678],
+        ["Kırmızı", 150, 14694718],
+        ["Turuncu", 150, 15764004],
+        ["Sarı", 150, 16106776],
+        ["Yeşil", 150, 3129201],
+        ["Mor", 200, 9067766],
+        ["Pembe", 200, 15757224],
+        ["Siyah", 250, 2500142],
+        ["Beyaz", 250, 15658734],
+        ["İTÜ Lacivert", 300, 1912687],
+      ],
+    ],
+    hood: [
+      "🧥 Kapüşon",
+      [
+        ["İNİN Turkuazı", 0, 1688534],
+        ["İTÜ Lacivert", 120, 1912687],
+        ["Kırmızı", 120, 14170682],
+        ["Siyah", 120, 2763312],
+        ["Gri", 100, 10134445],
+        ["Arı Sarısı", 150, 16106776],
+        ["Pembe", 150, 15757224],
+        ["Mor", 150, 8082902],
+      ],
+    ],
+    pants: [
+      "👖 Pantolon",
+      [
+        ["Kot", 0, 2834005],
+        ["Siyah", 100, 2302762],
+        ["Bej", 100, 13218442],
+        ["Gri", 100, 8226192],
+        ["Haki", 120, 7043642],
+        ["Bordo", 150, 12071474],
+      ],
+    ],
+    hel: [
+      "⛑️ Kask rengi (Mağaza'dan kask alınca görünür)",
+      [
+        ["Beyaz", 0, 16316664],
+        ["Siyah", 100, 2302762],
+        ["Kırmızı", 120, 14170682],
+        ["Mavi", 120, 2781142],
+        ["Arı (20 arı)", -1, 16106776],
+      ],
+    ],
+    hair: [
+      "💇 Saç",
+      [
+        ["Kahverengi", 0, 3877408],
+        ["Siyah", 60, 1709076],
+        ["Sarı", 80, 15254122],
+        ["Kızıl", 80, 11027231],
+        ["Mavi", 150, 3116031],
+        ["Pembe", 150, 16743096],
+      ],
+    ],
+    light: [
+      "💡 Far ışığı",
+      [
+        ["Beyaz", 0, 16773836],
+        ["Sıcak sarı", 100, 16763024],
+        ["Buz mavisi", 150, 11068671],
+        ["Mor", 200, 12950527],
+      ],
+    ],
+    trail: [
+      "✨ İz efekti",
+      [
+        ["Yok", 0, 0],
+        ["Arı Sarısı", 500, 16761370],
+        ["Neon Mavi", 800, 1695999],
+        ["Ateş", 1200, 16734746],
+        ["Gökkuşağı", 2000, -1],
+        ["Altın Arı (30 arı)", -1, 16766720],
+      ],
+    ],
+    bell: [
+      "🔔 Zil sesi",
+      [
+        ["Klasik", 0, 0],
+        ["Bisiklet zili", 150, 1],
+        ["Korna", 250, 2],
+        ["Melodi", 400, 4],
+        ["Arı vızıltısı (10 arı)", -1, 3],
+      ],
+    ],
+  };
+  // arı ödülleriyle açılanlar: [arı sayısı, grup, sıra]
+  var V18BEEU = [
+    [10, "bell", 4],
+    [20, "hel", 4],
+    [30, "trail", 5],
+  ];
+  function V18OWNS(k, i) {
+    let g = V18S().gar,
+      it = V18CS[k][1][i];
+    if (!it) return !1;
+    if (it[1] === 0) return !0;
+    if (it[1] < 0) {
+      let n = Object.keys(V18S().bees).length,
+        u = V18BEEU.find((q) => q[1] === k && q[2] === i);
+      return !!u && n >= u[0];
+    }
+    return !!(g.own[k] && g.own[k][i]);
+  }
+  function V18GBUY(k, i) {
+    let g = V18S().gar,
+      it = V18CS[k][1][i];
+    if (!V18OWNS(k, i)) {
+      if (it[1] < 0) return mt("Bu ödül Altın Arı toplayarak açılır", "bad");
+      if (S.save.money < it[1]) return mt("Para yetmiyor", "bad");
+      (xn(-it[1], it[0]), g.own[k] || (g.own[k] = {}), (g.own[k][i] = 1));
+    }
+    ((g.eq[k] = i), V18APPLY(), k === "bell" && Hn.bell(), Ln());
+  }
+  function V18MOWN(k) {
+    let g = V18S().gar,
+      m = V18M[k];
+    return m[2] === 0 || (m[2] < 0 ? Object.keys(V18S().bees).length >= V18BEEN : !!(g.own.model && g.own.model[k]));
+  }
+  function V18MBUY(k) {
+    let g = V18S().gar,
+      m = V18M[k],
+      e = S.save;
+    if (!e.own) return mt("Önce Mağaza'dan kendi scooter'ını (İNİN Pro) al", "bad");
+    if (!V18MOWN(k)) {
+      if (m[2] < 0) return mt("40 Altın Arı'nın hepsini bulunca açılır", "bad");
+      if (e.lvl < m[3]) return mt("Seviye " + m[3] + " gerekli", "bad");
+      if (e.money < m[2]) return mt("Para yetmiyor", "bad");
+      (xn(-m[2], m[0]), g.own.model || (g.own.model = {}), (g.own.model[k] = 1), S3(40));
+    }
+    ((g.eq.model = k), V18APPLY(), S.ride && S.ride.own && (x.stats = w3(!0, e.upg)), mt("🛴 " + m[0] + " seçildi", "good"), Ln());
+  }
+  function V18SPEC(own, sp) {
+    if (!own || !S.save || !S.save.v18) return sp;
+    let m = V18M[S.save.v18.gar.eq.model] || V18M.pro;
+    for (let q in m[4]) sp[q] *= m[4][q];
+    return sp;
+  }
+  function V18CARGO() {
+    return S.ride && S.ride.own && S.save.v18 && S.save.v18.gar.eq.model === "kargo" ? 0.7 : 1;
+  }
+  function V18PICK(k) {
+    let g = V18S().gar.eq,
+      L = V18CS[k][1];
+    return (L[g[k]] || L[0])[2];
+  }
+  var V18MX = null;
+  function V18MODELX() {
+    let o = x.ownMesh;
+    if (!o || !o.userData.body) return;
+    let B = o.userData.body;
+    if (!V18MX) {
+      V18MX = {};
+      let mk = (k) => {
+          let g = new Tn();
+          return ((g.visible = !1), B.add(g), (V18MX[k] = g), g);
+        },
+        dk = yn(1974822),
+        wh = yn(15658734),
+        rd = yn(14694718),
+        br = yn(14256698),
+        ch = yn(13421772),
+        bl = yn(1710618),
+        g = mk("retro"),
+        h = new Ie(new _i(0.075, 12, 10), ch);
+      (h.position.set(0, 1, 0.56), g.add(h));
+      let lens = new Ie(new ln(0.055, 0.055, 0.02, 12), new qt({ color: 16774864 }));
+      ((lens.rotation.x = Math.PI / 2), lens.position.set(0, 1, 0.63), g.add(lens));
+      let seat = new Ie(new ot(0.16, 0.05, 0.22), yn(7029286));
+      (seat.position.set(0, 0.26, -0.22), g.add(seat));
+      g = mk("sprint");
+      for (let s of [-1, 1]) {
+        let q = new Ie(new ot(0.025, 0.012, 0.74), wh);
+        (q.position.set(s * 0.05, 0.225, -0.02), g.add(q));
+      }
+      let fin = new Ie(new ot(0.02, 0.14, 0.16), rd);
+      (fin.position.set(0, 0.36, -0.42), g.add(fin));
+      g = mk("dagci");
+      for (let zz of [0.5, -0.38]) {
+        let q = new Ie(new ot(0.11, 0.02, 0.28), dk);
+        (q.position.set(0, 0.27, zz), g.add(q));
+      }
+      g = mk("kargo");
+      let bx = new Ie(new ot(0.3, 0.26, 0.28), br);
+      (bx.position.set(0, 0.42, -0.3), g.add(bx));
+      let lid = new Ie(new ot(0.31, 0.03, 0.29), dk);
+      (lid.position.set(0, 0.56, -0.3), g.add(lid));
+      g = mk("ari");
+      for (let zz of [-0.2, 0, 0.2]) {
+        let q = new Ie(new ot(0.205, 0.085, 0.05), bl);
+        (q.position.set(0, 0.17, zz), g.add(q));
+      }
+      let wm = new qt({ color: 16777215, transparent: !0, opacity: 0.55, side: 2, depthWrite: !1 });
+      for (let s of [-1, 1]) {
+        let q = new Ie(new ci(0.22, 0.12), wm);
+        (q.position.set(s * 0.14, 0.9, 0.38), q.rotation.set(-0.3, 0, s * 0.5), g.add(q));
+      }
+      for (let k in V18MX) k !== "ari" ? OUTL(V18MX[k]) : null;
+    }
+    let md = V18S().gar.eq.model;
+    for (let k in V18MX) V18MX[k].visible = k === md;
+  }
+  function V18APPLY() {
+    if (!S.save || !x.person) return;
+    let md = V18S().gar.eq.model;
+    Y6().own.color.setHex(md === "retro" ? 15852484 : md === "ari" ? 16106776 : V18PICK("col"));
+    let M = x.person.userData.mats;
+    M && (M.hood.color.setHex(V18PICK("hood")), M.pants.color.setHex(V18PICK("pants")), M.hair.color.setHex(V18PICK("hair")), M.hel.color.setHex(V18PICK("hel")));
+    x.light && x.light.color.setHex(V18PICK("light"));
+    V18MODELX();
+  }
+  function V18BELL() {
+    if (!S.save || !S.save.v18) return !1;
+    let id = V18PICK("bell");
+    if (!id) return !1;
+    id === 1
+      ? [0, 95, 190].forEach((t) => setTimeout(() => Ht(3300, 0.12, "triangle", 0.14), t))
+      : id === 2
+        ? (Ht(415, 0.45, "sawtooth", 0.08), Ht(523, 0.45, "sawtooth", 0.06))
+        : id === 3
+          ? [0, 110, 220, 330, 440].forEach((t, i) => setTimeout(() => Ht(200 + (i % 2) * 40, 0.15, "sawtooth", 0.07, 250), t))
+          : [659, 784, 988, 1319].forEach((f, i) => setTimeout(() => Ht(f, 0.16, "triangle", 0.12), i * 120));
+    return !0;
+  }
+  // ---- dünya: tabelalar, altın arılar, filo, rakipler, hayalet, iz ----
+  var V18SG = {};
+  function V18SIGNTEX(b, cv) {
+    cv = cv || document.createElement("canvas");
+    ((cv.width = 256), (cv.height = 72));
+    let g = cv.getContext("2d"),
+      st = S.save && S.save.v18 ? S.save.v18.biz[b.id] : null,
+      c = V18BC[b.cat];
+    ((g.fillStyle = st ? "#2a1f04" : "#0c2a30"),
+      g.fillRect(0, 0, 256, 72),
+      (g.strokeStyle = st ? "#ffc21a" : "#19c3d6"),
+      (g.lineWidth = 6),
+      g.strokeRect(3, 3, 250, 66),
+      (g.textBaseline = "middle"),
+      (g.font = "34px sans-serif"),
+      g.fillText(c[1], 10, 37));
+    let fs = 26;
+    for (g.font = "bold " + fs + "px sans-serif"; g.measureText(b.name).width > 188 && fs > 12;) (fs--, (g.font = "bold " + fs + "px sans-serif"));
+    ((g.fillStyle = "#fff"), g.fillText(b.name, 58, st ? 27 : 37));
+    st && ((g.font = "bold 16px sans-serif"), (g.fillStyle = "#ffd36a"), g.fillText("★ SENİN · Sv " + st.lv, 58, 55));
+    return cv;
+  }
+  function V18SIGN(id) {
+    let s = V18SG[id];
+    s && (V18SIGNTEX(V18BI[id], s.tex.image), (s.tex.needsUpdate = !0));
+  }
+  function V18SIGNS(sc) {
+    let pm = yn(5592405);
+    for (let id in V18BI) {
+      let b = V18BI[id],
+        g = new Tn(),
+        tex = new Fn(V18SIGNTEX(b)),
+        post = new Ie(new ln(0.04, 0.04, 2.1, 6), pm),
+        board = new Ie(new ci(1.9, 0.53), new qt({ map: tex, side: 2 }));
+      ((post.position.y = 1.05), g.add(post), (board.position.y = 2.25), g.add(board));
+      (g.position.set(b.dx, Ss(b.dx, b.dz), b.dz), (g.visible = !1), sc.add(g), (V18SG[id] = { g, board, tex }));
+    }
+  }
+  var V18BEEN = 40,
+    V18BEES = [],
+    V18BEEM = [],
+    V18BEEW = [];
+  function V18BEEPREP() {
+    let r = V18RNG(1773),
+      C = [];
+    for (let q = 0; q < bt.pts.length; q++) {
+      if (BTout(q)) continue;
+      let p = bt.pts[q],
+        t = tn(p[0], p[1]);
+      t !== Pt.BUILDING && t !== Pt.WATER && sn(p[0], p[1]) && C.push(p);
+    }
+    for (let k = C.length - 1; k > 0; k--) {
+      let j = Math.floor(r() * (k + 1));
+      [C[k], C[j]] = [C[j], C[k]];
+    }
+    for (let sp of [85, 65, 45, 30]) {
+      for (let p of C) {
+        if (V18BEES.length >= V18BEEN) break;
+        V18BEES.every((b) => (b[0] - p[0]) ** 2 + (b[1] - p[1]) ** 2 > sp * sp) && V18BEES.push([p[0], p[1]]);
+      }
+      if (V18BEES.length >= V18BEEN) break;
+    }
+  }
+  function V18BEEBUILD(sc) {
+    let T = new Tn(),
+      core = new Tn(),
+      yl = yn(16761370),
+      bk = yn(1710618),
+      body = new Ie(new _i(0.17, 14, 10), yl);
+    (body.scale.set(0.9, 0.85, 1.25), core.add(body));
+    for (let zz of [-0.06, 0.09]) {
+      let q = new Ie(new e1(0.152, 0.032, 6, 16), bk);
+      ((q.position.z = zz), core.add(q));
+    }
+    let head = new Ie(new _i(0.1, 10, 8), bk);
+    ((head.position.z = 0.25), core.add(head), T.add(core), OUTL(core));
+    let wm = new qt({ color: 15660799, transparent: !0, opacity: 0.75, side: 2, depthWrite: !1 });
+    for (let s of [-1, 1]) {
+      let w = new Ie(new _i(0.13, 8, 6), wm);
+      (w.scale.set(1, 0.15, 0.6), w.position.set(s * 0.16, 0.15, 0), (w.name = s > 0 ? "wr" : "wl"), T.add(w));
+    }
+    let halo = new Ie(new e1(0.42, 0.025, 6, 24), new qt({ color: 16766720, transparent: !0, opacity: 0.55, depthWrite: !1 }));
+    ((halo.rotation.x = Math.PI / 2), (halo.position.y = -0.75), T.add(halo));
+    for (let i = 0; i < V18BEES.length; i++) {
+      let m = T.clone();
+      (m.scale.setScalar(1.5), (m.visible = !1), sc.add(m), V18BEEM.push(m), V18BEEW.push([m.getObjectByName("wl"), m.getObjectByName("wr")]));
+    }
+  }
+  var V18FI = [],
+    V18FT = null;
+  function V18FLEETBUILD(sc) {
+    let t = b1(!0);
+    t.updateMatrixWorld(!0);
+    let mp = new Map();
+    t.traverse((s) => {
+      if (s.isMesh) {
+        let a = s.geometry.clone().applyMatrix4(s.matrixWorld);
+        (mp.has(s.material) || mp.set(s.material, []), mp.get(s.material).push(a));
+      }
+    });
+    for (let [m, a] of mp) {
+      let o = new ui(i7(a), m, V18Z.length * V18FMAX);
+      ((o.castShadow = !0), (o.frustumCulled = !1), (o.count = 0), sc.add(o), V18FI.push(o), OUTI(o));
+    }
+    ((V18FT = new Tn()), (V18FT.rotation.order = "YXZ"));
+  }
+  function V18FLEETM() {
+    if (!V18FI.length || !S.save) return;
+    let v = V18S(),
+      n = 0;
+    for (let i = 0; i < V18Z.length; i++) {
+      let z = v.fl.z[V18Z[i][0]];
+      if (!z || !z.n) continue;
+      let H = V18FHUB[i];
+      for (let k = 0; k < z.n && k < V18FMAX; k++) {
+        let [px, pz, yw] = H.slots[k];
+        (V18FT.position.set(px, Ss(px, pz) + A1(px, pz), pz), V18FT.rotation.set(0, yw, 0.1), V18FT.updateMatrix());
+        for (let o of V18FI) o.setMatrixAt(n, V18FT.matrix);
+        n++;
+      }
+    }
+    for (let o of V18FI) ((o.count = n), (o.instanceMatrix.needsUpdate = !0));
+  }
+  var V18RVN = [];
+  function V18RIVBUILD(sc) {
+    for (let k = 0; k < 3; k++) {
+      let q = V18LN[[0, 2, 3][k]],
+        g = new Tn(),
+        s = b1(!1),
+        mat = yn(q[2]),
+        gr = Y6().green;
+      s.traverse((m) => {
+        m.isMesh && m.material === gr && (m.material = mat);
+      });
+      g.add(s);
+      let p = i4(q[2], 2302762, 15911845, [1709076, 11027231, 3877408][k], !1, !0),
+        u = p.userData;
+      ((p.position.y = 0.22), u.la && (u.la.rotation.x = -1.05), u.ra && (u.ra.rotation.x = -1.05), g.add(p), OUTL(g));
+      (g.traverse((m) => {
+        m.isMesh && (m.castShadow = !1);
+      }),
+        (g.visible = !1),
+        sc.add(g),
+        V18RVN.push({ g, name: q[0], col: q[2], pts: null, seg: 0, u: 0, spd: 5.3 + k * 0.45, x: 0, z: 0, yaw: 0, wait: k * 2 }));
+    }
+  }
+  function V18RIVPICK(r) {
+    let P = an.D.pois,
+      ks = Ya.concat(Xa).filter((k) => P[k] && sn(P[k].x, P[k].z));
+    if (!ks.length) return;
+    let a = P[Ai(ks)],
+      f = r.pts ? [r.x, r.z] : null;
+    if (!f) {
+      let b = P[Ai(ks)];
+      f = [b.x, b.z];
+    }
+    let R = Ji(f[0], f[1], a.x, a.z);
+    !R || !R.pts || R.pts.length < 2 ? ((r.pts = null), (r.wait = 6)) : ((r.pts = R.pts), (r.seg = 0), (r.u = 0), (r.x = R.pts[0][0]), (r.z = R.pts[0][1]));
+  }
+  function V18RIVSTEP(r, dt) {
+    if (r.wait > 0) return void (r.wait -= dt);
+    if (!r.pts) return void V18RIVPICK(r);
+    let d = r.spd * dt;
+    for (; d > 0 && r.pts;) {
+      let a = r.pts[r.seg],
+        b = r.pts[r.seg + 1];
+      if (!b) return void ((r.wait = 2 + Math.random() * 4), V18RIVPICK(r));
+      let L = Math.hypot(b[0] - a[0], b[1] - a[1]) || 0.001,
+        rem = L * (1 - r.u);
+      d < rem ? ((r.u += d / L), (d = 0)) : ((d -= rem), r.seg++, (r.u = 0));
+    }
+    if (!r.pts) return;
+    let a = r.pts[r.seg],
+      b = r.pts[r.seg + 1] || a;
+    ((r.x = a[0] + (b[0] - a[0]) * r.u), (r.z = a[1] + (b[1] - a[1]) * r.u));
+    if (b !== a) {
+      let dy = Math.atan2(b[0] - a[0], b[1] - a[1]) - r.yaw;
+      for (; dy > Math.PI;) dy -= 2 * Math.PI;
+      for (; dy < -Math.PI;) dy += 2 * Math.PI;
+      r.yaw += dy * Math.min(1, dt * 5);
+    }
+  }
+  var V18GH = null,
+    V18REC = null;
+  function V18GHBUILD(sc) {
+    let g = new Tn(),
+      m = new qt({ color: 8382194, transparent: !0, opacity: 0.38, depthWrite: !1 }),
+      p = i4(1688534, 2834005, 15911845, 3877408, !1, !0);
+    ((p.position.y = 0.22), p.userData.la && ((p.userData.la.rotation.x = -1.05), (p.userData.ra.rotation.x = -1.05)), g.add(b1(!1)), g.add(p));
+    (g.traverse((q) => {
+      q.isMesh && ((q.material = m), (q.castShadow = !1));
+    }),
+      (g.visible = !1),
+      sc.add(g),
+      (V18GH = g));
+  }
+  function GHSTART(n) {
+    V18REC = { r: n.r.id, p: [], cp: [], t: 0 };
+  }
+  function GHT(e) {
+    let R = V18REC;
+    if (R && R.r === e.r.id) for (; R.t <= e.t; R.t += 0.2) R.p.push(Math.round(x.x * 10), Math.round(x.z * 10), Math.round(x.yaw * 100));
+  }
+  function GHCP(e) {
+    let R = V18REC;
+    if (!R || R.r !== e.r.id) return;
+    R.cp.push(+e.t.toFixed(2));
+    let gh = V18S().ghost[e.r.id],
+      k = R.cp.length - 1;
+    if (gh && gh.cp && gh.cp[k] != null && (k % 4 === 3 || e.idx >= e.pts.length - 1)) {
+      let d = e.t - gh.cp[k];
+      mt("👻 " + (d <= 0 ? "Hayaletten " + (-d).toFixed(1) + " sn öndesin" : "Hayaletin " + d.toFixed(1) + " sn gerisindesin"), d <= 0 ? "good" : "warn");
+    }
+  }
+  function GHFIN(e, t) {
+    let v = V18S(),
+      R = V18REC,
+      pv = v.ghost[e.r.id];
+    if (R && R.r === e.r.id && (!pv || t < pv.t)) {
+      (pv && (v.st.ghostWins++, setTimeout(() => mt("👻 Kendi hayaletini " + (pv.t - t).toFixed(1) + " sn farkla geçtin! Yeni hayalet kaydedildi.", "good"), 2600)),
+        R.p.length < 12e3 && (v.ghost[e.r.id] = { t: +t.toFixed(2), p: R.p, cp: R.cp }));
+    }
+    ((V18REC = null), V18W("race"));
+  }
+  function GHSTOP() {
+    V18REC = null;
+  }
+  function V18GHF() {
+    if (!V18GH) return;
+    let r = S.race,
+      gh = r && r.stage === "run" ? V18S().ghost[r.r.id] : null;
+    if (!gh || !gh.p || gh.p.length < 6) return void (V18GH.visible = !1);
+    let P = gh.p,
+      N = P.length / 3,
+      f = r.t / 0.2,
+      i = Math.floor(f),
+      u = f - i;
+    i >= N - 1 && ((i = N - 1), (u = 0));
+    let a = i * 3,
+      b = Math.min(N - 1, i + 1) * 3,
+      gx = (P[a] + (P[b] - P[a]) * u) / 10,
+      gz = (P[a + 1] + (P[b + 1] - P[a + 1]) * u) / 10,
+      ya = P[a + 2] / 100,
+      dy = P[b + 2] / 100 - ya;
+    for (; dy > Math.PI;) dy -= 2 * Math.PI;
+    for (; dy < -Math.PI;) dy += 2 * Math.PI;
+    (V18GH.position.set(gx, Ss(gx, gz) + A1(gx, gz), gz), (V18GH.rotation.y = ya + dy * u), (V18GH.visible = !0));
+  }
+  var V18TRM = null,
+    V18TRP = [],
+    V18CL = null;
+  function V18TRBUILD(sc) {
+    let g = new St(),
+      idx = [];
+    for (let i = 0; i < 35; i++) {
+      let a = i * 2;
+      idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2);
+    }
+    (g.setAttribute("position", new wt(new Float32Array(216), 3)), g.setAttribute("color", new wt(new Float32Array(288), 4)), g.setIndex(idx));
+    ((V18TRM = new Ie(g, new qt({ vertexColors: !0, transparent: !0, depthWrite: !1, side: 2 }))),
+      (V18TRM.frustumCulled = !1),
+      (V18TRM.visible = !1),
+      sc.add(V18TRM),
+      (V18CL = new Le()));
+  }
+  function V18TRF() {
+    if (!V18TRM) return;
+    let c = S.save && S.save.v18 ? V18PICK("trail") : 0;
+    if (!c || x.mode !== "ride") return void ((V18TRM.visible = !1), (V18TRP.length = 0));
+    let bx = x.x - Math.sin(x.yaw) * 0.45,
+      bz = x.z - Math.cos(x.yaw) * 0.45,
+      by = x.y + (x.yOff || 0),
+      l = V18TRP[0];
+    (!l || Math.hypot(l[0] - bx, l[2] - bz) > 0.35 ? V18TRP.unshift([bx, by, bz, x.yaw]) : ((l[0] = bx), (l[1] = by), (l[2] = bz), (l[3] = x.yaw)), V18TRP.length > 36 && (V18TRP.length = 36));
+    Math.abs(x.speed) < 1.5 && V18TRP.length > 1 && V18TRP.pop();
+    let n = V18TRP.length,
+      A = V18TRM.geometry.attributes,
+      P = A.position.array,
+      C = A.color.array,
+      T = performance.now() / 1e3;
+    for (let i = 0; i < 36; i++) {
+      let p = V18TRP[Math.min(i, n - 1)],
+        k = i * 6,
+        q = i * 8,
+        f = i < n && n > 1 ? (1 - i / 35) ** 1.6 : 0,
+        r,
+        gg,
+        b;
+      let wx = Math.cos(p[3]) * 0.12 * (0.4 + f),
+        wz = -Math.sin(p[3]) * 0.12 * (0.4 + f);
+      ((P[k] = p[0] - wx), (P[k + 1] = p[1] + 0.3), (P[k + 2] = p[2] - wz), (P[k + 3] = p[0] + wx), (P[k + 4] = p[1] + 0.3), (P[k + 5] = p[2] + wz));
+      c === -1
+        ? (V18CL.setHSL((i / 36 + T * 0.35) % 1, 1, 0.55), (r = V18CL.r), (gg = V18CL.g), (b = V18CL.b))
+        : ((r = ((c >> 16) & 255) / 255), (gg = ((c >> 8) & 255) / 255), (b = (c & 255) / 255));
+      c === 16761370 && (i >> 2) % 2 && (f *= 0.15);
+      c === 16766720 && (f *= 0.55 + 0.45 * Math.sin(i * 1.7 + T * 18));
+      ((C[q] = C[q + 4] = r), (C[q + 1] = C[q + 5] = gg), (C[q + 2] = C[q + 6] = b), (C[q + 3] = C[q + 7] = f * 0.8));
+    }
+    ((A.position.needsUpdate = !0), (A.color.needsUpdate = !0), (V18TRM.visible = n > 2));
+  }
+  // ---- telefon sekmeleri: İşletme, Filo, Görev, Garaj ----
+  var V18UI = { sel: null, bf: "all", gs: "model" };
+  function V18RR(n) {
+    let sc = n.scrollTop;
+    (C7(n), (n.scrollTop = sc));
+  }
+  function V18SEG(n, opts, cur, fn) {
+    let w = Bt('<div class="seg" style="margin:0 0 8px;display:flex;gap:6px;flex-wrap:wrap"></div>');
+    for (let [k, t] of opts) {
+      let b = Bt(`<div class="btn ${k === cur ? "" : "gray"}" style="flex:1;min-width:0">${t}</div>`);
+      ((b.onclick = (ev) => {
+        (ev.stopPropagation(), Hn.click(), fn(k));
+      }),
+        w.appendChild(b));
+    }
+    n.appendChild(w);
+  }
+  function V18BAR(p, c) {
+    return `<span style="display:inline-block;width:70px;height:7px;border-radius:4px;background:rgba(255,255,255,.15);vertical-align:middle;overflow:hidden"><i style="display:block;height:100%;width:${Math.round(Math.max(0, Math.min(1, p)) * 100)}%;background:${c || "#19c3d6"}"></i></span>`;
+  }
+  function V18TAB(n, k) {
+    try {
+      let on = Vn && Vn.querySelector(".tabs .tab.on");
+      on && on.scrollIntoView && on.scrollIntoView({ block: "nearest", inline: "center" });
+    } catch {}
+    if (!V18READY && (k === "biz" || k === "fleet" || k === "goal" || k === "gar")) return (n.appendChild(Bt('<div class="d">Yükleniyor…</div>')), !0);
+    if (k === "biz") return (V18UIBIZ(n), !0);
+    if (k === "fleet") return (V18UIFLT(n), !0);
+    if (k === "goal") return (V18UIGOAL(n), !0);
+    if (k === "gar") return (V18UIGAR(n), !0);
+    return !1;
+  }
+  function V18JH(n) {
+    if (!V18READY) return;
+    let e = S.save,
+      ev = V18EV(),
+      ti = V18TI(e.lvl),
+      o = ["🎚️ ×" + V18DM().toFixed(2)];
+    (ti && o.push("🎓 +%" + ti * 2), ev && o.push(V18EVS[ev][0] + " " + V18EVS[ev][1]), V18RN8() && o.push("🌧️🌙 ×1.5"), e.streak > 1 && o.push("🔥 Seri x" + e.streak + " (+%" + Math.round(Math.min(1, (e.streak - 1) * 0.1) * 100) + ")"));
+    n.appendChild(Bt(`<div class="d" style="opacity:.85;margin:-4px 0 8px">${o.join(" · ")}</div>`));
+  }
+  // İşletmeler
+  function V18UIBIZ(n) {
+    let e = S.save,
+      v = V18S(),
+      own = V18BOWN(),
+      h = e.hour,
+      hourly = 0,
+      cash = 0;
+    for (let id of own) ((hourly += V18BINC(V18BI[id], v.biz[id], h) * (v.biz[id].mgr ? 0.88 : 1)), (cash += v.biz[id].cash));
+    if (V18UI.sel && V18BI[V18UI.sel]) return V18UIBIZ1(n, V18UI.sel);
+    n.appendChild(
+      Gn(
+        `<div class="t">🏪 İşletmelerin: ${own.length}/${V18B.length}</div><div class="d">Şu an ~${V18TL(hourly)}/saat · kasalarda ${V18TL(cash)} · toplam kazanç ${V18TL(v.st.bizIn)}<br>Kasası dolan işletme para kazanmayı durdurur: yanına gidip <b>💰 Kasayı topla</b> ya da müdür tut. Tedarik işleri o gün geliri +%25 artırır.</div>`,
+      ),
+    );
+    V18SEG(
+      n,
+      [
+        ["all", "Tümü"],
+        ["own", "Benim"],
+        ["sale", "Satılık"],
+      ],
+      V18UI.bf,
+      (k) => ((V18UI.bf = k), V18RR(n)),
+    );
+    let L = V18B.map((b) => V18BI[b[0]]).filter((b) => (V18UI.bf === "own" ? v.biz[b.id] : V18UI.bf === "sale" ? !v.biz[b.id] : !0));
+    L.sort((a, b) => !!v.biz[b.id] - !!v.biz[a.id] || V18BC[a.cat][6] - V18BC[b.cat][6] || V18BPRICE(a) - V18BPRICE(b));
+    for (let b of L) {
+      let c = V18BC[b.cat],
+        st = v.biz[b.id],
+        d = Math.hypot(b.dx - x.x, b.dz - x.z),
+        lk = e.lvl < c[6],
+        op = V18BOPEN(b, h);
+      if (st) {
+        let cap = V18BCAP(b, st);
+        n.appendChild(
+          Gn(
+            `<div class="t">${c[1]} ${b.name} <span style="color:#ffd36a">★${st.lv}</span></div><div class="d">${st.mgr ? "👔 Müdür toplar" : "💰 " + V18TL(st.cash) + "/" + V18TL(cap) + " " + V18BAR(st.cash / cap, st.cash >= cap - 1 ? "#ff6a5a" : "#7ff0a0")} · ${op ? "~" + V18TL(V18BINC(b, st, h)) + "/sa" : "🌙 kapalı"} · ⭐${st.rt.toFixed(1)}${st.fresh === e.day ? " · 📦" : ""} · ${Math.round(d)} m</div>`,
+            [{ t: "Yönet", fn: () => ((V18UI.sel = b.id), V18RR(n)) }],
+          ),
+        );
+      } else {
+        let p = V18BPRICE(b);
+        n.appendChild(
+          Gn(
+            `<div class="t">${c[1]} ${b.name}</div><div class="d">${c[0]} · ${V18Z[b.zi][1]} · 🕘 ${c[4] <= 0 && c[5] >= 24 ? "7/24" : c[4] + "-" + c[5]} · ~${V18TL(c[3] * b.pm)}/sa · ${Math.round(d)} m</div>`,
+            [
+              lk
+                ? { t: `${V18TL(p)}<br><small>Sv ${c[6]}</small>`, cls: "dis", fn: () => mt("Seviye " + c[6] + " (" + V18TN(c[6]) + ") gerekli", "bad") }
+                : { t: `${V18TL(p)}<br><small>Satın al</small>`, cls: e.money < p ? "dis" : "", fn: () => (V18BBUY(b.id), V18RR(n)) },
+            ],
+          ),
+        );
+      }
+    }
+  }
+  function V18UIBIZ1(n, id) {
+    let e = S.save,
+      v = V18S(),
+      b = V18BI[id],
+      c = V18BC[b.cat],
+      st = v.biz[id],
+      d = Math.hypot(b.dx - x.x, b.dz - x.z),
+      back = Bt('<div class="btn gray" style="margin-bottom:8px">← İşletme listesi</div>');
+    ((back.onclick = () => ((V18UI.sel = null), Hn.click(), V18RR(n))), n.appendChild(back));
+    let go = { t: "📍 Rota", fn: () => ((S.route = Ji(x.x, x.z, b.dx, b.dz)), mt("Rota çizildi: " + b.name, "info"), Ts()) };
+    if (!st) {
+      let p = V18BPRICE(b);
+      n.appendChild(
+        Gn(
+          `<div class="t">${c[1]} ${b.name}</div><div class="d">${c[0]} · ${V18Z[b.zi][1]}<br>Açık: ${c[4] <= 0 && c[5] >= 24 ? "7/24" : c[4] + ":00 - " + c[5] + ":00"} · temel gelir ~${V18TL(c[3] * b.pm)}/saat · kasa 5 saatlik geliri tutar<br>Gereken: Sv ${c[6]} (${V18TN(c[6])}) · bölge itibarı fiyatı düşürür</div>`,
+          [{ t: `${V18TL(p)}<br><small>Satın al</small>`, cls: e.lvl < c[6] || e.money < p ? "dis" : "", fn: () => (V18BBUY(id), V18RR(n)) }, go],
+        ),
+      );
+      return;
+    }
+    let cap = V18BCAP(b, st),
+      up = st.lv < 5 ? Math.round((c[2] * b.pm * V18UPC[st.lv - 1]) / 50) * 50 : 0,
+      mp = Math.round((c[2] * b.pm * 0.4) / 50) * 50;
+    n.appendChild(
+      Gn(
+        `<div class="t">${c[1]} ${b.name} <span style="color:#ffd36a">★ Sv ${st.lv}/5</span></div><div class="d">${c[0]} · ${V18Z[b.zi][1]} · ${Math.round(d)} m uzakta<br>Şu an ${V18BOPEN(b, e.hour) ? "~" + V18TL(V18BINC(b, st, e.hour)) + "/saat" : "kapalı"} · ⭐ ${st.rt.toFixed(1)} memnuniyet${st.fresh === e.day ? " · 📦 taze stok (+%25)" : ""}<br>${st.mgr ? "👔 Müdür geliri otomatik yatırıyor (%12 pay)" : "💰 Kasa " + V18TL(st.cash) + " / " + V18TL(cap) + " " + V18BAR(st.cash / cap, "#7ff0a0")}<br>Yatırım: ${V18TL(st.inv)}</div>`,
+        [go],
+      ),
+    );
+    st.lv < 5 &&
+      n.appendChild(
+        Gn(`<div class="t">⬆️ Yükselt: Sv ${st.lv} → ${st.lv + 1}</div><div class="d">Gelir ×${V18LVM[st.lv - 1]} → ×${V18LVM[st.lv]}, kasa da büyür</div>`, [
+          { t: `${V18TL(up)}`, cls: e.money < up ? "dis" : "", fn: () => (V18BUP(id), V18RR(n)) },
+        ]),
+      );
+    n.appendChild(
+      Gn(`<div class="t">👔 Müdür</div><div class="d">${st.mgr ? "Kasayı senin yerine topluyor, gelirin %12'sini alıyor." : "Kasayı otomatik toplar, sen yokken de kazandırır. Gelirin %12'sini alır."}</div>`, [
+        st.mgr ? { t: "İşten çıkar", cls: "gray", fn: () => (V18BMGR(id), V18RR(n)) } : { t: V18TL(mp), cls: e.money < mp ? "dis" : "", fn: () => (V18BMGR(id), V18RR(n)) },
+      ]),
+    );
+    let pc = Gn(`<div class="t">🏷️ Fiyat politikası</div><div class="d">Ucuz: gelir ×0.85, memnuniyet hızla 4.8'e çıkar · Normal · Pahalı: gelir ×1.25, memnuniyet 3.4'e düşer. Memnuniyet geliri etkiler.</div>`);
+    n.appendChild(pc);
+    V18SEG(
+      n,
+      [
+        [0, "Ucuz"],
+        [1, "Normal"],
+        [2, "Pahalı"],
+      ],
+      st.pr,
+      (k) => ((st.pr = k), Ln(), V18RR(n)),
+    );
+    d < 15 &&
+      !st.mgr &&
+      st.cash >= 1 &&
+      n.appendChild(Gn(`<div class="t">💰 Kasada ${V18TL(st.cash)}</div>`, [{ t: "Topla", fn: () => (V18BCOL(id), V18RR(n)) }]));
+    n.appendChild(Gn(`<div class="t">Sat</div><div class="d">Yatırımının yarısını (${V18TL(st.inv * 0.5)}) geri alırsın.</div>`, [{ t: "Sat", cls: "red", fn: () => (V18BSELL(id), (V18UI.sel = null), V18RR(n)) }]));
+  }
+  // Filo
+  function V18UIFLT(n) {
+    let e = S.save,
+      v = V18S(),
+      f = v.fl,
+      h = e.hour;
+    if (e.lvl < V18FLV)
+      return void n.appendChild(
+        Gn(
+          `<div class="t">🔒 Filo patronluğu</div><div class="d">Seviye ${V18FLV} (${V18TN(V18FLV)}) olunca açılır.<br>Kendi İNİN filonu kur: bölge izni al, scooter yerleştir, şarjcı-dengeleyici-teknisyen tut. Sen iş yaparken (ve yokken) filon kazanır.</div>`,
+        ),
+      );
+    if (!f.lic)
+      return void n.appendChild(
+        Gn(`<div class="t">🛴 İNİN bayi lisansı</div><div class="d">Kendi scooter filonu kurmak için lisans al. Her bölgeye en fazla ${V18FMAX} scooter koyabilirsin.</div>`, [
+          { t: V18TL(V18FLIC), cls: e.money < V18FLIC ? "dis" : "", fn: () => (V18FLIC2(), V18RR(n)) },
+        ]),
+      );
+    let now = 0;
+    for (let i = 0; i < V18Z.length; i++) now += V18FRATE(i, h);
+    n.appendChild(
+      Gn(
+        `<div class="t">🛴 Filon: ${V18FCNT()} scooter</div><div class="d">Şu an ~${V18TL(now)}/saat · bugün ${V18TL(f.today)} · toplam ${V18TL(f.total)}<br>Gelir bölgenin saate göre yoğunluğuna bağlı: fakülteler gündüz, yurtlar sabah-akşam, metro işe gidiş-dönüş saatlerinde yoğun. Yeni scooter: ${V18TL(V18FSP())}</div>`,
+      ),
+    );
+    for (let k in V18FST) {
+      let d = V18FST[k];
+      n.appendChild(
+        Gn(`<div class="t">${d[0]} ${f.staff[k] ? '<span style="color:#7ff0a0">· çalışıyor</span>' : ""}</div><div class="d">${d[1]} · işe alım ${V18TL(d[2])}, günlük maaş ${V18TL(d[3])}</div>`, [
+          f.staff[k] ? { t: "Çıkar", cls: "gray", fn: () => (V18FSTAFF(k), V18RR(n)) } : { t: "İşe al", cls: e.money < d[2] ? "dis" : "", fn: () => (V18FSTAFF(k), V18RR(n)) },
+        ]),
+      );
+    }
+    for (let i = 0; i < V18Z.length; i++) {
+      let Z = V18Z[i],
+        z = f.z[Z[0]],
+        dm = V18DEM(i, h),
+        ic = dm >= 1.2 ? "🔥 yoğun" : dm >= 0.6 ? "🙂 orta" : "😴 sakin",
+        rl = V18RLV(i);
+      if (!z || !z.on) {
+        let p = V18FZP(i);
+        n.appendChild(Gn(`<div class="t">📍 ${Z[1]}</div><div class="d">${ic} · itibar: ${V18RN[rl]}</div>`, [{ t: `${V18TL(p)}<br><small>İzin al</small>`, cls: e.money < p ? "dis" : "", fn: () => (V18FZON(i), V18RR(n)) }]));
+        continue;
+      }
+      let rp = Math.round((1 - z.c) * 300 * z.n),
+        B = [
+          { t: `+1<br><small>${V18TL(V18FSP())}</small>`, cls: z.n >= V18FMAX || e.money < V18FSP() ? "dis" : "", fn: () => (V18FADD(i, 1), V18RR(n)) },
+          { t: "−1", cls: "gray", fn: () => (V18FADD(i, -1), V18RR(n)) },
+        ];
+      (z.st || B.push({ t: "⚡<br><small>3.000₺</small>", cls: e.money < 3e3 ? "dis" : "", fn: () => (V18FSTN(i), V18RR(n)) }),
+        !f.staff.tekn && rp > 20 && B.push({ t: `🔧<br><small>${V18TL(rp)}</small>`, fn: () => (V18FREP(i), V18RR(n)) }));
+      n.appendChild(
+        Gn(
+          `<div class="t">📍 ${Z[1]} · 🛴 ${z.n}/${V18FMAX}</div><div class="d">${ic} · ~${V18TL(V18FRATE(i, h))}/sa · 🔋 ${V18BAR(z.b, z.b < 0.25 ? "#ff6a5a" : "#7ff0a0")} %${Math.round(z.b * 100)} · 🔧 %${Math.round(z.c * 100)}${z.st ? " · ⚡ istasyon" : ""} · ⭐ ${V18RN[rl]}</div>`,
+          B,
+        ),
+      );
+    }
+  }
+  // Görevler
+  function V18UIGOAL(n) {
+    let e = S.save,
+      v = V18S(),
+      ev = V18EV(),
+      ti = V18TI(e.lvl),
+      nx = V18TNEXT(e.lvl);
+    n.appendChild(
+      Gn(
+        `<div class="t">🎓 ${V18TN(e.lvl)} · Sv ${e.lvl}</div><div class="d">İş primi +%${ti * 2}${nx ? " · Sonraki ünvan: <b>" + nx[1] + "</b> (Sv " + nx[0] + ")" : " · En yüksek ünvan!"}<br>XP ${Math.round(e.xp)}/${Ur(e.lvl)} ${V18BAR(e.xp / Ur(e.lvl), "#ffd36a")}</div>`,
+      ),
+    );
+    n.appendChild(
+      Gn(
+        `<div class="t">${ev ? V18EVS[ev][0] + " Bugün: " + V18EVS[ev][1] : "📅 Bugün etkinlik yok"}</div><div class="d">${ev ? V18EVS[ev][2] : "Her yeni günde bir kampüs etkinliği çıkabilir: Final Haftası, Bahar Şenliği, Maç Günü, Kariyer Günleri, Mezuniyet..."}${V18RN8() ? "<br>🌧️🌙 Yağmurlu gece: teslimatlar ×1.5" : ""}<br>🎚️ Zorluk çarpanı ×${V18DM().toFixed(2)} (Ayarlar)</div>`,
+      ),
+    );
+    let lg = v.login,
+      k = ((lg.n || 1) - 1) % 7,
+      R = [100, 150, 250, 350, 500, 700, 1200];
+    n.appendChild(Gn(`<div class="t">🔥 Giriş serisi: ${lg.n || 0} gün</div><div class="d">Her gün oyuna gir: ${R.map((r, i) => (i === k ? "<b>" + r + "₺</b>" : r + "₺")).join(" → ")}</div>`));
+    if (e.daily) {
+      let dn = e.daily.list.filter((q) => q.done).length;
+      n.appendChild(
+        Gn(
+          `<div class="t">📅 Günlük görevler (Gün ${e.day}) · ${dn}/${e.daily.list.length}</div><div class="d">${e.daily.list.map((q) => `${q.done ? "✅" : "⬜"} ${q.t} — ${Math.round(q.prog)}/${q.goal}${q.id === "clean" ? " m" : ""} · <span class="price">${q.rew}₺</span>`).join("<br>")}<br>Hepsini bitirdiğin gün serisi: ${v.dstreak || 0}</div>`,
+        ),
+      );
+    }
+    let wk = V18WEEK(),
+      wl = 7 - ((e.day - 1) % 7);
+    n.appendChild(
+      Gn(
+        `<div class="t">🏅 Haftalık görevler · ${wl} gün kaldı</div><div class="d">${wk.list.map((q) => `${q.done ? "✅" : "⬜"} ${q.t} — ${Math.round(q.prog)}/${q.goal} · <span class="price">${V18TL(q.rew)}</span>`).join("<br>")}</div>`,
+      ),
+    );
+    let L = V18LG(),
+      rk = V18LRANK(L);
+    n.appendChild(
+      Gn(
+        `<div class="t">🏆 Haftalık Kurye Ligi · ${wl} gün kaldı</div><div class="d">${rk.map((q, i) => `${["🥇", "🥈", "🥉"][i] || i + 1 + "."} ${q[2] ? "<b>Sen (" + V18T[ti][2] + ")</b>" : q[0]} — ${V18TL(q[1])}`).join("<br>")}<br>Ödüller: 1. 2.500₺ · 2. 1.200₺ · 3. 600₺. Sadece iş gelirin sayılır. Rakipler bekleyen işleri kapabilir!</div>`,
+      ),
+    );
+    let zr = V18Z.map((Z, i) => {
+      let r = v.rep[Z[0]] || 0,
+        l = V18RLV(i),
+        nx2 = V18RL[l + 1];
+      return `${["⚪", "🟢", "🔵", "🟣", "🟡"][l]} ${Z[1]}: ${V18RN[l]} ${nx2 ? V18BAR((r - V18RL[l]) / (nx2 - V18RL[l]), "#b48cff") : ""}`;
+    });
+    n.appendChild(Gn(`<div class="t">⭐ Fakülte / bölge itibarı</div><div class="d">Bir bölgeye ya da bölgeden yaptığın her teslimat itibar kazandırır: o bölgede iş ücreti +%4/kademe, işletme ve filo geliri +%5/kademe, işletme fiyatları -%4/kademe.<br>${zr.join("<br>")}</div>`));
+    let bn = Object.keys(v.bees).length;
+    n.appendChild(
+      Gn(
+        `<div class="t">🐝 Altın Arılar: ${bn}/${V18BEEN}</div><div class="d">Kampüse 40 altın arı saklandı. Yanından geçince toplanır (+75₺, +30 XP).<br>10: Arı zil sesi + 500₺ · 20: Arı kask + 1.000₺ · 30: Altın iz efekti + 2.000₺ · 40: İNİN Altın Arı scooter + 5.000₺${v.radar ? "<br>📡 Arı radarı aktif: en yakın arı mini haritada" : ""}</div>`,
+        v.radar ? [] : [{ t: "📡 Radar<br><small>800₺</small>", cls: e.money < 800 ? "dis" : "", fn: () => (e.money < 800 ? mt("Para yetmiyor", "bad") : (xn(-800, "Arı radarı"), (v.radar = 1), mt("📡 Mini haritada en yakın arı görünecek", "good"), Ln()), V18RR(n)) }],
+      ),
+    );
+    n.appendChild(Gn(`<div class="t">🎓 Ünvanlar</div><div class="d">${V18T.map((q, i) => (i === ti ? "<b>▶ " : e.lvl >= q[0] ? "✓ " : "") + "Sv " + q[0] + " " + q[1] + (i === ti ? "</b>" : "")).join("<br>")}</div>`));
+  }
+  // Garaj
+  function V18UIGAR(n) {
+    let e = S.save,
+      v = V18S(),
+      g = v.gar;
+    V18SEG(
+      n,
+      [
+        ["model", "🛴 Model"],
+        ["boya", "🎨 Boya"],
+        ["kiyafet", "🧥 Kıyafet"],
+        ["efekt", "✨ Efekt"],
+      ],
+      V18UI.gs,
+      (k) => ((V18UI.gs = k), V18RR(n)),
+    );
+    if (V18UI.gs === "model") {
+      e.own || n.appendChild(Gn(`<div class="t">Kendi scooter'ın yok</div><div class="d">Modeller kendi scooter'ın için. Mağaza'dan İNİN Pro'yu al (Sv 8). Kıyafetler herkese açık.</div>`, [{ t: "Mağaza", fn: () => ea("shop") }]));
+      for (let k in V18M) {
+        let m = V18M[k],
+          ow = V18MOWN(k),
+          eq = g.eq.model === k;
+        n.appendChild(
+          Gn(`<div class="t">${m[0]} ${eq ? '<span style="color:#7ff0a0">· seçili</span>' : ""}</div><div class="d">${m[1]}${m[3] > 1 && !ow ? " · Sv " + m[3] : ""}</div>`, [
+            eq ? { t: "✓", cls: "gray", fn: () => {} } : ow ? { t: "Seç", fn: () => (V18MBUY(k), V18RR(n)) } : m[2] < 0 ? { t: "🐝 40", cls: "dis", fn: () => V18MBUY(k) } : { t: V18TL(m[2]), cls: e.money < m[2] || e.lvl < m[3] || !e.own ? "dis" : "", fn: () => (V18MBUY(k), V18RR(n)) },
+          ]),
+        );
+      }
+      return;
+    }
+    let G = V18UI.gs === "boya" ? ["col", "light"] : V18UI.gs === "kiyafet" ? ["hood", "pants", "hel", "hair"] : ["trail", "bell"];
+    for (let k of G) {
+      let C = V18CS[k],
+        c = Bt(`<div class="card" style="display:block"><div class="t" style="margin-bottom:6px">${C[0]}</div></div>`),
+        w = Bt('<div style="display:flex;flex-wrap:wrap;gap:6px"></div>');
+      C[1].forEach((it, i) => {
+        let ow = V18OWNS(k, i),
+          eq = g.eq[k] === i,
+          sw = k === "bell" || k === "trail" ? (it[2] === -1 ? "linear-gradient(90deg,#f44,#fa0,#ff0,#4f4,#4af,#a4f)" : k === "bell" ? "#2a3a40" : it[2] ? "#" + it[2].toString(16).padStart(6, "0") : "#222") : "#" + it[2].toString(16).padStart(6, "0"),
+          b = Bt(
+            `<div style="flex:0 0 auto;min-width:64px;padding:5px 7px;border-radius:10px;border:2px solid ${eq ? "#7ff0a0" : "rgba(255,255,255,.18)"};background:rgba(0,0,0,.25);text-align:center;font-size:11px;line-height:1.25"><div style="width:26px;height:26px;border-radius:50%;margin:0 auto 3px;background:${sw};border:2px solid rgba(255,255,255,.5)"></div>${it[0]}<br><b style="color:${eq ? "#7ff0a0" : ow ? "#cfe" : "#ffd36a"}">${eq ? "Takılı" : ow ? "Seç" : it[1] < 0 ? "🐝" : it[1] + "₺"}</b></div>`,
+          );
+        ((b.onclick = (ev) => {
+          (ev.stopPropagation(), Hn.click(), V18GBUY(k, i), V18RR(n));
+        }),
+          w.appendChild(b));
+      });
+      (c.appendChild(w), n.appendChild(c));
+    }
+  }
+  // ---- başlatma, kare güncellemesi, harita, HUD, rozetler ----
+  var V18SC = null,
+    V18VT = 0,
+    V18LST = 0;
+  function V18INIT() {
+    if (!V18READY)
+      try {
+        V18SC = p4;
+        (V18BPREP(), V18FPREP(), V18BEEPREP(), V18SIGNS(V18SC), V18BEEBUILD(V18SC), V18FLEETBUILD(V18SC), V18RIVBUILD(V18SC), V18GHBUILD(V18SC), V18TRBUILD(V18SC));
+        let st = document.createElement("style");
+        ((st.textContent = ".tabs{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}.tabs::-webkit-scrollbar{display:none}.tabs .tab{flex:0 0 auto;padding:9px 11px;font-size:14px}"), document.head.appendChild(st));
+        V18READY = !0;
+      } catch (er) {
+        console.error("V18", er);
+      }
+    if (!V18READY) return;
+    let v = V18S();
+    (V18FLEETM(), V18APPLY());
+    for (let id in V18BI) V18SIGN(id);
+    let M = [],
+      o = V18OFFL();
+    o && M.push(o);
+    let l = V18LOGIN();
+    (l && M.push(l), M.forEach((m, i) => setTimeout(() => Ot() && Ot().big(m[0], m[1], "good"), 2600 + i * 4300)), (v.lastReal = Date.now()), V18LG(), V18WEEK());
+  }
+  function V18OFFL() {
+    let v = V18S(),
+      el = v.lastReal ? (Date.now() - v.lastReal) / 6e4 : 0;
+    if (el < 5) return null;
+    let gh = Math.min(16, el / 15),
+      inc = 0,
+      cash = 0,
+      fl = 0;
+    for (let id in v.biz) {
+      let b = V18BI[id],
+        st = v.biz[id];
+      if (!b) continue;
+      let avg = V18BC[b.cat][3] * b.pm * V18LVM[st.lv - 1] * 0.6 * [0.85, 1, 1.25][st.pr];
+      if (st.mgr) inc += avg * gh * 0.5 * 0.88;
+      else {
+        let add = Math.min(V18BCAP(b, st) - st.cash, avg * gh * 0.5);
+        add > 0 && ((st.cash += add), (cash += add));
+      }
+    }
+    for (let i = 0; i < V18Z.length; i++) {
+      let z = v.fl.z[V18Z[i][0]];
+      if (!z || !z.n) continue;
+      let hr = v.fl.staff.sarj || z.st ? gh : Math.min(gh, z.b / 0.05);
+      ((fl += 50 * Math.pow(z.n, 0.9) * 0.75 * z.c * (v.fl.staff.deng ? 1.25 : 1) * hr * 0.5), v.fl.staff.sarj || z.st || (z.b = Math.max(0, z.b - 0.05 * hr)));
+    }
+    ((inc = Math.round(inc)), (fl = Math.round(fl)));
+    if (inc + fl + cash < 1) return null;
+    (inc + fl > 0 && xn(inc + fl, "Sen yokken"), (v.st.bizIn += inc), (v.fl.total += fl), (v.st.fleetIn += fl));
+    let h = el >= 120 ? Math.round(el / 60) + " saat" : Math.round(el) + " dk";
+    return ["💤 SEN YOKKEN (" + h + ")", [inc ? "👔 Müdürler +" + V18TL(inc) : "", fl ? "🛴 Filo +" + V18TL(fl) : "", cash >= 1 ? "💰 Kasalarda " + V18TL(cash) + " birikti, toplamaya git" : ""].filter(Boolean).join("\n")];
+  }
+  function V18STEAL(dt) {
+    let t = S.t || 0;
+    if (t - V18LST < 40 || S.paused) return;
+    for (let q of S.offers) {
+      if (q.v18 && q.v18.k !== "biz") continue;
+      if ((q.born == null && (q.born = t), t - q.born > 55 && Math.random() < dt * 0.03)) {
+        V18LST = t;
+        S.offers = S.offers.filter((o) => o !== q);
+        let L = V18LG(),
+          r = L.r[Math.floor(Math.random() * L.r.length)];
+        ((r[1] += q.pay), V18S().st.stolen++, mt("🏁 Rakip kurye " + r[0] + ', "' + q.title + '" işini kaptı!', "warn"), S.offers.length < 2 && qa());
+        break;
+      }
+    }
+  }
+  function V18BEECHK() {
+    let v = V18S();
+    for (let i = 0; i < V18BEES.length; i++) {
+      if (v.bees[i]) continue;
+      let b = V18BEES[i];
+      if ((b[0] - x.x) ** 2 + (b[1] - x.z) ** 2 < 7) {
+        v.bees[i] = 1;
+        let n = Object.keys(v.bees).length;
+        ((v.st.beeN = n), xn(75, "Altın Arı"), S3(30), Or("ari"), V18W("ari"), S.audio && S.audio.level());
+        let ms = { 10: [500, "🔔 Arı vızıltısı zil sesi açıldı"], 20: [1e3, "⛑️ Arı kask rengi açıldı"], 30: [2e3, "✨ Altın Arı iz efekti açıldı"], 40: [5e3, "🛴 İNİN Altın Arı modeli açıldı!"] }[n];
+        (ms && xn(ms[0], "Arı ödülü"), Ot() && Ot().big("🐝 ALTIN ARI " + n + "/" + V18BEEN, "+75₺ · +30 XP" + (ms ? "\n" + ms[1] + " · +" + V18TL(ms[0]) : ""), "good"), V18BEEM[i] && (V18BEEM[i].visible = !1), Ln());
+      }
+    }
+  }
+  function V18F(dt, act) {
+    if (!V18READY || !S.save) return;
+    let e = S.save,
+      v = V18S(),
+      cam = S.camera ? S.camera.position : null,
+      T = performance.now() / 1e3;
+    if (act) {
+      (e.streak > 0 && !S.job && V18CT > 0 && ((V18CT -= dt), V18CT <= 0 && (mt("🔥 Seri bitti (x" + e.streak + "). Seriyi korumak için işleri ara vermeden al!", "info"), (e.streak = 0))),
+        V18STEAL(dt));
+      for (let r of V18RVN) V18RIVSTEP(r, dt);
+      V18BEECHK();
+    }
+    if (((V18VT += dt), V18VT > 0.4 && cam)) {
+      V18VT = 0;
+      let cx = cam.x,
+        cz = cam.z;
+      for (let id in V18SG) {
+        let s = V18SG[id];
+        s.g.visible = (s.g.position.x - cx) ** 2 + (s.g.position.z - cz) ** 2 < 12100;
+      }
+      for (let i = 0; i < V18BEEM.length; i++) V18BEEM[i].visible = !v.bees[i] && (V18BEES[i][0] - cx) ** 2 + (V18BEES[i][1] - cz) ** 2 < 16900;
+      for (let r of V18RVN) r.g.visible = !!r.pts && (r.x - cx) ** 2 + (r.z - cz) ** 2 < 48400;
+    }
+    if (cam)
+      for (let id in V18SG) {
+        let s = V18SG[id];
+        s.g.visible && (s.board.rotation.y = Math.atan2(cam.x - s.g.position.x, cam.z - s.g.position.z));
+      }
+    for (let i = 0; i < V18BEEM.length; i++) {
+      let m = V18BEEM[i];
+      if (!m.visible) continue;
+      let b = V18BEES[i];
+      (m.position.set(b[0], Ss(b[0], b[1]) + 1.25 + Math.sin(T * 2 + i) * 0.15, b[1]), (m.rotation.y = T * 1.4 + i));
+      let w = V18BEEW[i],
+        f = Math.sin(T * 40 + i) * 0.6;
+      w[0] && (w[0].rotation.z = -0.3 - f);
+      w[1] && (w[1].rotation.z = 0.3 + f);
+    }
+    for (let r of V18RVN) r.g.visible && (r.g.position.set(r.x, Ss(r.x, r.z) + A1(r.x, r.z), r.z), (r.g.rotation.y = r.yaw));
+    (V18GHF(), V18TRF());
+  }
+  function V18MAP(g, d, E, m) {
+    if (!V18READY) return;
+    let v = V18S();
+    ((g.textAlign = "center"), (g.textBaseline = "middle"));
+    for (let id in V18BI) {
+      let b = V18BI[id],
+        st = v.biz[id],
+        px = d(b.dx),
+        py = E(b.dz);
+      (st && ((g.fillStyle = "rgba(255,194,26,.95)"), g.beginPath(), g.arc(px, py, 11, 0, 7), g.fill()), (g.font = (st ? 14 : 11) + "px sans-serif"), (g.fillStyle = "#fff"), g.fillText(V18BC[b.cat][1], px, py));
+    }
+    for (let i = 0; i < V18Z.length; i++) {
+      let z = v.fl.z[V18Z[i][0]];
+      z && z.n && ((g.font = "bold 12px sans-serif"), (g.fillStyle = "#9cc8ff"), g.fillText("🛴" + z.n, d(V18FHUB[i].x), E(V18FHUB[i].z) + 14));
+    }
+    for (let r of V18RVN)
+      r.pts &&
+        ((g.fillStyle = "#" + r.col.toString(16).padStart(6, "0")),
+        g.beginPath(),
+        g.arc(d(r.x), E(r.z), 5, 0, 7),
+        g.fill(),
+        (g.font = "bold 10px sans-serif"),
+        (g.fillStyle = "#fff"),
+        g.fillText(r.name, d(r.x), E(r.z) - 10));
+  }
+  function V18MINI(n, P, sz) {
+    if (!V18READY) return;
+    let v = V18S(),
+      inb = (q) => q[0] > -10 && q[1] > -10 && q[0] < sz + 10 && q[1] < sz + 10;
+    ((n.textAlign = "center"), (n.textBaseline = "middle"));
+    for (let id in v.biz) {
+      let b = V18BI[id];
+      if (!b) continue;
+      let q = P(b.dx, b.dz);
+      inb(q) && ((n.fillStyle = v.biz[id].cash >= V18BCAP(b, v.biz[id]) - 1 && !v.biz[id].mgr ? "#ff6a5a" : "#ffc21a"), n.beginPath(), n.arc(q[0], q[1], 6, 0, 7), n.fill(), (n.font = "bold 9px sans-serif"), (n.fillStyle = "#000"), n.fillText("₺", q[0], q[1] + 0.5));
+    }
+    for (let r of V18RVN) {
+      if (!r.pts) continue;
+      let q = P(r.x, r.z);
+      inb(q) && ((n.fillStyle = "#" + r.col.toString(16).padStart(6, "0")), (n.strokeStyle = "#fff"), (n.lineWidth = 1.5), n.beginPath(), n.arc(q[0], q[1], 4.5, 0, 7), n.fill(), n.stroke());
+    }
+    if (v.radar) {
+      let bi = -1,
+        bd = 1e18;
+      for (let i = 0; i < V18BEES.length; i++) {
+        if (v.bees[i]) continue;
+        let d = (V18BEES[i][0] - x.x) ** 2 + (V18BEES[i][1] - x.z) ** 2;
+        d < bd && ((bd = d), (bi = i));
+      }
+      if (bi >= 0 && bd < 9e4) {
+        let q = P(V18BEES[bi][0], V18BEES[bi][1]);
+        inb(q) && ((n.font = "15px sans-serif"), n.fillText("🐝", q[0], q[1]));
+      }
+    }
+  }
+  function V18HUD(t) {
+    if (!V18READY) return "";
+    let ev = V18EV(),
+      s = t.streak || 0,
+      o = [];
+    (ev && o.push(V18EVS[ev][0] + " " + V18EVS[ev][1]),
+      V18RN8() && o.push("🌧️🌙 ×1.5"),
+      s > 1 && o.push("🔥x" + s + " +%" + Math.round(Math.min(1, (s - 1) * 0.1) * 100) + (S.job || V18CT <= 0 ? "" : " ⏱" + Math.ceil(V18CT) + "sn")));
+    return o.length ? `<div class="row" style="color:#ffd36a;font-size:12px">${o.join(" · ")}</div>` : "";
+  }
+  function V18LV(l) {
+    let o = [],
+      ti = V18T.find((q) => q[0] === l);
+    ti && o.push("🎓 Yeni ünvan: " + ti[1] + " · iş primi +%" + V18TI(l) * 2);
+    for (let k in V18BC) V18BC[k][6] === l && o.push("🏪 " + V18BC[k][0] + " işletmeleri satın alınabilir");
+    (l === V18FLV && o.push("🛴 Filo patronluğu açıldı!"), o.push(T3(l)));
+    return o.join("\n");
+  }
+  function V18POOL() {
+    try {
+      let P = an.D.pois,
+        out = (k) => {
+          let p = P[k];
+          return p.cx != null && !sn(p.cx, p.cz) && !(p.cat === "metro" && !/Tower|Plaza/i.test(p.name));
+        };
+      ((Xa = Xa.filter((k) => !/Seyr-i/.test(P[k].name) && !out(k))), (Ya = Ya.filter((k) => !out(k))));
+    } catch {}
+  }
+  var V18FC = (s) => {
+    let n = 0,
+      z = s.v18 && s.v18.fl ? s.v18.fl.z : {};
+    for (let k in z) n += z[k].n || 0;
+    return n;
+  };
+  var V18BN = (s) => (s.v18 ? Object.keys(s.v18.biz).length : 0),
+    V18AN = (s) => (s.v18 ? Object.keys(s.v18.bees).length : 0);
+  ACHS.push(
+    ["v18biz1", "🏪", "İlk dükkan", "İlk işletmeni satın al", (s) => V18BN(s) >= 1, 200, 50],
+    ["v18biz10", "🏬", "Kampüs patronu", "10 işletmenin sahibi ol", (s) => V18BN(s) >= 10, 2e3, 200, (s) => V18BN(s) / 10],
+    ["v18biz44", "👑", "Kampüsün sahibi", "Kampüsteki 44 işletmenin hepsini al", (s) => V18BN(s) >= 44, 2e4, 1e3, (s) => V18BN(s) / 44],
+    ["v18filo10", "🛴", "Filo patronu", "10 scooterlık filo kur", (s) => V18FC(s) >= 10, 1500, 150, (s) => V18FC(s) / 10],
+    ["v18filo50", "🚀", "Mobilite devi", "50 scooterlık filo kur", (s) => V18FC(s) >= 50, 8e3, 500, (s) => V18FC(s) / 50],
+    ["v18ari10", "🐝", "Arı avcısı", "10 Altın Arı bul", (s) => V18AN(s) >= 10, 300, 60, (s) => V18AN(s) / 10],
+    ["v18ari40", "🍯", "Kovan tamam", "40 Altın Arı'nın hepsini bul", (s) => V18AN(s) >= 40, 3e3, 300, (s) => V18AN(s) / 40],
+    ["v18doc", "🎓", "Doçent", "Doçent ünvanını al (Sv 15)", (s) => s.lvl >= 15, 1500, 0, (s) => s.lvl / 15],
+    ["v18prof", "📜", "Profesör", "Profesör ol (Sv 18)", (s) => s.lvl >= 18, 3e3, 0, (s) => s.lvl / 18],
+    ["v18rektor", "🏛️", "Rektör", "Rektör ol (Sv 34)", (s) => s.lvl >= 34, 1e4, 0, (s) => s.lvl / 34],
+    ["v18seri10", "🔥", "Durdurulamaz", "10'luk teslimat serisi yap", (s) => (s.bestStreak || 0) >= 10, 500, 80, (s) => (s.bestStreak || 0) / 10],
+    ["v18lig", "🏆", "Lig şampiyonu", "Haftalık kurye liginde 1. ol", (s) => !!s.v18 && s.v18.st.leagueWins >= 1, 1e3, 150],
+    ["v18hayalet", "👻", "Kendini geç", "Bir yarışta kendi hayaletini geç", (s) => !!s.v18 && s.v18.st.ghostWins >= 1, 300, 60],
+  );
   var h7 = (n) => (Math.round(n * 10) / 10).toLocaleString("tr-TR"),
     Qn = (n) => (n < 0 ? "-" : "") + Math.abs(Math.round(n)).toLocaleString("tr-TR") + " \u20BA";
   function Ot() {
@@ -24928,9 +26877,9 @@ void main() {
   function S3(n) {
     let e = S.save;
     for (n > 0 && FLOAT("+" + Math.round(n) + " XP", "#ffd36a"), e.xp += n; e.xp >= Ur(e.lvl);)
-      ((e.xp -= Ur(e.lvl)), e.lvl++, Ot() && Ot().big("SEV\u0130YE " + e.lvl, T3(e.lvl), "lvl"), S.audio && S.audio.level(), CONFETTI(90));
+      ((e.xp -= Ur(e.lvl)), e.lvl++, Ot() && Ot().big("SEVİYE " + e.lvl, V18LV(e.lvl), "lvl"), S.audio && S.audio.level(), CONFETTI(90));
   }
-  var Ur = (n) => Math.round(80 + 70 * Math.pow(n - 1, 1.35));
+  var Ur = (n) => Math.round(80 + 60 * Math.pow(n - 1, 1.15));
   function T3(n) {
     return (
       {
@@ -25001,7 +26950,7 @@ void main() {
         ].filter((s) => !s.lvl || s.lvl <= e.lvl),
       ),
     ];
-    e.daily = { day: e.day, list: i };
+    ((e.daily = { day: e.day, list: V18DAILY(i) }), V18DAY(n));
   }
   var Ai = (n) => n[Math.floor(Math.random() * n.length)];
   function Or(n, e = 1) {
@@ -25182,7 +27131,8 @@ void main() {
       Xa.includes("yemekhane") || Xa.push("yemekhane"),
       (Ya = b4("dorm", "faculty", "library", "sport", "metro", "other").filter((n) => !Xa.includes(n))),
       Ya.length < 4 && (Ya = Object.keys(an.D.pois)),
-      g7());
+      g7(),
+      V18POOL());
   }
   var m7 = [
       ["D\xF6ner", 0.8],
@@ -25231,7 +27181,7 @@ void main() {
       let o = D4(r, t);
       o && e.push(o);
     }
-    ((S.offers = e), (S.offerT = 0));
+    ((S.offers = V18OFF(e)), (S.offerT = 0));
   }
   function D4(n, e) {
     let t = S.save,
@@ -25394,20 +27344,22 @@ void main() {
       : (i < 0.5 && ((s *= 1.2), a.push("H\u0131zl\u0131 teslim bonusu %20"), Or("fast")),
         (e.streak = (e.streak || 0) + 1),
         (e.bestStreak = Math.max(e.bestStreak || 0, e.streak)),
-        e.streak > 1 && ((s *= 1 + Math.min(0.5, (e.streak - 1) * 0.1)), a.push("\u{1F525} Seri x" + e.streak + " +%" + Math.round(Math.min(0.5, (e.streak - 1) * 0.1) * 100))));
+        e.streak > 1 && ((s *= 1 + Math.min(1, (e.streak - 1) * 0.1)), a.push("\u{1F525} Seri x" + e.streak + " +%" + Math.round(Math.min(1, (e.streak - 1) * 0.1) * 100))));
     js() && (S.flags.nightJob = !0);
     let r = 0;
     (!t && n.cond > 90 && n.type === "kurye" && Math.random() < 0.6 && (r = 5 + Math.round(Math.random() * 20)),
       S.save.items.helmet && (s *= 1.1),
+      (s = V18PAY(n, s, a)),
       (s = Math.round(s)),
       n.type === "vip" && n.cond < 60 && ((s = 0), (a = ["Maket par\xE7aland\u0131, \xF6deme yok!"]), ts(-5, "VIP hasar")),
       xn(s + r, n.title),
-      S3(n.xp),
+      S3(V18XP(n)),
       CONFETTI(s + r > 150 ? 70 : 40),
       !t && n.cond > 80 && ts(1),
       e.stats.jobs++,
       Or("jobs"),
       n.type === "sarj" && (e.stats.juiced++, Or("juice")),
+      V18DONE(n, s + r),
       Ot() &&
         Ot().big(
           "+" + Qn(s + r),
@@ -25429,7 +27381,7 @@ void main() {
   function Nr(n, e) {
     let t = S.job;
     if (!t || t.stage !== "deliver" || !t.frag) return;
-    let i = S.save.items.bag ? 0.5 : 1,
+    let i = (S.save.items.bag ? 0.5 : 1) * V18CARGO(),
       s = n * t.frag * 4 * i;
     s < 1 || ((t.cond = Math.max(0, t.cond - s)), s > 4 && mt(`${t.item} sars\u0131ld\u0131! (%${Math.round(t.cond)}) ${e || ""}`, "warn"));
   }
@@ -25545,13 +27497,14 @@ void main() {
         (n.idx = 1),
         (n.t = 0),
         (n.cleanStart = S.save.stats.falls),
+        GHSTART(n),
         (S.route = null),
         S.audio && S.audio.go(),
         Ot() && Ot().big("BA\u015ELA!", n.r.name, "info"));
     }
   }
   function k3(n) {
-    S.race && ((S.race = null), (S.route = null), n && mt(n, "bad"));
+    (GHSTOP(), S.race && ((S.race = null), (S.route = null), n && mt(n, "bad")));
   }
   function v7(n) {
     let e = S.race;
@@ -25560,12 +27513,12 @@ void main() {
       S.routeT > 3 && ((S.route = Ji(x.x, x.z, e.pts[0][0], e.pts[0][1])), (S.routeT = 0));
       return;
     }
-    if (((e.t += n), x.mode !== "ride" && x.mode !== "fallen")) {
+    if (((e.t += n), GHT(e), x.mode !== "ride" && x.mode !== "fallen")) {
       k3("Yar\u0131\u015F iptal: scooterdan indin");
       return;
     }
     let t = e.pts[e.idx];
-    if (Math.hypot(t[0] - x.x, t[1] - x.z) < 7 && (e.idx++, S.audio && S.audio.check(), e.idx >= e.pts.length)) {
+    if (Math.hypot(t[0] - x.x, t[1] - x.z) < 7 && (e.idx++, S.audio && S.audio.check(), GHCP(e), e.idx >= e.pts.length)) {
       let i = e.t,
         s = i <= e.gold ? "gold" : i <= e.silver ? "silver" : i <= e.bronze ? "bronze" : null,
         a = S.save.medals[e.r.id],
@@ -25577,6 +27530,7 @@ void main() {
         l && xn(l, "Yar\u0131\u015F \xF6d\xFCl\xFC"),
         S3(s ? 40 : 10),
         Or("race"),
+        GHFIN(e, i),
         Ot() &&
           Ot().big(
             s ? { gold: "\u{1F947} ALTIN", silver: "\u{1F948} G\xDCM\xDC\u015E", bronze: "\u{1F949} BRONZ" }[s] : "Madalya yok",
@@ -25693,6 +27647,7 @@ S\xFCre ${i.toFixed(1)} sn (Alt\u0131n \u2264 ${e.gold.toFixed(0)} sn)${
         Math.abs(x.speed) < 0.6 &&
         e.push({ k: "race", label: "\u{1F3C1} Yar\u0131\u015F\u0131 ba\u015Flat \xB7 " + S.race.r.fee + "\u20BA", fn: x7 })),
       x.mode === "fallen" && x.fallT > 1.6 && e.push({ k: "up", label: "\u{1F6F4} Kalk ve tekrar bin", fn: d7 }));
+    V18ACT(e);
     let i = S.job;
     if (i && x.mode !== "fallen") {
       let s = i.stage === "pickup" ? i.from : i.to;
@@ -25738,6 +27693,7 @@ S\xFCre ${i.toFixed(1)} sn (Alt\u0131n \u2264 ${e.gold.toFixed(0)} sn)${
       mt("Enerji " + Math.round(i.energy), "good"));
   }
   function P1(n) {
+    V18H(n);
     let e = S.save;
     if (((e.hour += n), (e.energy = Math.max(0, e.energy - 2 * n)), S.ride && !S.ride.own)) {
       let t = S.ride,
@@ -25891,6 +27847,7 @@ S\xFCre ${i.toFixed(1)} sn (Alt\u0131n \u2264 ${e.gold.toFixed(0)} sn)${
     let e = S.save;
     ((OPTX.noslow = e.opt.noslow === !0), (OPTX.terrain = e.opt.terrain !== !1 && !OPTX.noslow), (OPTX.pen = e.opt.pen !== !1), (S.t += n), ACHT(n));
     let t = (n * Lr) / 3600;
+    V18H(t);
     if (
       ((e.hour += t),
       (e.energy = Math.max(0, e.energy - t * (x.mode === "walk" && x.speed > 2.5 ? 9 : 4))),
@@ -26095,6 +28052,7 @@ S\xFCre ${i.toFixed(1)} sn (Alt\u0131n \u2264 ${e.gold.toFixed(0)} sn)${
   }
   var Hn = {
     bell() {
+      if (V18BELL()) return;
       (Ht(2100, 0.6, "sine", 0.18), setTimeout(() => Ht(2100, 0.5, "sine", 0.14), 140), Ht(5200, 0.25, "sine", 0.04));
     },
     click() {
@@ -26604,9 +28562,9 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
     if (L3 > 0.2) {
       L3 = 0;
       let s = Dn[t.weather];
-      Xe.stat.innerHTML = `<div class="row"><span class="money">${Qn(t.money)}</span><span class="lv">SV ${t.lvl}</span><div class="bar"><i style="width:${((t.xp / Ur(t.lvl)) * 100).toFixed(0)}%;background:#ffd36a"></i></div></div>
+      Xe.stat.innerHTML = `<div class="row"><span class="money">${Qn(t.money)}</span><span class="lv">${V18TS(t.lvl)}</span><div class="bar"><i style="width:${((t.xp / Ur(t.lvl)) * 100).toFixed(0)}%;background:#ffd36a"></i></div></div>
       <div class="row">\u2B50 ${Math.round(t.score)} <span style="opacity:.6">puan</span> \xB7 \u26A1 <div class="bar"><i style="width:${t.energy}%;background:${t.energy < 20 ? "#ff5a4a" : "#19c3d6"}"></i></div></div>
-      <div class="row">\u{1F4F1} %${Math.round(t.phone)} \xB7 ${s.i} ${A3()} \xB7 G\xFCn ${t.day}${Ci() ? ' \xB7 <b style="color:#19c3d6">PASS</b>' : ""}</div>`;
+      <div class="row">\u{1F4F1} %${Math.round(t.phone)} \xB7 ${s.i} ${A3()} \xB7 G\xFCn ${t.day}${Ci() ? ' \xB7 <b style="color:#19c3d6">PASS</b>' : ""}</div>${V18HUD(t)}`;
       let a = S.job,
         r = S.race;
       if (((a || r) && (Xe.job.dataset.t = ""), a)) {
@@ -26799,8 +28757,9 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
     }
     for (let [h, f] of Pn) {
       let [p, y] = $a(h, f, t, i, s, a);
-      ((n.font = "16px sans-serif"), (n.textAlign = "center"), (n.textBaseline = "middle"), n.fillText("\u26A1", p, y));
+      ((n.font = "16px sans-serif"), (n.textAlign = "center"), (n.textBaseline = "middle"), n.fillText("⚡", p, y));
     }
+    V18MINI(n, (X, Z) => $a(X, Z, t, i, s, a), e);
     let o = S.job
       ? S.job.stage === "pickup"
         ? S.job.from
@@ -26879,10 +28838,14 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
         i.target === Vn && Ts();
       }));
     let e = [
-        ["map", "\u{1F5FA}\uFE0F Harita"],
-        ["jobs", "\u{1F4BC} \u0130\u015Fler"],
-        ["race", "\u{1F3C1} Yar\u0131\u015F"],
-        ["shop", "\u{1F6D2} Ma\u011Faza"],
+        ["map", "\u{1F5FA}️ Harita"],
+        ["jobs", "\u{1F4BC} İşler"],
+        ["goal", "\u{1F3AF} G\xF6rev"],
+        ["race", "\u{1F3C1} Yarış"],
+        ["biz", "\u{1F3EA} İşletme"],
+        ["fleet", "\u{1F6F4} Filo"],
+        ["shop", "\u{1F6D2} Mağaza"],
+        ["gar", "\u{1F3A8} Garaj"],
         ["me", "\u{1F464} Profil"],
         ["ach", "\u{1F3C6} Rozetler"],
         ["set", "\u2699\uFE0F"],
@@ -26918,7 +28881,8 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
   }
   function C7(n) {
     let e = S.save;
-    if (((n.innerHTML = ""), is === "jobs")) {
+    if (((n.innerHTML = ""), V18TAB(n, is))) {
+    } else if (is === "jobs") {
       if (S.job) {
         let i = S.job;
         n.appendChild(
@@ -26948,6 +28912,7 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
           `<div class="d" style="opacity:.7;margin:0 0 8px">${Dn[e.weather].i} ${Dn[e.weather].n}${Dn[e.weather].pay > 1 ? " (+%" + Math.round((Dn[e.weather].pay - 1) * 100) + ")" : ""}${js() ? " \xB7 Gece primi +%15" : ""}${e.score >= 90 ? " \xB7 Y\xFCksek puan +%15" : e.score < 55 ? " \xB7 D\xFC\u015F\xFCk puan -%15" : ""} \xB7 ${t}Yeni i\u015Fler ~${Math.max(0, Math.round(75 - S.offerT))} sn</div>`,
         ),
       ),
+        V18JH(n),
         S.offers.forEach((i) => {
           let s = { kurye: "\u{1F354}", not: "\u{1F4C4}", sarj: "\u26A1", dengele: "\u{1F501}", vip: "\u{1F48E}" }[i.type];
           n.appendChild(
@@ -27117,7 +29082,7 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
       ),
       n.appendChild(
         Gn(
-          `<div class="t">Seviye ${e.lvl} \xB7 \u2B50 ${Math.round(e.score)} puan</div><div class="d">XP ${e.xp}/${Ur(e.lvl)} \xB7 Sonraki: ${T3(e.lvl + 1)}</div>`,
+          `<div class="t">\u{1F393} ${V18TN(e.lvl)} \xB7 Seviye ${e.lvl} \xB7 ⭐ ${Math.round(e.score)} puan</div><div class="d">XP ${e.xp}/${Ur(e.lvl)} \xB7 Sonraki: ${T3(e.lvl + 1)}</div>`,
         ),
       ),
         e.daily &&
@@ -27153,7 +29118,8 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
             c.appendChild(l),
             n.appendChild(c));
         };
-      (i(
+      (V18DIFF(i, t),
+      i(
         "Grafik",
         [
           [0, "D\xFC\u015F\xFCk"],
@@ -27411,7 +29377,8 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
           (g.fillStyle = v.includes(M) ? "#7fe6f2" : "#fff"),
           g.fillText(_.name, D, V));
       }
-      for (let [M, _] of Pn) ((g.font = "16px sans-serif"), g.fillText("\u26A1", d(M), E(_) - 16));
+      for (let [M, _] of Pn) ((g.font = "16px sans-serif"), g.fillText("⚡", d(M), E(_) - 16));
+      V18MAP(g, d, E, m);
       for (let M of Kt)
         M.state !== "ride" &&
           ((g.fillStyle = M.job ? "#ff9a2a" : M.batt < 0.15 ? "#ff4a4a" : M.batt < 0.4 ? "#ffd23a" : "#19c3d6"),
@@ -27564,9 +29531,9 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
   }
   function th(n, e, t) {
     let i =
-      Bt(`<div id="menu"><div class="box"><div class="logo">\u0130N<span>\u0130N</span></div><h3>\u0130T\xDC Ayaza\u011Fa \xB7 Scooter Sim\xFClat\xF6r\xFC</h3><div class="tag">Ger\xE7ek kamp\xFCs haritas\u0131 \xB7 ger\xE7ek yoku\u015Flar \xB7 v1.7</div>
+      Bt(`<div id="menu"><div class="box"><div class="logo">\u0130N<span>\u0130N</span></div><h3>\u0130T\xDC Ayaza\u011Fa \xB7 Scooter Sim\xFClat\xF6r\xFC</h3><div class="tag">Ger\xE7ek kamp\xFCs haritas\u0131 \xB7 ger\xE7ek yoku\u015Flar \xB7 v1.8</div>
     ${n ? '<div class="mbtn pri" id="mc"><i>\u25B6</i>Devam et</div>' : ""}<div class="mbtn ${n ? "" : "pri"}" id="mn"><i>${n ? "\uFF0B" : "\u25B6"}</i>${n ? "Yeni oyun" : "Ba\u015Fla"}</div><div class="mbtn" id="mh"><i>?</i>Nas\u0131l oynan\u0131r</div>
-    <div class="foot">v1.7.0 \xB7 Hayran yap\u0131m\u0131 oyun \xB7 ger\xE7ek bir scooter \u015Firketiyle ba\u011Flant\u0131s\u0131 yok \xB7 Harita \xA9 OpenStreetMap katk\u0131c\u0131lar\u0131 (ODbL, 26.11.2026) \xB7 Y\xFCkselti: SRTM / Terrain Tiles (AWS Open Data)</div></div></div>`);
+    <div class="foot">v1.8.0 \xB7 Hayran yap\u0131m\u0131 oyun \xB7 ger\xE7ek bir scooter \u015Firketiyle ba\u011Flant\u0131s\u0131 yok \xB7 Harita \xA9 OpenStreetMap katk\u0131c\u0131lar\u0131 (ODbL, 26.11.2026) \xB7 Y\xFCkselti: SRTM / Terrain Tiles (AWS Open Data)</div></div></div>`);
     (mi.appendChild(i), mi.classList.add("inmenu"), (S.inMenu = !0));
     let s = i.querySelector(".box");
     i.addEventListener("pointermove", (r) => {
@@ -27605,7 +29572,8 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
   <b>Fizik:</b> Scooter 100 km/s'e \xE7\u0131kar ama h\u0131zland\u0131k\xE7a batarya \xE7abuk biter; kamp\xFCs s\u0131n\u0131r\u0131 50, g\xFCvenlik yakalarsa ceza. Yoku\u015F a\u015Fa\u011F\u0131 100'\xFC a\u015Farsan yalpalars\u0131n. D\xFC\u015Fmek yok: kasis, rampas\u0131z kald\u0131r\u0131m, arnavut kald\u0131r\u0131m\u0131, \xE7im, \u0131slak zemin, keskin viraj ve \xE7arpmalarda sadece yava\u015Flars\u0131n.<br>
   <b>Kurallar:</b> Merkez yaya b\xF6lgesinde 10 km/s. Yola/ge\xE7ide/kav\u015Fa\u011Fa park etme. Gece far yak. Yayalara \xE7arpma.<br>
   <b>Ayarlar (\u2699\uFE0F):</b> Oyunu zor bulursan <b>Arazi zorluklar\u0131</b> ve <b>Cezalar</b>'\u0131 kapatabilirsin.<br>
-  <b>\u0130lerleme:</b> \u{1F3C6} Rozetler, \u{1F4CD} kamp\xFCste ke\u015Fif (yerlerin yan\u0131na git) ve \u{1F525} seri teslimat bonusu (+%10/teslimat, en fazla +%50).<br>
+  <b>\u0130lerleme:</b> \u{1F3C6} Rozetler, \u{1F4CD} kamp\xFCste ke\u015Fif (yerlerin yan\u0131na git) ve \u{1F525} seri teslimat bonusu (+%10/teslimat, en fazla +%100; iş bitince 3 dk içinde yenisini almazsan seri biter).<br>
+  <b>v1.8:</b> \u{1F393} Seviyen akademik \xFCnvan verir (Hazırlık → Rekt\xF6r). \u{1F3EA} Kamp\xFCsteki 44 ger\xE7ek işletmeyi satın al, y\xFCkselt, m\xFCd\xFCr tut, kasayı topla. \u{1F6F4} Sv 9'da kendi filonu kur. \u{1F3AF} G\xFCnl\xFCk/haftalık g\xF6revler, giriş serisi, kurye ligi, fak\xFClte itibarı, etkinlik g\xFCnleri. \u{1F3A8} Garajda model, renk, kıyafet, iz ve zil. \u{1F47B} Yarışlarda kendi hayaletine karşı yarış. \u{1F41D} Kamp\xFCse saklanmış 40 Altın Arı'yı bul.<br>
   <b>Hayatta kal:</b> Enerji azal\u0131r \u2192 yemekhane/kafe. Telefon \u015Farj\u0131 biter \u2192 k\xFCt\xFCphane/yurt/powerbank. Saat 02:00 olmadan yurtta uyu.<br>
   <b>Klavye:</b> WASD/oklar, Space fren, E etkile\u015Fim, B zil, L far, M telefon.</div></div></div>`);
     (mi.appendChild(n), (n.querySelector(".x").onclick = () => n.remove()));
@@ -27825,7 +29793,7 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
       addEventListener("pagehide", Ln));
     let k = !1,
       I = () => {
-        ((k = !0), D3(), S.offers.length || qa(), S.save.daily || D1(!0));
+        (V18INIT(), (k = !0), D3(), S.offers.length || qa(), S.save.daily || D1(!0));
         S.save.lookHint || ((S.save.lookHint = 1), setTimeout(() => vn("\u{1F446} Ekran\u0131 s\xFCr\xFCkleyerek etraf\u0131na bakabilirsin \xB7 \u{1F3A5} ile birinci \u015Fah\u0131s", "info"), 5e3));
       };
     (Za(1),
@@ -27905,7 +29873,7 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
           ie.position.set(G.ownPos[0], ta.heightAt(G.ownPos[0], G.ownPos[1]) + A1(G.ownPos[0], G.ownPos[1]), G.ownPos[1]),
           (ie.userData.ks.visible = !0));
       }
-      if (k) {
+      if ((V18F(de, xe), k)) {
         let ie = x.mode !== "walk",
           ue = x.mode === "fallen" ? x.fallYaw : x.yaw;
         x.mode === "walk" && x.speed < 0.2 && (ue = M.yaw);
