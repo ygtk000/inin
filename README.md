@@ -10,6 +10,10 @@ iPhone: Safari'de aç → Paylaş → Ana Ekrana Ekle. İlk açılıştan sonra 
 
 ![QR](ININ_QR.png)
 
+## v1.9.1
+- ⚡ Ayarlar → Performans: **Akıcı** (gölgeler kapalı, görüş 300 m, büyük ağlar parçalanıp uzaktakiler çizilmiyor, çözünürlük ≤1×) ve **Ultra akıcı** (ek olarak çizgiler kapalı, 30 FPS sabit, görüş 190 m, kalabalık %35, çözünürlük ≤0.75×). Test sahnesinde çizilen üçgen sayısı 1,1 milyondan Akıcı'da ~220 bine, Ultra'da ~120 bine iniyor. Oyun uzun süre kasarsa bu ayarı kendisi önerir.
+- 🔔 Bildirimler küçüldü: seviye/ödül bildirimleri ekranın üstünde ince bir şerit, rozetler altta küçük kart, daha kısa süre. Ayarlardan "Sadece yazı" seçilirse tek satırlık bildirim olarak gelir.
+
 ## v1.9.0
 - 🎨 Filo kimliği: filona kendi adını ver; gövde ve vurgu rengi, desen (yan şerit, çift şerit, arı bantları) ve amblem seç. Filo scooter'ları, bölge tabelaları ve harita etiketi bu kimliği kullanır.
 - 🎚️ Zorluk çarpanı büyüdü: Rahat ×1.0 · Normal ×1.5 · Gerçekçi ×2.0. Çarpan artık iş ücreti ve iş XP'sine ek olarak işletme ve filo gelirine de uygulanır.

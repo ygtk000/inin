@@ -2,7 +2,7 @@
 from patch_common import P
 p = P('/home/claude/work/app.mod.js')
 p.rep('''<div class="foot">v1.2.4 \\xB7 Hayran yap\\u0131m\\u0131 oyun \\xB7 ger\\xE7ek bir scooter \\u015Firketiyle ba\\u011Flant\\u0131s\\u0131 yok \\xB7 Harita \\xA9 OpenStreetMap katk\\u0131c\\u0131lar\\u0131 \\xB7 Y\\xFCkselti: Copernicus DEM</div>''',
-      '''<div class="foot">v1.9.0 \\xB7 Hayran yap\\u0131m\\u0131 oyun \\xB7 ger\\xE7ek bir scooter \\u015Firketiyle ba\\u011Flant\\u0131s\\u0131 yok \\xB7 Harita \\xA9 OpenStreetMap katk\\u0131c\\u0131lar\\u0131 (ODbL, 26.11.2026) \\xB7 Y\\xFCkselti: SRTM / Terrain Tiles (AWS Open Data)</div>''')
+      '''<div class="foot">v1.9.1 \\xB7 Hayran yap\\u0131m\\u0131 oyun \\xB7 ger\\xE7ek bir scooter \\u015Firketiyle ba\\u011Flant\\u0131s\\u0131 yok \\xB7 Harita \\xA9 OpenStreetMap katk\\u0131c\\u0131lar\\u0131 (ODbL, 26.11.2026) \\xB7 Y\\xFCkselti: SRTM / Terrain Tiles (AWS Open Data)</div>''')
 p.rep('''<div class="tag">Ger\\xE7ek kamp\\xFCs haritas\\u0131 \\xB7 ger\\xE7ek yoku\\u015Flar</div>''',
       '''<div class="tag">Ger\\xE7ek kamp\\xFCs haritas\\u0131 \\xB7 ger\\xE7ek yoku\\u015Flar \\xB7 v1.9</div>''')
 p.rep('''  <b>Hayatta kal:</b> Enerji azal\\u0131r \\u2192 yemekhane/kafe.''',

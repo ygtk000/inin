@@ -23590,7 +23590,8 @@ void main() {
     (ut.scene.fog.color.copy(r),
       ut.scene.background.copy(r),
       (ut.scene.fog.near = 60 + 80 * (1 - e)),
-      (ut.scene.fog.far = (e > 0.5 ? 300 : 520) - (1 - i) * 120),
+      (ut.scene.fog.far = V18FOGF((e > 0.5 ? 300 : 520) - (1 - i) * 120)),
+      (ut.scene.fog.near = Math.min(ut.scene.fog.near, ut.scene.fog.far * 0.45)),
       (ut.sun.intensity = 0.15 + 2 * i * (1 - e * 0.6)),
       ut.sun.color.setRGB(1, 0.85 + i * 0.1, 0.7 + i * 0.25),
       (ut.hemi.intensity = 0.25 + 1 * i * (1 - e * 0.3)));
@@ -23644,7 +23645,7 @@ void main() {
     ((o.instanceMatrix = im.instanceMatrix), (o.count = im.count), (o.frustumCulled = im.frustumCulled), (o.castShadow = !1), (o.userData.src = im), im.parent.add(o), OUTLIST.push(o));
   }
   function OUTSYNC() {
-    let on = !S.save || S.save.opt.outline !== !1;
+    let on = (!S.save || S.save.opt.outline !== !1) && V18PF() < 2;
     for (let o of OUTLIST) {
       let s = o.userData.src;
       s
@@ -23652,7 +23653,7 @@ void main() {
           (o.visible =
             on &&
             s.visible &&
-            (s.userData.cx == null || !S.camera || (s.userData.cx - S.camera.position.x) ** 2 + (s.userData.cz - S.camera.position.z) ** 2 < 48400)))
+            (s.userData.cx == null || !S.camera || (s.userData.cx - S.camera.position.x) ** 2 + (s.userData.cz - S.camera.position.z) ** 2 < V18OUTD())))
         : (o.visible = on);
     }
     ut.edges && (ut.edges.visible = on);
@@ -24864,6 +24865,7 @@ void main() {
     } catch {}
   }
   function ACHPOP(ic, title, nm, rw) {
+    if (S.save && S.save.opt && S.save.opt.notif === 0) return vn(ic + " " + nm + " · " + rw, "good");
     ACHq.push([ic, title, nm, rw]);
     ACHq.length === 1 && ACHshow();
   }
@@ -26187,6 +26189,193 @@ void main() {
     (sw("Gövde rengi", V18FCOL, L.col, null, "col", "col"), sw("Vurgu rengi (gidon direği, şeritler)", V18FCOL, L.acc, null, "acc", "col"), sw("Desen", V18FPAT, L.pat, L.op, "pat", "pat"), sw("Amblem", V18FEMB, L.emb, L.oe, "emb", "emb"));
     n.appendChild(c);
   }
+  // ---- performans modu ve kompakt bildirimler ----
+  var V18PFL = 0,
+    V18LF = 0,
+    V18SH = null,
+    V18CH = null,
+    V18CT2 = 0,
+    V18PED = null,
+    V18LOWT = 0,
+    V18HINT = 0;
+  function V18PF() {
+    return S.save && S.save.opt ? S.save.opt.perf | 0 : 0;
+  }
+  function V18VD(d) {
+    let p = V18PF();
+    return p === 2 ? Math.min(d, 190) : p === 1 ? Math.min(d, 300) : d;
+  }
+  function V18FOGF(f) {
+    let p = V18PF();
+    return p ? Math.min(f, V18VD(999) - 10) : f;
+  }
+  function V18PRQ(q) {
+    let p = V18PF();
+    return p === 2 ? Math.min(q, 0.75) : p === 1 ? Math.min(q, 1) : q;
+  }
+  function V18PRJ(j) {
+    let p = V18PF();
+    return p === 2 ? Math.min(j, 0.5) : p === 1 ? Math.min(j, 0.6) : j;
+  }
+  function V18FPL() {
+    return V18PF() === 2 ? 25 : 38;
+  }
+  function V18FPH() {
+    return V18PF() === 2 ? 29 : 56;
+  }
+  function V18LBL() {
+    return [150, 100, 70][V18PF()];
+  }
+  function V18MMF() {
+    return [3, 5, 8][V18PF()];
+  }
+  function V18RTI() {
+    return [2.5, 4, 6][V18PF()];
+  }
+  function V18OUTD() {
+    return [48400, 1e4, 0][V18PF()];
+  }
+  function V18SKIP(t) {
+    if (V18PF() !== 2) return ((V18LF = t), !1);
+    if (t - V18LF < 31) return !0;
+    return ((V18LF = t), !1);
+  }
+  // büyük birleşik ağları hücrelere böl (yalnızca performans modunda kullanılır)
+  function V18CHUNKPREP() {
+    if (V18CH || !V18SC) return;
+    V18CH = { orig: [], subs: [], tiles: [] };
+    let tri = (g) => (g.index ? g.index.count : g.attributes.position ? g.attributes.position.count : 0) / 3;
+    for (let o of V18SC.children.slice()) {
+      if (!o.isMesh || o.isInstancedMesh || !o.geometry || Array.isArray(o.material) || !o.visible) continue;
+      let g = o.geometry,
+        T = tri(g);
+      if (T < 2e3 || !g.attributes.position) continue;
+      g.boundingSphere || g.computeBoundingSphere();
+      let bs = g.boundingSphere;
+      if (!bs) continue;
+      if (bs.radius < 260) {
+        V18CH.tiles.push({ o, x: bs.center.x + o.position.x, z: bs.center.z + o.position.z, r: bs.radius });
+        continue;
+      }
+      if (o.position.lengthSq() > 1e-6 || o.rotation.x || o.rotation.y || o.rotation.z || o.scale.x !== 1) continue;
+      let P = g.attributes.position.array,
+        I = g.index ? g.index.array : null,
+        C = 160,
+        cells = new Map();
+      for (let t = 0; t < T; t++) {
+        let a = I ? I[t * 3] : t * 3,
+          b = I ? I[t * 3 + 1] : t * 3 + 1,
+          c = I ? I[t * 3 + 2] : t * 3 + 2,
+          cx = (P[a * 3] + P[b * 3] + P[c * 3]) / 3,
+          cz = (P[a * 3 + 2] + P[b * 3 + 2] + P[c * 3 + 2]) / 3,
+          k = Math.floor(cx / C) + "," + Math.floor(cz / C),
+          L = cells.get(k);
+        (L || cells.set(k, (L = [])), L.push(a, b, c));
+      }
+      let subs = [];
+      for (let [, L] of cells) {
+        let ng = new St();
+        for (let nm in g.attributes) ng.setAttribute(nm, g.attributes[nm]);
+        ng.setIndex(new wt(new Uint32Array(L), 1));
+        let x0 = 1e9,
+          x1 = -1e9,
+          y0 = 1e9,
+          y1 = -1e9,
+          z0 = 1e9,
+          z1 = -1e9;
+        for (let v of L) {
+          let px = P[v * 3],
+            py = P[v * 3 + 1],
+            pz = P[v * 3 + 2];
+          (px < x0 && (x0 = px), px > x1 && (x1 = px), py < y0 && (y0 = py), py > y1 && (y1 = py), pz < z0 && (z0 = pz), pz > z1 && (z1 = pz));
+        }
+        let cx = (x0 + x1) / 2,
+          cy = (y0 + y1) / 2,
+          cz = (z0 + z1) / 2,
+          r = Math.hypot(x1 - x0, y1 - y0, z1 - z0) / 2;
+        ((ng.boundingSphere = bs.clone()), ng.boundingSphere.center.set(cx, cy, cz), (ng.boundingSphere.radius = r));
+        let m = new Ie(ng, o.material);
+        ((m.castShadow = o.castShadow), (m.receiveShadow = o.receiveShadow), (m.renderOrder = o.renderOrder), (m.visible = !1), (m.matrixAutoUpdate = !1), m.updateMatrix(), V18SC.add(m), subs.push({ o: m, x: cx, z: cz, r }));
+      }
+      (V18CH.orig.push(o), V18CH.subs.push(...subs));
+    }
+  }
+  function V18PERFAPPLY() {
+    if (!V18READY) return;
+    let p = V18PF();
+    if (!V18SH) {
+      V18SH = [];
+      V18SC.traverse((o) => o.isLight && o.castShadow && V18SH.push(o));
+    }
+    for (let l of V18SH) l.castShadow = p === 0;
+    try {
+      V18PED || (V18PED = [Ga, Va, Es, Dr].map((q) => [q, q.count]));
+      for (let [q, n] of V18PED) q.count = p === 2 ? Math.round(n * 0.35) : n;
+    } catch {}
+    if (p) V18CHUNKPREP();
+    if (V18CH) {
+      for (let o of V18CH.orig) o.visible = !p;
+      if (!p) {
+        for (let s of V18CH.subs) s.o.visible = !1;
+        for (let s of V18CH.tiles) s.o.visible = !0;
+      }
+    }
+    ((V18CT2 = 9), S.applyOutline && S.applyOutline());
+  }
+  function V18PERFF(dt) {
+    let p = V18PF();
+    if (p !== V18PFL) ((V18PFL = p), V18PERFAPPLY());
+    let cam = S.camera;
+    if (!cam) return;
+    cam.far = p ? V18VD(999) + 40 : 1200;
+    if (p && V18CH && (V18CT2 += dt) > 0.25) {
+      V18CT2 = 0;
+      let cx = cam.position.x,
+        cz = cam.position.z,
+        D = V18VD(999);
+      for (let s of V18CH.subs) s.o.visible = Math.hypot(s.x - cx, s.z - cz) - s.r < D;
+      for (let s of V18CH.tiles) s.o.visible = Math.hypot(s.x - cx, s.z - cz) - s.r < D;
+      if (p === 2) for (let c of di) c.mesh && (c.mesh.visible = (c.x - cx) ** 2 + (c.z - cz) ** 2 < 16900);
+    }
+    // otomatik öneri: uzun süre düşük kare hızı
+    if (!p && S.stats && S.stats.fps < 24 && !V18HINT) {
+      if ((V18LOWT += dt) > 12) ((V18HINT = 1), mt("🐢 Oyun kasıyor gibi. Ayarlar → ⚡ Performans: Akıcı ya da Ultra akıcı dene.", "warn"));
+    } else V18LOWT = Math.max(0, V18LOWT - dt);
+  }
+  function V18PERFUI(i, t) {
+    (i(
+      `⚡ Performans<div class="d" style="font-weight:400;font-family:Barlow;font-size:12px">Akıcı: gölgeler kapanır, görüş mesafesi ve çözünürlük düşer. Ultra akıcı: ek olarak çizgiler kapanır, 30 FPS sabitlenir, kalabalık azalır. En iyi sonuç için Grafik'i de Düşük yapıp oyunu yeniden aç.</div>`,
+      [
+        [0, "Görsel"],
+        [1, "Akıcı"],
+        [2, "Ultra akıcı"],
+      ],
+      t.perf | 0,
+      (s) => {
+        t.perf = s;
+      },
+    ),
+      i(
+        `🔔 Büyük bildirimler<div class="d" style="font-weight:400;font-family:Barlow;font-size:12px">Seviye, ödül ve olay bildirimleri: üstte küçük bir şerit ya da sadece kısa yazı.</div>`,
+        [
+          [1, "Küçük şerit"],
+          [0, "Sadece yazı"],
+        ],
+        t.notif === 0 ? 0 : 1,
+        (s) => {
+          t.notif = s;
+        },
+      ));
+  }
+  function V18BIGQ(n, e, t) {
+    if (S.save && S.save.opt && S.save.opt.notif === 0) {
+      let f = (e || "").split("\n")[0];
+      return (vn(n + (f ? " · " + f : ""), t === "bad" ? "bad" : t === "info" ? "info" : "good"), !0);
+    }
+    return !1;
+  }
+  var V18NCSS =
+    "#big{top:8px!important;transform:translateX(-50%)!important;padding:7px 14px 8px!important;min-width:0!important;width:max-content;max-width:min(62vw,420px)!important;pointer-events:none!important;border-radius:14px!important}#big h2{font-size:17px!important;margin:0 0 2px!important;letter-spacing:.4px!important;line-height:1.15}#big p{font-size:12.5px!important;line-height:1.3;max-height:3.9em;overflow:hidden}#toasts{top:58px!important}.toast{font-size:12.5px!important;padding:5px 11px!important}.achpop{top:auto!important;bottom:18%!important;padding:5px 12px 5px 6px!important;gap:8px!important;border-radius:12px!important}.achpop .ic{font-size:20px!important;width:30px!important;height:30px!important}.achpop .tt{font-size:10px!important;letter-spacing:1px!important}.achpop .nm{font-size:14px!important}.achpop .rw{font-size:11px!important}";
   // ---- dünya: tabelalar, altın arılar, filo, rakipler, hayalet, iz ----
   var V18SG = {};
   function V18SIGNTEX(b, cv) {
@@ -26825,7 +27014,7 @@ void main() {
         V18SC = p4;
         (V18BPREP(), V18FPREP(), V18BEEPREP(), V18SIGNS(V18SC), V18BEEBUILD(V18SC), V18FLEETBUILD(V18SC), V18FSIGNS(V18SC), V18RIVBUILD(V18SC), V18GHBUILD(V18SC), V18TRBUILD(V18SC));
         let st = document.createElement("style");
-        ((st.textContent = ".tabs{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}.tabs::-webkit-scrollbar{display:none}.tabs .tab{flex:0 0 auto;padding:9px 11px;font-size:14px}"), document.head.appendChild(st));
+        ((st.textContent = ".tabs{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}.tabs::-webkit-scrollbar{display:none}.tabs .tab{flex:0 0 auto;padding:9px 11px;font-size:14px}" + V18NCSS), document.head.appendChild(st));
         V18READY = !0;
       } catch (er) {
         console.error("V18", er);
@@ -26838,7 +27027,7 @@ void main() {
       o = V18OFFL();
     o && M.push(o);
     let l = V18LOGIN();
-    (l && M.push(l), M.forEach((m, i) => setTimeout(() => Ot() && Ot().big(m[0], m[1], "good"), 2600 + i * 4300)), (v.lastReal = Date.now()), V18LG(), V18WEEK());
+    (l && M.push(l), M.forEach((m, i) => setTimeout(() => Ot() && Ot().big(m[0], m[1], "good"), 2600 + i * 3200)), (v.lastReal = Date.now()), V18LG(), V18WEEK(), (V18PFL = -1));
   }
   function V18OFFL() {
     let v = V18S(),
@@ -26902,10 +27091,12 @@ void main() {
   }
   function V18F(dt, act) {
     if (!V18READY || !S.save) return;
+    V18PERFF(dt);
     let e = S.save,
       v = V18S(),
       cam = S.camera ? S.camera.position : null,
-      T = performance.now() / 1e3;
+      T = performance.now() / 1e3,
+      pf = V18PF();
     if (act) {
       (e.streak > 0 && !S.job && V18CT > 0 && ((V18CT -= dt), V18CT <= 0 && (mt("🔥 Seri bitti (x" + e.streak + "). Seriyi korumak için işleri ara vermeden al!", "info"), (e.streak = 0))),
         V18STEAL(dt));
@@ -26918,11 +27109,11 @@ void main() {
         cz = cam.z;
       for (let id in V18SG) {
         let s = V18SG[id];
-        s.g.visible = (s.g.position.x - cx) ** 2 + (s.g.position.z - cz) ** 2 < 12100;
+        s.g.visible = (s.g.position.x - cx) ** 2 + (s.g.position.z - cz) ** 2 < [12100, 4900, 2500][pf];
       }
-      for (let i = 0; i < V18BEEM.length; i++) V18BEEM[i].visible = !v.bees[i] && (V18BEES[i][0] - cx) ** 2 + (V18BEES[i][1] - cz) ** 2 < 16900;
-      for (let r of V18RVN) r.g.visible = !!r.pts && (r.x - cx) ** 2 + (r.z - cz) ** 2 < 48400;
-      for (let s of V18FHS) s.g.visible = s.n > 0 && (s.g.position.x - cx) ** 2 + (s.g.position.z - cz) ** 2 < 12100;
+      for (let i = 0; i < V18BEEM.length; i++) V18BEEM[i].visible = !v.bees[i] && (V18BEES[i][0] - cx) ** 2 + (V18BEES[i][1] - cz) ** 2 < [16900, 8100, 4900][pf];
+      for (let r of V18RVN) r.g.visible = !!r.pts && (r.x - cx) ** 2 + (r.z - cz) ** 2 < [48400, 14400, 6400][pf];
+      for (let s of V18FHS) s.g.visible = s.n > 0 && (s.g.position.x - cx) ** 2 + (s.g.position.z - cz) ** 2 < [12100, 4900, 2500][pf];
     }
     if (cam)
       for (let id in V18SG) {
@@ -28084,7 +28275,7 @@ S\xFCre ${i.toFixed(1)} sn (Alt\u0131n \u2264 ${e.gold.toFixed(0)} sn)${
         x.scooter.batt > 0 && (S.flags.battDead = !1));
     }
     if (((S.lastX = x.x), (S.lastZ = x.z), S.job)) {
-      if (((S.routeT = (S.routeT || 0) + n), S.routeT > 2.5 && k1(), e.hour > S.job.deadline + 1.5)) {
+      if (((S.routeT = (S.routeT || 0) + n), S.routeT > V18RTI() && k1(), e.hour > S.job.deadline + 1.5)) {
         if ((mt("\u0130\u015F s\xFCresi \xE7ok a\u015Ft\u0131, i\u015F iptal edildi", "bad"), S.job.sid)) {
           let a = Kt.find((r) => r.id === S.job.sid);
           a && (a.job = null);
@@ -28705,6 +28896,7 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
   }
   var Y4 = 0;
   function J4(n, e, t = "info") {
+    if (V18BIGQ(n, e, t)) return;
     ((Xe.big.className = "panel " + t),
       (Xe.big.innerHTML = "<h2></h2><p></p>"),
       (Xe.big.firstChild.textContent = n),
@@ -28716,7 +28908,7 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
         () => {
           ((Xe.big.style.display = "none"), (U3 = !1));
         },
-        3800 + (e || "").length * 25,
+        2300 + (e || "").length * 18,
       )));
   }
   function S7(n, e) {
@@ -28794,7 +28986,7 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
         }),
         (Xe.acts.style.bottom = i ? "var(--ab)" : "16px"));
     }
-    (S.frame || 0) % 3 === 0 && R7();
+    (S.frame || 0) % V18MMF() === 0 && R7();
   }
   function T7() {
     let n = S.save;
@@ -29309,6 +29501,7 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
             n.appendChild(c));
         };
       (V18DIFF(i, t),
+      V18PERFUI(i, t),
       i(
         "Grafik",
         [
@@ -29723,7 +29916,7 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
     let i =
       Bt(`<div id="menu"><div class="box"><div class="logo">\u0130N<span>\u0130N</span></div><h3>\u0130T\xDC Ayaza\u011Fa \xB7 Scooter Sim\xFClat\xF6r\xFC</h3><div class="tag">Ger\xE7ek kamp\xFCs haritas\u0131 \xB7 ger\xE7ek yoku\u015Flar \xB7 v1.9</div>
     ${n ? '<div class="mbtn pri" id="mc"><i>\u25B6</i>Devam et</div>' : ""}<div class="mbtn ${n ? "" : "pri"}" id="mn"><i>${n ? "\uFF0B" : "\u25B6"}</i>${n ? "Yeni oyun" : "Ba\u015Fla"}</div><div class="mbtn" id="mh"><i>?</i>Nas\u0131l oynan\u0131r</div>
-    <div class="foot">v1.9.0 \xB7 Hayran yap\u0131m\u0131 oyun \xB7 ger\xE7ek bir scooter \u015Firketiyle ba\u011Flant\u0131s\u0131 yok \xB7 Harita \xA9 OpenStreetMap katk\u0131c\u0131lar\u0131 (ODbL, 26.11.2026) \xB7 Y\xFCkselti: SRTM / Terrain Tiles (AWS Open Data)</div></div></div>`);
+    <div class="foot">v1.9.1 \xB7 Hayran yap\u0131m\u0131 oyun \xB7 ger\xE7ek bir scooter \u015Firketiyle ba\u011Flant\u0131s\u0131 yok \xB7 Harita \xA9 OpenStreetMap katk\u0131c\u0131lar\u0131 (ODbL, 26.11.2026) \xB7 Y\xFCkselti: SRTM / Terrain Tiles (AWS Open Data)</div></div></div>`);
     (mi.appendChild(i), mi.classList.add("inmenu"), (S.inMenu = !0));
     let s = i.querySelector(".box");
     i.addEventListener("pointermove", (r) => {
@@ -30005,15 +30198,17 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
     function fe() {
       if (!k || S.paused) return;
       let se = S.stats.fps;
-      (se < 38 ? (re++, (K = 0)) : se > 56 ? (K++, (re = 0)) : (re = K = 0),
-        re >= 2 && Y > j && ((Y = Math.max(j, Y * 0.85)), a.setPixelRatio(Y), (re = 0)),
-        K >= 4 && Y < q && ((Y = Math.min(q, Y * 1.1)), a.setPixelRatio(Y), (K = 0)),
+      (se < V18FPL() ? (re++, (K = 0)) : se > V18FPH() ? (K++, (re = 0)) : (re = K = 0),
+        Y > V18PRQ(q) && ((Y = V18PRQ(q)), a.setPixelRatio(Y)),
+        re >= 2 && Y > V18PRJ(j) && ((Y = Math.max(V18PRJ(j), Y * 0.85)), a.setPixelRatio(Y), (re = 0)),
+        K >= 4 && Y < V18PRQ(q) && ((Y = Math.min(V18PRQ(q), Y * 1.1)), a.setPixelRatio(Y), (K = 0)),
         (S.stats.pr = Y));
     }
     S.stats = { fps: 60 };
     function pe(se) {
       var ht, Ke, ft, z, Gt, Ye;
       requestAnimationFrame(pe);
+      if (V18SKIP(se)) return;
       let de = Math.min(0.1, (se - _) / 1e3);
       ((_ = se), F++, (V += de), V > 1 && ((S.stats.fps = F / V), (F = 0), (V = 0), fe()), (S.frame = (S.frame || 0) + 1));
       let G = S.save,
@@ -30157,10 +30352,10 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
         h.attributes.position.needsUpdate = !0;
       }
       (ut.water.material.color.setHSL(0.54, 0.4, 0.28 + Math.sin(se / 1500) * 0.02 + he.day * 0.1),
-        Q0(l.position.x, l.position.z, G.weather === "yagmur" ? 330 : 460));
+        Q0(l.position.x, l.position.z, V18VD(G.weather === "yagmur" ? 330 : 460)));
       for (let ie of ut.labels) {
         let ue = Math.hypot(ie.position.x - x.x, ie.position.z - x.z);
-        ie.visible = ue < 150 && ue > 12;
+        ie.visible = ue < V18LBL() && ue > 12;
       }
       let ke = S.job
         ? S.job.stage === "pickup"

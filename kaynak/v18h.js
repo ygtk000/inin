@@ -8,7 +8,7 @@
         V18SC = p4;
         (V18BPREP(), V18FPREP(), V18BEEPREP(), V18SIGNS(V18SC), V18BEEBUILD(V18SC), V18FLEETBUILD(V18SC), V18FSIGNS(V18SC), V18RIVBUILD(V18SC), V18GHBUILD(V18SC), V18TRBUILD(V18SC));
         let st = document.createElement("style");
-        ((st.textContent = ".tabs{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}.tabs::-webkit-scrollbar{display:none}.tabs .tab{flex:0 0 auto;padding:9px 11px;font-size:14px}"), document.head.appendChild(st));
+        ((st.textContent = ".tabs{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}.tabs::-webkit-scrollbar{display:none}.tabs .tab{flex:0 0 auto;padding:9px 11px;font-size:14px}" + V18NCSS), document.head.appendChild(st));
         V18READY = !0;
       } catch (er) {
         console.error("V18", er);
@@ -21,7 +21,7 @@
       o = V18OFFL();
     o && M.push(o);
     let l = V18LOGIN();
-    (l && M.push(l), M.forEach((m, i) => setTimeout(() => Ot() && Ot().big(m[0], m[1], "good"), 2600 + i * 4300)), (v.lastReal = Date.now()), V18LG(), V18WEEK());
+    (l && M.push(l), M.forEach((m, i) => setTimeout(() => Ot() && Ot().big(m[0], m[1], "good"), 2600 + i * 3200)), (v.lastReal = Date.now()), V18LG(), V18WEEK(), (V18PFL = -1));
   }
   function V18OFFL() {
     let v = V18S(),
@@ -85,10 +85,12 @@
   }
   function V18F(dt, act) {
     if (!V18READY || !S.save) return;
+    V18PERFF(dt);
     let e = S.save,
       v = V18S(),
       cam = S.camera ? S.camera.position : null,
-      T = performance.now() / 1e3;
+      T = performance.now() / 1e3,
+      pf = V18PF();
     if (act) {
       (e.streak > 0 && !S.job && V18CT > 0 && ((V18CT -= dt), V18CT <= 0 && (mt("🔥 Seri bitti (x" + e.streak + "). Seriyi korumak için işleri ara vermeden al!", "info"), (e.streak = 0))),
         V18STEAL(dt));
@@ -101,11 +103,11 @@
         cz = cam.z;
       for (let id in V18SG) {
         let s = V18SG[id];
-        s.g.visible = (s.g.position.x - cx) ** 2 + (s.g.position.z - cz) ** 2 < 12100;
+        s.g.visible = (s.g.position.x - cx) ** 2 + (s.g.position.z - cz) ** 2 < [12100, 4900, 2500][pf];
       }
-      for (let i = 0; i < V18BEEM.length; i++) V18BEEM[i].visible = !v.bees[i] && (V18BEES[i][0] - cx) ** 2 + (V18BEES[i][1] - cz) ** 2 < 16900;
-      for (let r of V18RVN) r.g.visible = !!r.pts && (r.x - cx) ** 2 + (r.z - cz) ** 2 < 48400;
-      for (let s of V18FHS) s.g.visible = s.n > 0 && (s.g.position.x - cx) ** 2 + (s.g.position.z - cz) ** 2 < 12100;
+      for (let i = 0; i < V18BEEM.length; i++) V18BEEM[i].visible = !v.bees[i] && (V18BEES[i][0] - cx) ** 2 + (V18BEES[i][1] - cz) ** 2 < [16900, 8100, 4900][pf];
+      for (let r of V18RVN) r.g.visible = !!r.pts && (r.x - cx) ** 2 + (r.z - cz) ** 2 < [48400, 14400, 6400][pf];
+      for (let s of V18FHS) s.g.visible = s.n > 0 && (s.g.position.x - cx) ** 2 + (s.g.position.z - cz) ** 2 < [12100, 4900, 2500][pf];
     }
     if (cam)
       for (let id in V18SG) {

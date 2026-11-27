@@ -14,7 +14,7 @@ def rep2(old, new, cnt=1):
     if p.src.count(old) == cnt: return _rep(old, new, cnt)
     return _rep(esc(old), new, cnt)
 p.rep = rep2
-MOD = ''.join(open('/home/claude/work/' + f, encoding='utf-8').read() for f in ['v18a.js', 'v18b.js', 'v18c.js', 'v18d.js', 'v18e.js', 'v18i.js', 'v18g.js', 'v18f.js', 'v18h.js'])
+MOD = ''.join(open('/home/claude/work/' + f, encoding='utf-8').read() for f in ['v18a.js', 'v18b.js', 'v18c.js', 'v18d.js', 'v18e.js', 'v18i.js', 'v18j.js', 'v18g.js', 'v18f.js', 'v18h.js'])
 H7 = '  var h7 = (n) => (Math.round(n * 10) / 10).toLocaleString("tr-TR"),'
 p.rep(H7, MOD + H7)
 # XP eğrisi: daha yumuşak (Rektör Sv 34 ulaşılabilir)
@@ -82,4 +82,31 @@ p.rep('      S.save && ((S.save.pos = [x.x, x.z, x.yaw]), localStorage', '      
 # yardım metni
 p.rep(r'seri teslimat bonusu (+%10/teslimat, en fazla +%50).<br>', r'''seri teslimat bonusu (+%10/teslimat, en fazla +%100; iş bitince 3 dk içinde yenisini almazsan seri biter).<br>
   <b>v1.8:</b> \u{1F393} Seviyen akademik \xFCnvan verir (Hazırlık → Rekt\xF6r). \u{1F3EA} Kamp\xFCsteki 44 ger\xE7ek işletmeyi satın al, y\xFCkselt, m\xFCd\xFCr tut, kasayı topla. \u{1F6F4} Sv 9'da kendi filonu kur. \u{1F3AF} G\xFCnl\xFCk/haftalık g\xF6revler, giriş serisi, kurye ligi, fak\xFClte itibarı, etkinlik g\xFCnleri. \u{1F3A8} Garajda model, renk, kıyafet, iz ve zil. \u{1F47B} Yarışlarda kendi hayaletine karşı yarış. \u{1F41D} Kamp\xFCse saklanmış 40 Altın Arı'yı bul.<br>''')
+p.save()
+# ---- v1.10: performans modu + kompakt bildirimler ----
+p = P('/home/claude/work/app.mod.js')
+p.rep('''      (se < 38 ? (re++, (K = 0)) : se > 56 ? (K++, (re = 0)) : (re = K = 0),
+        re >= 2 && Y > j && ((Y = Math.max(j, Y * 0.85)), a.setPixelRatio(Y), (re = 0)),
+        K >= 4 && Y < q && ((Y = Math.min(q, Y * 1.1)), a.setPixelRatio(Y), (K = 0)),''','''      (se < V18FPL() ? (re++, (K = 0)) : se > V18FPH() ? (K++, (re = 0)) : (re = K = 0),
+        Y > V18PRQ(q) && ((Y = V18PRQ(q)), a.setPixelRatio(Y)),
+        re >= 2 && Y > V18PRJ(j) && ((Y = Math.max(V18PRJ(j), Y * 0.85)), a.setPixelRatio(Y), (re = 0)),
+        K >= 4 && Y < V18PRQ(q) && ((Y = Math.min(V18PRQ(q), Y * 1.1)), a.setPixelRatio(Y), (K = 0)),''')
+p.rep('''      requestAnimationFrame(pe);
+      let de = Math.min(0.1, (se - _) / 1e3);''','''      requestAnimationFrame(pe);
+      if (V18SKIP(se)) return;
+      let de = Math.min(0.1, (se - _) / 1e3);''')
+p.rep('Q0(l.position.x, l.position.z, G.weather === "yagmur" ? 330 : 460)', 'Q0(l.position.x, l.position.z, V18VD(G.weather === "yagmur" ? 330 : 460))')
+p.rep('      (ut.scene.fog.far = (e > 0.5 ? 300 : 520) - (1 - i) * 120),', '      (ut.scene.fog.far = V18FOGF((e > 0.5 ? 300 : 520) - (1 - i) * 120)),\n      (ut.scene.fog.near = Math.min(ut.scene.fog.near, ut.scene.fog.far * 0.45)),')
+p.rep('ie.visible = ue < 150 && ue > 12;', 'ie.visible = ue < V18LBL() && ue > 12;')
+p.rep('(S.frame || 0) % 3 === 0 && R7();', '(S.frame || 0) % V18MMF() === 0 && R7();')
+p.rep('S.routeT > 2.5 && k1()', 'S.routeT > V18RTI() && k1()')
+p.rep('    let on = !S.save || S.save.opt.outline !== !1;', '    let on = (!S.save || S.save.opt.outline !== !1) && V18PF() < 2;')
+p.rep('(s.userData.cx - S.camera.position.x) ** 2 + (s.userData.cz - S.camera.position.z) ** 2 < 48400))', '(s.userData.cx - S.camera.position.x) ** 2 + (s.userData.cz - S.camera.position.z) ** 2 < V18OUTD()))')
+p.rep('''  function J4(n, e, t = "info") {
+    ((Xe.big.className''', '''  function J4(n, e, t = "info") {
+    if (V18BIGQ(n, e, t)) return;
+    ((Xe.big.className''')
+p.rep('3800 + (e || "").length * 25', '2300 + (e || "").length * 18')
+p.rep('    ACHq.push([ic, title, nm, rw]);', '    if (S.save && S.save.opt && S.save.opt.notif === 0) return vn(ic + " " + nm + " · " + rw, "good");\n    ACHq.push([ic, title, nm, rw]);')
+p.rep('      (V18DIFF(i, t),\n', '      (V18DIFF(i, t),\n      V18PERFUI(i, t),\n')
 p.save()
