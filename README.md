@@ -8,6 +8,18 @@
 
 iPhone: Safari'de aç → Paylaş → Ana Ekrana Ekle. İlk açılıştan sonra internetsiz çalışır.
 
+![QR](ININ_QR.png)
+
+## v1.9.0
+- 🎨 Filo kimliği: filona kendi adını ver; gövde ve vurgu rengi, desen (yan şerit, çift şerit, arı bantları) ve amblem seç. Filo scooter'ları, bölge tabelaları ve harita etiketi bu kimliği kullanır.
+- 🎚️ Zorluk çarpanı büyüdü: Rahat ×1.0 · Normal ×1.5 · Gerçekçi ×2.0. Çarpan artık iş ücreti ve iş XP'sine ek olarak işletme ve filo gelirine de uygulanır.
+- ⚖️ Ekonomi ve seviye dengesi baştan ayarlandı (kaynak/denge/sim.py ile simüle edildi): günde ~1,5 saat Rahat oynayan biri tüm işletmeleri, filoyu, garajı ve Rektörlüğü yaklaşık 7 günde tamamlar; Normal ~5, Gerçekçi ~4 gün.
+  - İşletme fiyatları düştü, gelirler arttı, yükseltmeler pahalandı (ilk alımlar hızlı, son seviyeler emek ister).
+  - Filo, istasyon ve çalışan fiyatları düştü; yatırım yapmak artık XP de kazandırır.
+  - Seviye eğrisi Rektör (Sv 34) ilk haftada ulaşılabilir olacak şekilde yeniden çizildi.
+- 🏅 Haftalık görevler ve kurye ligi artık gerçek takvimde 7 günde bir yenilenir; lig ödülleri arttı.
+- 📱 ININ_QR.png: oyunun bağlantısını paylaşmak için QR kod.
+
 ## v1.8.0
 - 🎓 Seviyeler akademik ünvan verir: Hazırlık Öğrencisi → Lisans → Mühendis → Y. Lisans → Doktora → Arş. Gör. → Öğr. Gör. → Dr. Öğr. Üyesi → Doçent → Profesör → Bölüm Başkanı → Enstitü Müdürü → Dekan → Rektör Yardımcısı → Rektör (Sv 34). Her ünvan iş ücretine +%2 prim.
 - 🏪 Kampüs içindeki 44 gerçek işletme (OSM 27.11.2026 + İTÜ ve yemek.com kaynakları) tabelalarıyla oyunda: satın al, 5 seviyeye yükselt, müdür tut, fiyat politikası seç, kasayı topla, tedarik işleriyle geliri artır. Sen yokken müdürler kazandırır.

@@ -89,7 +89,7 @@
   var V18FI = [],
     V18FT = null;
   function V18FLEETBUILD(sc) {
-    let t = b1(!0);
+    let t = V18FTEMPLATE();
     t.updateMatrixWorld(!0);
     let mp = new Map();
     t.traverse((s) => {
@@ -120,6 +120,7 @@
       }
     }
     for (let o of V18FI) ((o.count = n), (o.instanceMatrix.needsUpdate = !0));
+    V18FHS.length && V18FAPPLY();
   }
   var V18RVN = [];
   function V18RIVBUILD(sc) {

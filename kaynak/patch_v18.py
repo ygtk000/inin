@@ -14,11 +14,11 @@ def rep2(old, new, cnt=1):
     if p.src.count(old) == cnt: return _rep(old, new, cnt)
     return _rep(esc(old), new, cnt)
 p.rep = rep2
-MOD = ''.join(open('/home/claude/work/' + f, encoding='utf-8').read() for f in ['v18a.js', 'v18b.js', 'v18c.js', 'v18d.js', 'v18e.js', 'v18g.js', 'v18f.js', 'v18h.js'])
+MOD = ''.join(open('/home/claude/work/' + f, encoding='utf-8').read() for f in ['v18a.js', 'v18b.js', 'v18c.js', 'v18d.js', 'v18e.js', 'v18i.js', 'v18g.js', 'v18f.js', 'v18h.js'])
 H7 = '  var h7 = (n) => (Math.round(n * 10) / 10).toLocaleString("tr-TR"),'
 p.rep(H7, MOD + H7)
 # XP eğrisi: daha yumuşak (Rektör Sv 34 ulaşılabilir)
-p.rep('var Ur = (n) => Math.round(80 + 70 * Math.pow(n - 1, 1.35));', 'var Ur = (n) => Math.round(80 + 60 * Math.pow(n - 1, 1.15));')
+p.rep('var Ur = (n) => Math.round(80 + 70 * Math.pow(n - 1, 1.35));', 'var Ur = (n) => Math.round(60 + 28 * Math.pow(n - 1, 1.25));')
 p.rep(r'Ot().big("SEVİYE " + e.lvl, T3(e.lvl), "lvl")', r'Ot().big("SEVİYE " + e.lvl, V18LV(e.lvl), "lvl")')
 # yeni gün / günlük görevler / etkinlik
 p.rep('    e.daily = { day: e.day, list: i };\n  }', '    ((e.daily = { day: e.day, list: V18DAILY(i) }), V18DAY(n));\n  }')

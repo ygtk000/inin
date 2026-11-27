@@ -171,13 +171,17 @@
           { t: V18TL(V18FLIC), cls: e.money < V18FLIC ? "dis" : "", fn: () => (V18FLIC2(), V18RR(n)) },
         ]),
       );
-    let now = 0;
+    let now = 0,
+      LK = V18FLOOK();
     for (let i = 0; i < V18Z.length; i++) now += V18FRATE(i, h);
     n.appendChild(
       Gn(
-        `<div class="t">🛴 Filon: ${V18FCNT()} scooter</div><div class="d">Şu an ~${V18TL(now)}/saat · bugün ${V18TL(f.today)} · toplam ${V18TL(f.total)}<br>Gelir bölgenin saate göre yoğunluğuna bağlı: fakülteler gündüz, yurtlar sabah-akşam, metro işe gidiş-dönüş saatlerinde yoğun. Yeni scooter: ${V18TL(V18FSP())}</div>`,
+        `<div class="t">${V18FEMB[LK.emb][2] || "🛴"} ${LK.name}: ${V18FCNT()} scooter</div><div class="d">Şu an ~${V18TL(now)}/saat · bugün ${V18TL(f.today)} · toplam ${V18TL(f.total)}<br>Gelir bölgenin saate göre yoğunluğuna bağlı: fakülteler gündüz, yurtlar sabah-akşam, metro işe gidiş-dönüş saatlerinde yoğun. Yeni scooter: ${V18TL(V18FSP())}</div>`,
       ),
     );
+    V18UI.fl ? V18UIFLOOK(n, () => V18RR(n)) : null;
+    let tg = Bt(`<div class="btn ${V18UI.fl ? "" : "gray"}" style="margin:0 0 8px">${V18UI.fl ? "▲ Filo kimliğini kapat" : "🎨 Filo kimliği: ad, renk, desen, amblem"}</div>`);
+    ((tg.onclick = (q) => (q.stopPropagation(), Hn.click(), (V18UI.fl = !V18UI.fl), V18RR(n))), n.insertBefore(tg, V18UI.fl ? n.lastChild : null));
     for (let k in V18FST) {
       let d = V18FST[k];
       n.appendChild(
@@ -197,12 +201,12 @@
         n.appendChild(Gn(`<div class="t">📍 ${Z[1]}</div><div class="d">${ic} · itibar: ${V18RN[rl]}</div>`, [{ t: `${V18TL(p)}<br><small>İzin al</small>`, cls: e.money < p ? "dis" : "", fn: () => (V18FZON(i), V18RR(n)) }]));
         continue;
       }
-      let rp = Math.round((1 - z.c) * 300 * z.n),
+      let rp = Math.round((1 - z.c) * 120 * z.n),
         B = [
           { t: `+1<br><small>${V18TL(V18FSP())}</small>`, cls: z.n >= V18FMAX || e.money < V18FSP() ? "dis" : "", fn: () => (V18FADD(i, 1), V18RR(n)) },
           { t: "−1", cls: "gray", fn: () => (V18FADD(i, -1), V18RR(n)) },
         ];
-      (z.st || B.push({ t: "⚡<br><small>3.000₺</small>", cls: e.money < 3e3 ? "dis" : "", fn: () => (V18FSTN(i), V18RR(n)) }),
+      (z.st || B.push({ t: "⚡<br><small>1.200₺</small>", cls: e.money < 1200 ? "dis" : "", fn: () => (V18FSTN(i), V18RR(n)) }),
         !f.staff.tekn && rp > 20 && B.push({ t: `🔧<br><small>${V18TL(rp)}</small>`, fn: () => (V18FREP(i), V18RR(n)) }));
       n.appendChild(
         Gn(
@@ -242,7 +246,7 @@
       );
     }
     let wk = V18WEEK(),
-      wl = 7 - ((e.day - 1) % 7);
+      wl = V18WIDX().left;
     n.appendChild(
       Gn(
         `<div class="t">🏅 Haftalık görevler · ${wl} gün kaldı</div><div class="d">${wk.list.map((q) => `${q.done ? "✅" : "⬜"} ${q.t} — ${Math.round(q.prog)}/${q.goal} · <span class="price">${V18TL(q.rew)}</span>`).join("<br>")}</div>`,
@@ -252,7 +256,7 @@
       rk = V18LRANK(L);
     n.appendChild(
       Gn(
-        `<div class="t">🏆 Haftalık Kurye Ligi · ${wl} gün kaldı</div><div class="d">${rk.map((q, i) => `${["🥇", "🥈", "🥉"][i] || i + 1 + "."} ${q[2] ? "<b>Sen (" + V18T[ti][2] + ")</b>" : q[0]} — ${V18TL(q[1])}`).join("<br>")}<br>Ödüller: 1. 2.500₺ · 2. 1.200₺ · 3. 600₺. Sadece iş gelirin sayılır. Rakipler bekleyen işleri kapabilir!</div>`,
+        `<div class="t">🏆 Haftalık Kurye Ligi · ${wl} gün kaldı</div><div class="d">${rk.map((q, i) => `${["🥇", "🥈", "🥉"][i] || i + 1 + "."} ${q[2] ? "<b>Sen (" + V18T[ti][2] + ")</b>" : q[0]} — ${V18TL(q[1])}`).join("<br>")}<br>Ödüller: 1. 3.000₺ · 2. 1.500₺ · 3. 750₺. Hafta gerçek takvimle 7 günde biter, sadece iş gelirin sayılır. Rakipler bekleyen işleri kapabilir!</div>`,
       ),
     );
     let zr = V18Z.map((Z, i) => {

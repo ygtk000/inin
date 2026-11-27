@@ -6,7 +6,7 @@
     if (!V18READY)
       try {
         V18SC = p4;
-        (V18BPREP(), V18FPREP(), V18BEEPREP(), V18SIGNS(V18SC), V18BEEBUILD(V18SC), V18FLEETBUILD(V18SC), V18RIVBUILD(V18SC), V18GHBUILD(V18SC), V18TRBUILD(V18SC));
+        (V18BPREP(), V18FPREP(), V18BEEPREP(), V18SIGNS(V18SC), V18BEEBUILD(V18SC), V18FLEETBUILD(V18SC), V18FSIGNS(V18SC), V18RIVBUILD(V18SC), V18GHBUILD(V18SC), V18TRBUILD(V18SC));
         let st = document.createElement("style");
         ((st.textContent = ".tabs{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}.tabs::-webkit-scrollbar{display:none}.tabs .tab{flex:0 0 auto;padding:9px 11px;font-size:14px}"), document.head.appendChild(st));
         V18READY = !0;
@@ -15,7 +15,7 @@
       }
     if (!V18READY) return;
     let v = V18S();
-    (V18FLEETM(), V18APPLY());
+    (V18FLEETM(), V18APPLY(), V18FAPPLY());
     for (let id in V18BI) V18SIGN(id);
     let M = [],
       o = V18OFFL();
@@ -35,7 +35,7 @@
       let b = V18BI[id],
         st = v.biz[id];
       if (!b) continue;
-      let avg = V18BC[b.cat][3] * b.pm * V18LVM[st.lv - 1] * 0.6 * [0.85, 1, 1.25][st.pr];
+      let avg = V18BC[b.cat][3] * b.pm * V18LVM[st.lv - 1] * 0.6 * [0.85, 1, 1.25][st.pr] * V18DM();
       if (st.mgr) inc += avg * gh * 0.5 * 0.88;
       else {
         let add = Math.min(V18BCAP(b, st) - st.cash, avg * gh * 0.5);
@@ -46,7 +46,7 @@
       let z = v.fl.z[V18Z[i][0]];
       if (!z || !z.n) continue;
       let hr = v.fl.staff.sarj || z.st ? gh : Math.min(gh, z.b / 0.05);
-      ((fl += 50 * Math.pow(z.n, 0.9) * 0.75 * z.c * (v.fl.staff.deng ? 1.25 : 1) * hr * 0.5), v.fl.staff.sarj || z.st || (z.b = Math.max(0, z.b - 0.05 * hr)));
+      ((fl += 50 * Math.pow(z.n, 0.9) * 0.75 * z.c * (v.fl.staff.deng ? 1.25 : 1) * V18DM() * hr * 0.5), v.fl.staff.sarj || z.st || (z.b = Math.max(0, z.b - 0.05 * hr)));
     }
     ((inc = Math.round(inc)), (fl = Math.round(fl)));
     if (inc + fl + cash < 1) return null;
@@ -105,12 +105,14 @@
       }
       for (let i = 0; i < V18BEEM.length; i++) V18BEEM[i].visible = !v.bees[i] && (V18BEES[i][0] - cx) ** 2 + (V18BEES[i][1] - cz) ** 2 < 16900;
       for (let r of V18RVN) r.g.visible = !!r.pts && (r.x - cx) ** 2 + (r.z - cz) ** 2 < 48400;
+      for (let s of V18FHS) s.g.visible = s.n > 0 && (s.g.position.x - cx) ** 2 + (s.g.position.z - cz) ** 2 < 12100;
     }
     if (cam)
       for (let id in V18SG) {
         let s = V18SG[id];
         s.g.visible && (s.board.rotation.y = Math.atan2(cam.x - s.g.position.x, cam.z - s.g.position.z));
       }
+    if (cam) for (let s of V18FHS) s.g.visible && (s.board.rotation.y = Math.atan2(cam.x - s.g.position.x, cam.z - s.g.position.z));
     for (let i = 0; i < V18BEEM.length; i++) {
       let m = V18BEEM[i];
       if (!m.visible) continue;
@@ -137,7 +139,7 @@
     }
     for (let i = 0; i < V18Z.length; i++) {
       let z = v.fl.z[V18Z[i][0]];
-      z && z.n && ((g.font = "bold 12px sans-serif"), (g.fillStyle = "#9cc8ff"), g.fillText("🛴" + z.n, d(V18FHUB[i].x), E(V18FHUB[i].z) + 14));
+      z && z.n && ((g.font = "bold 12px sans-serif"), (g.fillStyle = "#9cc8ff"), g.fillText((V18FEMB[V18FLOOK().emb][2] || "🛴") + " " + V18FNAME() + " · " + z.n, d(V18FHUB[i].x), E(V18FHUB[i].z) + 14));
     }
     for (let r of V18RVN)
       r.pts &&
@@ -226,7 +228,6 @@
     ["v18doc", "🎓", "Doçent", "Doçent ünvanını al (Sv 15)", (s) => s.lvl >= 15, 1500, 0, (s) => s.lvl / 15],
     ["v18prof", "📜", "Profesör", "Profesör ol (Sv 18)", (s) => s.lvl >= 18, 3e3, 0, (s) => s.lvl / 18],
     ["v18rektor", "🏛️", "Rektör", "Rektör ol (Sv 34)", (s) => s.lvl >= 34, 1e4, 0, (s) => s.lvl / 34],
-    ["v18seri10", "🔥", "Durdurulamaz", "10'luk teslimat serisi yap", (s) => (s.bestStreak || 0) >= 10, 500, 80, (s) => (s.bestStreak || 0) / 10],
     ["v18lig", "🏆", "Lig şampiyonu", "Haftalık kurye liginde 1. ol", (s) => !!s.v18 && s.v18.st.leagueWins >= 1, 1e3, 150],
     ["v18hayalet", "👻", "Kendini geç", "Bir yarışta kendi hayaletini geç", (s) => !!s.v18 && s.v18.st.ghostWins >= 1, 300, 60],
   );

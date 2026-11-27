@@ -1,18 +1,18 @@
   // ---- işletmeler (OSM 27.11.2026 + İTÜ/yemek.com kaynakları) ----
   // [ad, simge, fiyat, saatlik gelir, açılış, kapanış, seviye]
   var V18BC = {
-    otomat: ["Otomat", "🥤", 1200, 45, 0, 24, 2],
-    kucuk: ["Simit · Börek · Lokanta", "🥯", 3000, 125, 7, 22, 3],
-    kafe: ["Kafe", "☕", 4500, 185, 7.5, 23, 4],
-    berber: ["Kuaför", "💈", 3500, 130, 9, 20, 4],
-    kirtasiye: ["Kırtasiye · Kitap · Baskı", "📚", 4000, 150, 8, 19, 5],
-    kafeterya: ["Kafeterya", "🍽️", 5500, 220, 8, 20, 5],
-    restoran: ["Restoran", "🍕", 7000, 280, 11, 22.5, 6],
-    zincir: ["Zincir kahveci", "🧋", 9000, 360, 7, 22, 7],
-    cowork: ["Çalışma kafe", "💻", 5000, 170, 8, 24, 7],
-    magaza: ["Mağaza", "🛍️", 8000, 260, 9, 19, 8],
-    yikama: ["Oto yıkama", "🚗", 6500, 230, 8, 19, 8],
-    market: ["Market", "🛒", 15000, 520, 8, 21.5, 10],
+    otomat: ["Otomat", "🥤", 450, 58, 0, 24, 2],
+    kucuk: ["Simit · Börek · Lokanta", "🥯", 1050, 163, 7, 22, 3],
+    kafe: ["Kafe", "☕", 1600, 240, 7.5, 23, 4],
+    berber: ["Kuaför", "💈", 1200, 170, 9, 20, 4],
+    kirtasiye: ["Kırtasiye · Kitap · Baskı", "📚", 1400, 195, 8, 19, 5],
+    kafeterya: ["Kafeterya", "🍽️", 1900, 286, 8, 20, 5],
+    restoran: ["Restoran", "🍕", 2450, 364, 11, 22.5, 6],
+    zincir: ["Zincir kahveci", "🧋", 3150, 468, 7, 22, 7],
+    cowork: ["Çalışma kafe", "💻", 1750, 221, 8, 24, 7],
+    magaza: ["Mağaza", "🛍️", 2800, 338, 9, 19, 8],
+    yikama: ["Oto yıkama", "🚗", 2300, 299, 8, 19, 8],
+    market: ["Market", "🛒", 5250, 676, 8, 21.5, 10],
   };
   var V18FOOD = { otomat: 1, kucuk: 1, kafe: 1, kafeterya: 1, restoran: 1, zincir: 1, cowork: 1 };
   var V18B = [
@@ -101,7 +101,7 @@
     return Math.round((c[2] * b.pm * (1 - 0.04 * V18RLV(b.zi))) / 50) * 50;
   }
   var V18LVM = [1, 1.5, 2.1, 2.8, 3.6],
-    V18UPC = [0.5, 0.9, 1.5, 2.4];
+    V18UPC = [0.9, 1.8, 3.2, 5.5];
   function V18BOPEN(b, h) {
     let c = V18BC[b.cat];
     h = ((h % 24) + 24) % 24;
@@ -126,7 +126,7 @@
     ev === "mac" && /restoran|kucuk/.test(b.cat) && (m *= 1.4);
     ev === "kariyer" && b.cat === "zincir" && (m *= 1.4);
     ev === "mezun" && (b.id === "satis1773" || b.id === "gratis") && (m *= 2);
-    m *= [0.85, 1, 1.25][st.pr] * (0.55 + 0.1 * st.rt) * (1 + 0.05 * V18RLV(b.zi)) * (st.fresh === S.save.day ? 1.25 : 1);
+    m *= [0.85, 1, 1.25][st.pr] * (0.55 + 0.1 * st.rt) * (1 + 0.05 * V18RLV(b.zi)) * (st.fresh === S.save.day ? 1.25 : 1) * V18DM();
     return m;
   }
   function V18BOWN() {
@@ -145,7 +145,7 @@
     (xn(-p, b.name + " satın alındı"),
       (v.biz[id] = { lv: 1, cash: 0, mgr: 0, pr: 1, rt: 4, fresh: 0, inv: p, full: 0 }),
       (v.st.bizN = Object.keys(v.biz).length),
-      S3(Math.round(20 + p / 120)),
+      S3(Math.round(15 + p / 40)),
       V18SIGN(id),
       S.audio && S.audio.level(),
       Ot() && Ot().big("🏪 " + b.name, "Artık senin! Kasası dolunca yanına gidip topla ya da müdür tut.", "good"),
@@ -157,7 +157,7 @@
     if (!st || st.lv >= 5) return;
     let p = Math.round((V18BC[b.cat][2] * b.pm * V18UPC[st.lv - 1]) / 50) * 50;
     if (S.save.money < p) return mt("Para yetmiyor (" + V18TL(p) + ")", "bad");
-    (xn(-p, b.name + " yükseltme"), st.lv++, (st.inv += p), S3(Math.round(10 + p / 150)), mt("⬆️ " + b.name + " Sv " + st.lv, "good"), V18SIGN(id), Ln());
+    (xn(-p, b.name + " yükseltme"), st.lv++, (st.inv += p), S3(Math.round(15 + p / 40)), mt("⬆️ " + b.name + " Sv " + st.lv, "good"), V18SIGN(id), Ln());
   }
   function V18BMGR(id) {
     let b = V18BI[id],
@@ -166,7 +166,7 @@
     if (st.mgr) return ((st.mgr = 0), mt("Müdür ayrıldı. Kasayı artık sen toplayacaksın.", "info"), Ln());
     let p = Math.round((V18BC[b.cat][2] * b.pm * 0.4) / 50) * 50;
     if (S.save.money < p) return mt("Para yetmiyor (" + V18TL(p) + ")", "bad");
-    (xn(-p, "Müdür: " + b.name), (st.mgr = 1), (st.inv += p), st.cash > 0 && (xn(st.cash, "Kasa"), (st.cash = 0)), mt("👔 Müdür işe başladı: gelir otomatik hesabına geçer (%12 pay alır)", "good"), Ln());
+    (xn(-p, "Müdür: " + b.name), (st.mgr = 1), (st.inv += p), S3(Math.round(p / 40)), st.cash > 0 && (xn(st.cash, "Kasa"), (st.cash = 0)), mt("👔 Müdür işe başladı: gelir otomatik hesabına geçer (%12 pay alır)", "good"), Ln());
   }
   function V18BSELL(id) {
     let v = V18S(),

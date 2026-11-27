@@ -239,7 +239,7 @@
       if (m[2] < 0) return mt("40 Altın Arı'nın hepsini bulunca açılır", "bad");
       if (e.lvl < m[3]) return mt("Seviye " + m[3] + " gerekli", "bad");
       if (e.money < m[2]) return mt("Para yetmiyor", "bad");
-      (xn(-m[2], m[0]), g.own.model || (g.own.model = {}), (g.own.model[k] = 1), S3(40));
+      (xn(-m[2], m[0]), g.own.model || (g.own.model = {}), (g.own.model[k] = 1), S3(Math.round(15 + m[2] / 40)));
     }
     ((g.eq.model = k), V18APPLY(), S.ride && S.ride.own && (x.stats = w3(!0, e.upg)), mt("🛴 " + m[0] + " seçildi", "good"), Ln());
   }

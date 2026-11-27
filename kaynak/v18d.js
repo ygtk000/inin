@@ -15,7 +15,8 @@
       ];
     ow && P.push({ id: "kasa", t: "İşletmelerinden 3 kez kasa topla", goal: 3, prog: 0, rew: 90 }, { id: "tedarik", t: "1 tedarik işi tamamla", goal: 1, prog: 0, rew: 100 });
     Object.keys(v.bees).length < V18BEEN && P.push({ id: "ari", t: "1 Altın Arı bul", goal: 1, prog: 0, rew: 120 });
-    V18FCNT() > 0 && P.push({ id: "filo", t: "Filon bugün 400₺ kazansın", goal: 400, prog: 0, rew: 90 });
+    let fg = Math.round((300 + e.lvl * 30) / 50) * 50;
+    V18FCNT() > 0 && P.push({ id: "filo", t: "Filon bugün " + fg + "₺ kazansın", goal: fg, prog: 0, rew: 90 });
     e.lvl >= 6 && P.push({ id: "vip", t: "1 VIP teslimat yap", goal: 1, prog: 0, rew: 110 });
     for (let k = P.length - 1; k > 0; k--) {
       let j = Math.floor(Math.random() * (k + 1));
@@ -37,10 +38,18 @@
     ["ari", "Altın Arı bul", 5, 1200],
     ["tedarik", "tedarik işi yap", 4, 1100],
   ];
+  function V18WIDX() {
+    let v = V18S(),
+      d = new Date(),
+      t = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 864e5);
+    v.wstart || (v.wstart = t);
+    let k = Math.max(0, t - v.wstart);
+    return { w: Math.floor(k / 7), left: 7 - (k % 7) };
+  }
   function V18WEEK() {
     let e = S.save,
       v = V18S(),
-      w = Math.floor((e.day - 1) / 7);
+      w = V18WIDX().w;
     if (v.week && v.week.w === w) return v.week;
     let ow = V18BOWN().length > 0,
       fl = V18FCNT() > 0,
@@ -52,7 +61,7 @@
     }
     let m = 1 + 0.1 * (e.lvl - 1),
       L = P.slice(0, 3).map((q) => {
-        let goal = q[0] === "earn" ? Math.round((2500 + e.lvl * 400) / 100) * 100 : q[0] === "jobs" ? 30 + Math.min(30, e.lvl * 2) : q[2];
+        let goal = q[0] === "earn" ? Math.round((2500 + e.lvl * 400) / 100) * 100 : q[0] === "jobs" ? 30 + Math.min(30, e.lvl * 2) : q[0] === "kasa" ? Math.round((5e3 + e.lvl * 800) / 100) * 100 : q[0] === "filo" ? Math.round((3e3 + e.lvl * 300) / 100) * 100 : q[2];
         return { id: q[0], t: q[0] === "combo" ? "x8 teslimat serisine ulaş" : (q[0] === "earn" || q[0] === "kasa" || q[0] === "filo" ? V18TL(goal) : goal) + " " + q[1].replace(/^₺ /, ""), goal, prog: 0, rew: Math.round((q[3] * m) / 50) * 50 };
       });
     return (v.week = { w, list: L });
@@ -76,7 +85,7 @@
   ];
   function V18LG() {
     let v = V18S(),
-      w = Math.floor((S.save.day - 1) / 7);
+      w = V18WIDX().w;
     if (!v.league || v.league.w !== w) {
       let old = v.league;
       if (old && old.w < w) V18LEND(old);
@@ -93,7 +102,7 @@
   function V18LEND(L) {
     let a = V18LRANK(L),
       k = a.findIndex((q) => q[2]),
-      rw = [2500, 1200, 600][k] || 0,
+      rw = [3e3, 1500, 750][k] || 0,
       v = V18S();
     rw && (xn(rw, "Kurye ligi ödülü"), S3([250, 150, 80][k]));
     k === 0 && v.st.leagueWins++;

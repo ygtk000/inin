@@ -37,7 +37,7 @@
   // ---- zorluk ----
   function V18DM() {
     let o = S.save.opt;
-    return 1 + (o.terrain !== !1 && o.noslow !== !0 ? 0.15 : 0) + (o.pen !== !1 ? 0.25 : 0) + (o.noslow !== !0 ? 0.1 : 0);
+    return 1 + (o.terrain !== !1 && o.noslow !== !0 ? 0.25 : 0) + (o.pen !== !1 ? 0.5 : 0) + (o.noslow !== !0 ? 0.25 : 0);
   }
   function V18DP() {
     let o = S.save.opt,
@@ -48,7 +48,7 @@
   }
   function V18DIFF(i, t) {
     i(
-      `🎚️ Zorluk · ödül çarpanı ×${V18DM().toFixed(2)}<div class="d" style="font-weight:400;font-family:Barlow;font-size:12px">Rahat: hiçbir şey yavaşlatmaz, ceza yok (×1.00). Normal: arazi ve yavaşlatmalar açık, ceza yok (×1.25). Gerçekçi: her şey açık (×1.50). İş ücreti ve XP bu çarpanla artar. Aşağıdaki ayarları tek tek de değiştirebilirsin.</div>`,
+      `🎚️ Zorluk · ödül çarpanı ×${V18DM().toFixed(2)}<div class="d" style="font-weight:400;font-family:Barlow;font-size:12px">Rahat: hiçbir şey yavaşlatmaz, ceza yok (×1.0). Normal: arazi ve yavaşlatmalar açık, ceza yok (×1.5). Gerçekçi: her şey açık (×2.0). Çarpan iş ücretine, iş XP'sine, işletme ve filo gelirine uygulanır. Aşağıdaki ayarları tek tek de değiştirebilirsin.</div>`,
       [
         ["rahat", "Rahat"],
         ["normal", "Normal"],

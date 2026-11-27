@@ -1,15 +1,15 @@
   // ---- filo patronluğu ----
   var V18FLV = 9,
-    V18FLIC = 2500,
+    V18FLIC = 1500,
     V18FST = {
-      sarj: ["🔌 Şarjcı", "Bataryaları %60'ın altına düşürmez", 1500, 150],
-      deng: ["🔁 Dengeleyici", "Scooter'ları yoğun noktalara taşır: filo geliri +%25", 2500, 220],
-      tekn: ["🔧 Teknisyen", "Arıza ve yıpranmayı önler, bakımları yapar", 2000, 180],
+      sarj: ["🔌 Şarjcı", "Bataryaları %60'ın altına düşürmez", 600, 60],
+      deng: ["🔁 Dengeleyici", "Scooter'ları yoğun noktalara taşır: filo geliri +%25", 1000, 90],
+      tekn: ["🔧 Teknisyen", "Arıza ve yıpranmayı önler, bakımları yapar", 800, 75],
     },
     V18FMAX = 8,
     V18FHUB = [];
   function V18FZP(zi) {
-    return { m: 3500, f: 2000, d: 2400, t: 3000 }[V18Z[zi][4]];
+    return { m: 1400, f: 800, d: 1000, t: 1200 }[V18Z[zi][4]];
   }
   function V18FCNT() {
     let n = 0,
@@ -18,13 +18,13 @@
     return n;
   }
   function V18FSP() {
-    return 1200 + 20 * V18FCNT();
+    return 600 + 10 * V18FCNT();
   }
   function V18FRATE(zi, h) {
     let v = V18S(),
       z = v.fl.z[V18Z[zi][0]];
     if (!z || !z.n || z.b <= 0.03) return 0;
-    return 50 * Math.pow(z.n, 0.9) * V18DEM(zi, h) * z.c * (v.fl.staff.deng ? 1.25 : 1) * (V18EV() === "filo" ? 1.6 : 1) * (1 + 0.05 * V18RLV(zi));
+    return 50 * Math.pow(z.n, 0.9) * V18DEM(zi, h) * z.c * (v.fl.staff.deng ? 1.25 : 1) * (V18EV() === "filo" ? 1.6 : 1) * (1 + 0.05 * V18RLV(zi)) * V18DM();
   }
   function V18FSTEP(dh, h) {
     let v = V18S(),
@@ -52,7 +52,7 @@
     let v = V18S();
     if (S.save.lvl < V18FLV) return mt("Seviye " + V18FLV + " (" + V18TN(V18FLV) + ") gerekli", "bad");
     if (S.save.money < V18FLIC) return mt("Para yetmiyor", "bad");
-    (xn(-V18FLIC, "İNİN bayi lisansı"), (v.fl.lic = 1), S3(60), Ot() && Ot().big("🛴 İNİN BAYİSİ", "Artık kendi filon var! Bir bölge izni al ve scooter yerleştir.", "good"), Ln());
+    (xn(-V18FLIC, "İNİN bayi lisansı"), (v.fl.lic = 1), S3(60), V18FLOOK(), Ot() && Ot().big("🛴 İNİN BAYİSİ", "Artık kendi filon var! Bir bölge izni al ve scooter yerleştir.", "good"), Ln());
   }
   function V18FZON(zi) {
     let v = V18S(),
@@ -60,7 +60,7 @@
       p = V18FZP(zi);
     if (v.fl.z[k] && v.fl.z[k].on) return;
     if (S.save.money < p) return mt("Para yetmiyor (" + V18TL(p) + ")", "bad");
-    (xn(-p, "Bölge izni: " + V18Z[zi][1]), (v.fl.z[k] = { on: 1, n: 0, b: 1, c: 1, st: 0 }), mt("✅ " + V18Z[zi][1] + " izni alındı", "good"), Ln());
+    (xn(-p, "Bölge izni: " + V18Z[zi][1]), (v.fl.z[k] = { on: 1, n: 0, b: 1, c: 1, st: 0 }), S3(Math.round(15 + p / 40)), mt("✅ " + V18Z[zi][1] + " izni alındı", "good"), Ln());
   }
   function V18FADD(zi, d) {
     let v = V18S(),
@@ -70,23 +70,23 @@
       if (z.n >= V18FMAX) return mt("Bu bölgede en fazla " + V18FMAX + " scooter olabilir", "bad");
       let p = V18FSP();
       if (S.save.money < p) return mt("Para yetmiyor (" + V18TL(p) + ")", "bad");
-      (xn(-p, "Filoya scooter"), (z.b = (z.b * z.n + 1) / (z.n + 1)), (z.c = (z.c * z.n + 1) / (z.n + 1)), z.n++, S3(15));
+      (xn(-p, "Filoya scooter"), (z.b = (z.b * z.n + 1) / (z.n + 1)), (z.c = (z.c * z.n + 1) / (z.n + 1)), z.n++, S3(Math.round(15 + p / 40)));
     } else {
       if (!z.n) return;
-      (z.n--, xn(Math.round((V18FSP() - 20) * 0.5), "Scooter satıldı"));
+      (z.n--, xn(Math.round((V18FSP() - 10) * 0.5), "Scooter satıldı"));
     }
     (V18FLEETM(), Ln());
   }
   function V18FSTN(zi) {
     let z = V18S().fl.z[V18Z[zi][0]];
     if (!z || z.st) return;
-    if (S.save.money < 3e3) return mt("Para yetmiyor (3.000₺)", "bad");
-    (xn(-3e3, "Şarj istasyonu"), (z.st = 1), mt("⚡ Şarj istasyonu kuruldu", "good"), Ln());
+    if (S.save.money < 1200) return mt("Para yetmiyor (1.200₺)", "bad");
+    (xn(-1200, "Şarj istasyonu"), (z.st = 1), S3(45), mt("⚡ Şarj istasyonu kuruldu", "good"), Ln());
   }
   function V18FREP(zi) {
     let z = V18S().fl.z[V18Z[zi][0]];
     if (!z) return;
-    let p = Math.round((1 - z.c) * 300 * z.n);
+    let p = Math.round((1 - z.c) * 120 * z.n);
     if (p < 1) return;
     if (S.save.money < p) return mt("Para yetmiyor (" + V18TL(p) + ")", "bad");
     (xn(-p, "Filo bakımı"), (z.c = 1), mt("🔧 Bakım tamam", "good"), Ln());
@@ -96,7 +96,7 @@
       d = V18FST[k];
     if (f.staff[k]) return ((f.staff[k] = 0), mt(d[0] + " işten ayrıldı", "info"), Ln());
     if (S.save.money < d[2]) return mt("Para yetmiyor (" + V18TL(d[2]) + ")", "bad");
-    (xn(-d[2], d[0] + " işe alındı"), (f.staff[k] = 1), mt(d[0] + " işe başladı · günlük maaş " + d[3] + "₺", "good"), Ln());
+    (xn(-d[2], d[0] + " işe alındı"), (f.staff[k] = 1), S3(Math.round(d[2] / 40)), mt(d[0] + " işe başladı · günlük maaş " + d[3] + "₺", "good"), Ln());
   }
   // gün sonu: maaşlar ve özet
   function V18FDAY() {
@@ -110,7 +110,7 @@
         let p = V18FST[k][3];
         S.save.money >= p ? ((sal += p), xn(-p, "Maaş: " + V18FST[k][0])) : ((f.staff[k] = 0), out.push(V18FST[k][0]));
       }
-    let s = "🛴 Filo dün " + V18TL(f.today) + " kazandı" + (sal ? " · maaşlar " + V18TL(sal) : "") + (out.length ? " · bakiye yetmediği için ayrılan: " + out.join(", ") : "");
+    let s = "🛴 " + V18FLOOK().name + " dün " + V18TL(f.today) + " kazandı" + (sal ? " · maaşlar " + V18TL(sal) : "") + (out.length ? " · bakiye yetmediği için ayrılan: " + out.join(", ") : "");
     f.today = 0;
     return s;
   }
