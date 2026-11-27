@@ -370,6 +370,27 @@ for b in builds:
         b['h'] = max(b['h'], b['minH'] + 0.7)
     keep.append(b)
 builds = keep
+# yolun köşesinden geçtiği binaları (OSM çizim kayması) yol kenarına kadar kırp
+rb_union = unary_union([LineString(r['pts']).buffer(r['W'] / 2 + 0.4, cap_style=2) for r in roads_out])
+trim_n = 0
+for b in builds:
+    if b.get('roof'): continue
+    try:
+        pg = Polygon(b['poly'], b.get('holes') or []).buffer(0)
+    except Exception:
+        continue
+    if pg.is_empty or pg.area < 4: continue
+    ov = pg.intersection(rb_union).area
+    if ov < 0.5 or ov > 0.15 * pg.area: continue
+    d = pg.difference(rb_union)
+    if d.geom_type == 'MultiPolygon': d = max(d.geoms, key=lambda g: g.area)
+    if d.is_empty or d.geom_type != 'Polygon' or d.area < 0.6 * pg.area: continue
+    d = d.simplify(0.15)
+    b['poly'] = [[round(x, 2), round(y, 2)] for x, y in list(d.exterior.coords)[:-1]]
+    if d.interiors: b['holes'] = [[[round(x, 2), round(y, 2)] for x, y in list(h.coords)[:-1]] for h in d.interiors]
+    elif 'holes' in b: del b['holes']
+    trim_n += 1
+print('buildings trimmed at road edges:', trim_n)
 # Arı Kapı sütunları ve kulübesi (OSM building:part)
 for e in osm:
     t = e.get('tags', {})

@@ -8,6 +8,13 @@
 
 iPhone: Safari'de aç → Paylaş → Ana Ekrana Ekle. İlk açılıştan sonra internetsiz çalışır.
 
+## v1.7.0
+- Tüm yarışlar (başlangıç, bitiş, her kontrol noktası) ve görev alış/teslim noktaları tek tek kampüs sınırına göre kontrol edildi: hepsi içeride.
+- Rota bulucu kampüs dışındaki yolları kullanmaz; dış kapıdaki (Metro gibi) noktalar en yakın kampüs içi noktaya alındı.
+- Kampüs Maratonu artık yalnızca kampüs içi noktalardan geçer; Gölet Turu kampüs içi yollardan çizilir.
+- Kontrol noktaları arasındaki düz hat bina, duvar, su veya sınır dışından geçmez (gerekirse ara kontrol noktası eklenir).
+- Yola taşan bina parçaları kırpıldı.
+
 ## v1.6.0
 - Tek yükselti yüzeyi: zemin (4 m ızgara), yollar, kaldırımlar, binalar ve fizik aynı yüzeyi kullanır.
 - Yol boyuna profilleri yumuşatılır, kavşaklarda eşitlenir; yol kenarlarında yumuşak dolgu/yarma geçişi.
